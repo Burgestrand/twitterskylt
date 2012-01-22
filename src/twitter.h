@@ -15,6 +15,6 @@
 
 /* Functions */
 tw_error tw_fetch_tweet(tw_username, tw_tweet*);
-const unsigned char *tw_explain_error(tw_error);
+const char *tw_explain_error(tw_error);
 
 #endif

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-const unsigned char *tw_explain_error(tw_error error)
+const char *tw_explain_error(tw_error error)
 {
   switch (error)
   {
@@ -28,7 +28,7 @@ tw_error tw_fetch_tweet(tw_username username, tw_tweet* tweet)
 {
   const char *api_format_url = "https://api.twitter.com/1/statuses/user_timeline.json?count=1&trim_user=true&include_rts=false&include_entities=true&exclude_replies=true&contributor_details=false&screen_name=%s";
 
-  if (strlen(username) > TW_SIZE_USERNAME)
+  if (strlen((char *) username) > TW_SIZE_USERNAME)
   {
     return ERROR_USERNAME_TOO_LONG;
   }
@@ -38,11 +38,10 @@ tw_error tw_fetch_tweet(tw_username username, tw_tweet* tweet)
   // Parse the tweet
 
   // Fake a tweet
-  unsigned char fake_tweet[strlen("%@ is awesome!") + TW_SIZE_USERNAME + 1];
+  char fake_tweet[strlen("%@ is awesome!") + TW_SIZE_USERNAME + 1];
   sprintf(fake_tweet, "@%s is awesome!", username);
 
   // Return the tweet
-  strlcpy(tweet, fake_tweet, 141);
+  strlcpy((char *) tweet, fake_tweet, 141);
   return ERROR_NO_ERROR;
 }
-
