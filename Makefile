@@ -7,18 +7,24 @@ CFLAGS=-DDEBUG -ggdb -O0 -c -Wall -pedantic -std=c99
 # Linker flags.
 LDFLAGS=
 
-all: main
-	$(CC) $(LDFLAGS) main.o util.o twitter.o -o twitterskylt
+# Source files.
+SOURCES=main.c util.c twitter.c
+OBJECTS=$(SOURCES:.c=.o)
 
-main: util.o twitter.o
-	$(CC) $(CFLAGS) src/main.c
+# Compilation target.
+TARGET=twitterskylt
 
-util.o:
-	$(CC) $(CFLAGS) src/util.c
+# Makefile specials
+VPATH=src/
 
-twitter.o:
-	$(CC) $(CFLAGS) src/twitter.c
+all: $(SOURCES) $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.o:
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	rm twitterskylt
-	rm *.o
+	rm $(TARGET)
+	rm $(OBJECTS)
