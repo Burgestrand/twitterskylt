@@ -1,2 +1,2 @@
 all:
-	gcc src/twitterskylt.c -o twitterskylt
+	gcc -DDEBUG src/main.c src/util.c src/twitter.c -o twitterskylt
