@@ -18,22 +18,14 @@ describe("displayFriendly", function() {
 
 describe("words", function() {
 	it("splits text into words", function() {
-		var words = "You shall not pass!".words();
-		expect(words[0]).toEqual("You");
-		expect(words[1]).toEqual("shall");
-		expect(words[2]).toEqual("not");
-		expect(words[3]).toEqual("pass!");
+		expect("You shall not pass!".words()).toEqual(["You", "shall", "not", "pass!"]);
 	});
 	
 	it("collapses whitespace", function() {
-		var words = "Hello   there".words();
-		expect(words[0]).toEqual("Hello");
-		expect(words[1]).toEqual("there");
+		expect("Hello   there".words()).toEqual(["Hello", "there"]);
 	});
 	
 	it("removes leading and trailing whitespace", function() {
-		var words = "   good bye   ".words();
-		expect(words[0]).toEqual("good");
-		expect(words[1]).toEqual("bye");
+		expect("   good bye   ".words()).toEqual(["good", "bye"]);
 	});
 });
