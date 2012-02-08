@@ -54,4 +54,13 @@ describe("justifyGreedy", function() {
 			["of", "the", "display"]
 		]);
 	});
+	
+	it("properly justifies tweets with broken words on multiple lines", function() {
+		expect(justifyGreedy("this is a sample tweet with multiple words broken: on the first line and additionally on the second line"))
+		.toEqual([
+			["this", "is", "a", "sample", "tweet", "with", "multiple"],
+			["words", "broken:", "on", "the", "first", "line", "and"],
+			["additionally", "on", "the", "second", "line"]
+		]);
+	})
 });
