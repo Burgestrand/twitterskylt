@@ -82,4 +82,13 @@ describe("justifyGreedy", function() {
 			["0123456789"]
 		]);
 	});
+	
+	it("properly breaks up a word that is too large to fit on multiple lines", function() {
+		expect(justifyGreedy("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"))
+		.toEqual([
+			["0123456789012345678901234567890123456789"],
+			["0123456789012345678901234567890123456789"],
+			["0123456789"]
+		]);
+	});
 });
