@@ -61,13 +61,18 @@ function justifyGreedy(message) {
 			var wordsLeft = words.slice(wordIndex);
 			
 			// If we can move this word down and still have enough space left, we do so.
-			if ( minimumCharsNeeded(wordsLeft) <= charsLeft ) {
+			// This also requires that the word is short enough to fit on a single line.
+			if ( minimumCharsNeeded(wordsLeft) <= charsLeft && word.length <= LINE_LENGTH ) {
 				addLine();
 				addWord(word);
 			}
 			// Otherwise we must let this word run over two lines.
 			else {
-				var lineCharsLeft = LINE_LENGTH - currentLength - 1; // 1 for the space character that must precede this word.
+				var lineCharsLeft = LINE_LENGTH - currentLength;
+				if ( 0 < currentLength ) {
+					lineCharsLeft -= 1; // 1 for the space character that must precede this word.
+				}
+				
 				var firstHalf = word.substring(0, lineCharsLeft);
 				var secondHalf = word.substring(lineCharsLeft);
 				
