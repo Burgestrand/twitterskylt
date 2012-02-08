@@ -78,7 +78,7 @@ function justifyGreedy(message) {
 				
 				addWord(firstHalf);
 				addLine();
-				addWord(secondHalf);
+				words.splice(wordIndex + 1, 0, secondHalf); // Add it to the list of unprocessed words, so that words spanning multiple lines will be processed again as needed.
 			}
 		}
 	}
