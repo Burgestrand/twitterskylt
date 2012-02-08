@@ -20,8 +20,24 @@ function displayFriendly(message) {
 	return output;
 }
 
+function displayLines(lines) {
+	var message = "";
+	lines.forEach(function(line) {
+		message += line.join(" ").padRight(" ", LINE_LENGTH);
+	});
+	console.log(displayFriendly(message));
+}
+
 String.prototype.words = function() {
 	return this.trim().split(/\s+/);
+}
+
+String.prototype.padRight = function(character, length) {
+	var str = this;
+	while ( str.length < length ) {
+		str += character;
+	}
+	return str;
 }
 
 // Returns a list of lines that in turn consist of a list of words to be displayed on that line.
