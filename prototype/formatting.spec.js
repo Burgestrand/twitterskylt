@@ -38,4 +38,20 @@ describe("justifyGreedy", function() {
 			["bananas"]
 		]);
 	});
+	
+	it("properly justifies a single broken word followed by more words", function() {
+		expect(justifyGreedy("this is a tweet about apples, pears, bananas, mangoes in syrup"))
+		.toEqual([
+			["this", "is", "a", "tweet", "about", "apples,", "pears,"],
+			["bananas,", "mangoes", "in", "syrup"]
+		]);
+	});
+	
+	it("does not justify a word that fits exactly at the end of a line", function() {
+		expect(justifyGreedy("a tweet that exactly fits the first line of the display"))
+		.toEqual([
+			["a", "tweet", "that", "exactly", "fits", "the", "first", "line"],
+			["of", "the", "display"]
+		]);
+	});
 });

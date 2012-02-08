@@ -2,12 +2,13 @@ var LINE_LENGTH = 40;
 var LINE_COUNT = 4;
 
 function displayFriendly(message) {
+	message = message.replace(/ /g, "_");
 	var output = "";
 	var charIndex = 0;
 	for ( var line = 0; line < LINE_COUNT; line++ ) {
 		for ( var column = 0; column < LINE_LENGTH; column++ ) {
 			if ( message.charAt(charIndex) === "" ) {
-				output += "_";
+				output += "*";
 			} else {
 				output += message.charAt(charIndex);
 				charIndex++;
@@ -30,13 +31,18 @@ function justifyGreedy(message) {
 	var lines = [];
 	var currentLine = [];
 	var currentLength = 0;
+	
 	for ( var wordIndex = 0; wordIndex < words.length; wordIndex++ ) {
 		var word = words[wordIndex];
-		currentLength += word.length + 1; // The 1 represents the whitespace that must follow a word.
+		currentLength += word.length;
 		// If the current word exceds the line length, we create a new line to start adding words to.
 		if ( LINE_LENGTH < currentLength ) {
 			lines.push(currentLine);
 			currentLine = [];
+			currentLength = 0; // We start counting from the beginning on the next line.
+		// Otherwise, we need to 1 to the length to take into the account the whitespace that must follow a word.
+		} else {
+			currentLength += 1;
 		}
 		currentLine.push(word);
 	}
