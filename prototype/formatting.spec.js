@@ -91,4 +91,24 @@ describe("justifyGreedy", function() {
 			["0123456789"]
 		]);
 	});
+	
+	it("properly handles the maximum number of words", function() {
+		expect(justifyGreedy("aa a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a"))
+		.toEqual([
+			["aa",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a"], 
+			["a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a"],  
+			["a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a"],  
+			["a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a",  "a"]
+		]);
+	});
+	
+	it("properly handles the maximum tweet length", function() {
+		expect(justifyGreedy("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+		.toEqual([
+			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+		]);
+	});
 });
