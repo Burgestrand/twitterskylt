@@ -1,7 +1,7 @@
 var lineLength = 40;
 var lineCount = 4;
 
-function display(message) {
+function displayFriendly(message) {
 	var output = "";
 	var charIndex = 0;
 	for ( var line = 0; line < lineCount; line++ ) {
@@ -16,5 +16,5 @@ function display(message) {
 		output += "\n";
 	}
 	
-	console.log(output);
+	return output;
 }
