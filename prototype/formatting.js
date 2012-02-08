@@ -40,18 +40,19 @@ function justifyGreedy(message) {
 		return lines[lines.length - 1];
 	}
 	
+	function addWord(word) {
+		currentLine().push(word);
+		currentLength += word.length + 1; // 1 represents the space character that must separate two words.
+	}
+	
 	addLine();
 	
 	for ( var wordIndex = 0; wordIndex < words.length; wordIndex++ ) {
 		var word = words[wordIndex];
-		currentLength += word.length;
 		
 		// If the word fits the current line, we add it.
-		if ( currentLength <= LINE_LENGTH ) {
-			// We need to 1 to the length to take into the account the whitespace that must follow a word.
-			// This space does not appear if the word is at the end of a line, however, so we don't include it in the test above.
-			currentLength += 1;
-			currentLine().push(word);
+		if ( currentLength + word.length <= LINE_LENGTH ) {
+			addWord(word);
 		}
 		// Otherwise, the current word exceeds the line length and we must handle it.
 		else {
@@ -62,8 +63,7 @@ function justifyGreedy(message) {
 			// If we can move this word down and still have enough space left, we do so.
 			if ( minimumCharsNeeded(wordsLeft) <= charsLeft ) {
 				addLine();
-				currentLine().push(word);
-				currentLength += word.length + 1;
+				addWord(word);
 			}
 			// Otherwise we must let this word run over two lines.
 			else {
@@ -71,10 +71,9 @@ function justifyGreedy(message) {
 				var firstHalf = word.substring(0, lineCharsLeft);
 				var secondHalf = word.substring(lineCharsLeft);
 				
-				currentLine().push(firstHalf);
+				addWord(firstHalf);
 				addLine();
-				currentLine().push(secondHalf);
-				currentLength += secondHalf.length + 1;
+				addWord(secondHalf);
 			}
 		}
 	}
