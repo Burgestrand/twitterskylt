@@ -29,3 +29,13 @@ describe("words", function() {
 		expect("   good bye   ".words()).toEqual(["good", "bye"]);
 	});
 });
+
+describe("justifyGreedy", function() {
+	it("properly justifies a single broken word", function() {
+		expect(justifyGreedy("this is a tweet about apples, pears, bananas"))
+		.toEqual([
+			["this", "is", "a", "tweet", "about", "apples,", "pears,"],
+			["bananas"]
+		]);
+	});
+});
