@@ -18,3 +18,7 @@ function displayFriendly(message) {
 	
 	return output;
 }
+
+String.prototype.words = function() {
+	return this.trim().split(/\s+/);
+}
