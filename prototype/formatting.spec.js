@@ -74,4 +74,12 @@ describe("justifyGreedy", function() {
 			["uuuuuuu", "vvvvv", "xxxx", "yyyyyy", "zzzz", "aaa", "bbbbb"]
 		]);
 	});
+	
+	it("properly breaks up a word that is too large to fit on a single line", function() {
+		expect(justifyGreedy("01234567890123456789012345678901234567890123456789"))
+		.toEqual([
+			["0123456789012345678901234567890123456789"],
+			["0123456789"]
+		]);
+	});
 });
