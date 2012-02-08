@@ -62,5 +62,16 @@ describe("justifyGreedy", function() {
 			["words", "broken:", "on", "the", "first", "line", "and"],
 			["additionally", "on", "the", "second", "line"]
 		]);
-	})
+	});
+	
+	it("does not justify a word if that would make the result too long", function() {
+		// In this example, only the first broken word should be justified; the rest should be split over two lines.
+		expect(justifyGreedy("aaaaaa bbb cccc ddddd eeeeeee ffffff ggggg hhh iiiii j kk lllllll mmm nnnnnnn oo ppppp qqqqqqq rrrrrrrrrrrr ssss ttttt uuuuuuu vvvvv xxxx yyyyyy zzzz aaa bbbbb"))
+		.toEqual([
+			["aaaaaa", "bbb", "cccc", "ddddd", "eeeeeee", "ffffff"],    
+			["ggggg", "hhh", "iiiii", "j", "kk", "lllllll", "mmm", "nnnnnnn"],
+			["oo", "ppppp", "qqqqqqq", "rrrrrrrrrrrr", "ssss", "ttttt"],
+			["uuuuuuu", "vvvvv", "xxxx", "yyyyyy", "zzzz", "aaa", "bbbbb"]
+		]);
+	});
 });

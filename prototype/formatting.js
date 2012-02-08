@@ -24,30 +24,75 @@ String.prototype.words = function() {
 	return this.trim().split(/\s+/);
 }
 
-// Returns a list of lines, which in turn consist of a list of words to be displayed on that line.
+// Returns a list of lines that in turn consist of a list of words to be displayed on that line.
 // Justifies the message by simply moving any broken words down to the next line if there is room.
 function justifyGreedy(message) {
 	var words = message.words();
 	var lines = [];
-	var currentLine = [];
 	var currentLength = 0;
+	
+	function addLine() {
+		lines.push([]);
+		currentLength = 0;
+	}
+	
+	function currentLine() {
+		return lines[lines.length - 1];
+	}
+	
+	addLine();
 	
 	for ( var wordIndex = 0; wordIndex < words.length; wordIndex++ ) {
 		var word = words[wordIndex];
 		currentLength += word.length;
-		// If the current word exceds the line length, we create a new line to start adding words to.
-		if ( LINE_LENGTH < currentLength ) {
-			lines.push(currentLine);
-			currentLine = [];
-			currentLength = 0; // We start counting from the beginning on the next line.
-		// Otherwise, we need to 1 to the length to take into the account the whitespace that must follow a word.
-		} else {
+		
+		// If the word fits the current line, we add it.
+		if ( currentLength <= LINE_LENGTH ) {
+			// We need to 1 to the length to take into the account the whitespace that must follow a word.
+			// This space does not appear if the word is at the end of a line, however, so we don't include it in the test above.
 			currentLength += 1;
+			currentLine().push(word);
 		}
-		currentLine.push(word);
+		// Otherwise, the current word exceeds the line length and we must handle it.
+		else {
+			var linesLeft = LINE_COUNT - lines.length;
+			var charsLeft = linesLeft * LINE_LENGTH;
+			var wordsLeft = words.slice(wordIndex);
+			
+			// If we can move this word down and still have enough space left, we do so.
+			if ( minimumCharsNeeded(wordsLeft) <= charsLeft ) {
+				addLine();
+				currentLine().push(word);
+				currentLength += word.length + 1;
+			}
+			// Otherwise we must let this word run over two lines.
+			else {
+				var lineCharsLeft = LINE_LENGTH - currentLength - 1; // 1 for the space character that must precede this word.
+				var firstHalf = word.substring(0, lineCharsLeft);
+				var secondHalf = word.substring(lineCharsLeft);
+				
+				currentLine().push(firstHalf);
+				addLine();
+				currentLine().push(secondHalf);
+				currentLength += secondHalf.length + 1;
+			}
+		}
 	}
-	// We must also include the last line in the result.
-	lines.push(currentLine);
 	
 	return lines;
+}
+
+// Returns the minimum number of characters needed to display a list of words (including spaces) on a number of lines.
+function minimumCharsNeeded(words) {
+	var currentLength = 0;
+	for ( var wordIndex = 0; wordIndex < words.length; wordIndex++ ) {
+		var word = words[wordIndex];
+		currentLength += word.length;
+		var wordEndsAtLineEnd = currentLength % LINE_LENGTH === 0;
+		if ( !wordEndsAtLineEnd ) {
+			currentLength += 1; // Space character needed after word.
+		}
+	}
+	
+	return currentLength;
 }
