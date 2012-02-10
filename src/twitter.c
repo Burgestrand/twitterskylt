@@ -24,7 +24,7 @@ const char *tw_explain_error(tw_error error)
  * returns:
  *   - error status
  */
-tw_error tw_fetch_tweet(tw_username username, tw_tweet* tweet)
+tw_error tw_fetch_tweet(const tw_username *username, tw_tweet *tweet)
 {
   const char *api_format_url = "https://api.twitter.com/1/statuses/user_timeline.json?count=1&trim_user=true&include_rts=false&include_entities=true&exclude_replies=true&contributor_details=false&screen_name=%s";
 
