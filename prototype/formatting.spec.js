@@ -111,4 +111,15 @@ describe("justifyGreedy", function() {
 			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
 		]);
 	});
+	
+	it("properly moves down a word at the end of a line in a too long tweet", function() {
+		expect(justifyGreedy("12 1234 123456789 abc def gh ijk 1234567 123456 123 123 12345678999 abcdefghijklmn abcdefghijklmn abcdefghijklmn abcdefghijklmn abcdefghijklabcdefghijklabcdefghijkl"))
+		.toEqual([
+			["12", "1234", "123456789", "abc", "def", "gh", "ijk", "1234567"],
+			["123456",  "123",  "123",  "12345678999", "abcdefghijklm"],
+			["n", "abcdefghijklmn", "abcdefghijklmn", "abcdefgh"],
+			["ijklmn", "abcdefghijklabcdefghijklabcdefghi"],
+			["jkl"]
+		]);
+	});
 });
