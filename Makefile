@@ -8,7 +8,7 @@ CFLAGS=-DDEBUG -ggdb -O0 -c -Wall -pedantic -std=c99
 LDFLAGS=
 
 # Source files.
-SOURCES=main.c util.c twitter.c
+SOURCES=main.c util.c twitter.c formatting.c
 OBJECTS=$(SOURCES:.c=.o)
 
 # Compilation target.
