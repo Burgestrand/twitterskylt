@@ -1,3 +1,10 @@
+function justifyGreedy(string)
+{
+  return justify(string).map(function(e) {
+    return e.split(" ");
+  });
+}
+
 function justify(string)
 {
   var lines = [];
@@ -17,10 +24,10 @@ function justify(string)
     if (is_first_word && next_length > line_length)
     {
       // we’re the first word on this line, but we won’t fit, we must split it!
-      first_slice  = current_word.substring(0, max_line_length);
+      first_slice  = current_word.substring(0, line_length);
 
       // next word will be our next slice
-      second_slice = current_word.substring(max_line_length);
+      second_slice = current_word.substring(line_length);
       words.unshift(second_slice);
 
       // include this slice for this line
