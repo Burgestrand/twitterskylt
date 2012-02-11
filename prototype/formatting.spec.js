@@ -66,12 +66,12 @@ describe("justifyGreedy", function() {
 	
 	it("does not justify a word if that would make the result too long", function() {
 		// In this example, only the first broken word should be justified; the rest should be split over two lines.
-		expect(justifyGreedy("aaaaaa bbb cccc ddddd eeeeeee ffffff ggggg hhh iiiii j kk lllllll mmm nnnnnnn oo ppppp qqqqqqq rrrrrrrrrrrr ssss ttttt uuuuuuu vvvvv xxxx yyyyyy zzzz aaa bbbbb"))
+		expect(justifyGreedy("#SCAF's Tantawi has met today w the #US Joint Chief of Staff Gen. Martin Dempsey to discuss military ties and the #NGO situation in #Egypt and #Syria and #Yemen"))
 		.toEqual([
-			["aaaaaa", "bbb", "cccc", "ddddd", "eeeeeee", "ffffff"],    
-			["ggggg", "hhh", "iiiii", "j", "kk", "lllllll", "mmm", "nnnnnnn"],
-			["oo", "ppppp", "qqqqqqq", "rrrrrrrrrrrr", "ssss", "ttttt"],
-			["uuuuuuu", "vvvvv", "xxxx", "yyyyyy", "zzzz", "aaa", "bbbbb"]
+			["#SCAF's", "Tantawi", "has", "met", "today", "w", "the", "#US"],    
+			["Joint", "Chief", "of", "Staff", "Gen.", "Martin", "Dempsey"],
+			["to", "discuss", "military", "ties", "and", "the", "#NGO", "si"],
+			["tuation", "in", "#Egypt", "and", "#Syria", "and", "#Yemen"]
 		]);
 	});
 	
@@ -109,6 +109,17 @@ describe("justifyGreedy", function() {
 			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
 			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
 			["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+		]);
+	});
+	
+	it("properly moves down a word at the end of a line in a too long tweet", function() {
+		expect(justifyGreedy("12 1234 123456789 abc def gh ijk 1234567 123456 123 123 12345678999 abcdefghijklmn abcdefghijklmn abcdefghijklmn abcdefghijklmn abcdefghijklabcdefghijklabcdefghijkl"))
+		.toEqual([
+			["12", "1234", "123456789", "abc", "def", "gh", "ijk", "1234567"],
+			["123456",  "123",  "123",  "12345678999", "abcdefghijklm"],
+			["n", "abcdefghijklmn", "abcdefghijklmn", "abcdefgh"],
+			["ijklmn", "abcdefghijklabcdefghijklabcdefghi"],
+			["jkl"]
 		]);
 	});
 });
