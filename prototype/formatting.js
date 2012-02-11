@@ -85,9 +85,6 @@ function justifyGreedy(message) {
 			// Otherwise we must let this word run over two lines.
 			else {
 				var lineCharsLeft = LINE_LENGTH - currentLength;
-				if ( 0 < currentLength ) {
-					lineCharsLeft -= 1; // 1 for the space character that must precede this word.
-				}
 				
 				var firstHalf = word.substring(0, lineCharsLeft);
 				var secondHalf = word.substring(lineCharsLeft);
