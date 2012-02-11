@@ -5,9 +5,9 @@
 int
 main(void)
 {
-  unsigned char *username = ALLOC_USTR(TW_SIZE_USERNAME);
-  unsigned char *tweet    = ALLOC_USTR(TW_SIZE_TWEET);
-  tw_error error          = ERROR_NO_ERROR;
+  tw_username *username = ALLOC_USTR(TW_SIZE_USERNAME);
+  tw_tweet    *tweet    = ALLOC_USTR(TW_SIZE_TWEET);
+  tw_error error        = ERROR_NO_ERROR;
 
   /* Read username to fetch for */
   printf("Username: ");
