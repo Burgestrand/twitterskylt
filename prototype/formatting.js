@@ -9,6 +9,37 @@ function justifyGreedy(message) {
 	var words = message.words();
 	var lines = [];
 	
+	addLine();
+	
+	while ( words.length > 0 ) {
+		if ( lineIsFull() ) {
+			addLine();
+		}
+		
+		if ( wordFitsLine(currentWord()) ) {
+			addWord(currentWord());
+			words.shift();
+		}
+		else if ( wordCanBeMovedDown(currentWord()) ) {
+			addLine();
+			addWord(currentWord());
+			words.shift();
+		}
+		// Word must be broken.
+		else {
+			var firstPart = currentWord().substring(0, lineCharsLeft());
+			var secondPart = currentWord().substring(lineCharsLeft());
+			
+			addWord(firstPart);
+			addLine();
+			
+			words.shift();
+			words.unshift(secondPart);
+		}
+	}
+	
+	return lines;
+	
 	function addLine() {
 		lines.push([]);
 	}
@@ -45,10 +76,10 @@ function justifyGreedy(message) {
 	}
 	
 	function wordCanBeMovedDown(word) {
-		return roomNeeded() <= roomLeft() && wordFitsOnOneLine(word);
+		return roomNeeded() <= roomLeft() && wordFitsSingleLine(word);
 	}
 	
-	function wordFitsOnOneLine(word) {
+	function wordFitsSingleLine(word) {
 		return word.length <= LINE_LENGTH;
 	}
 	
@@ -71,35 +102,4 @@ function justifyGreedy(message) {
 			return LINE_LENGTH - currentLength() - " ".length;
 		}
 	}
-	
-	addLine();
-	
-	while ( words.length > 0 ) {
-		if ( lineIsFull() ) {
-			addLine();
-		}
-		
-		if ( wordFitsLine(currentWord()) ) {
-			addWord(currentWord());
-			words.shift();
-		}
-		else if ( wordCanBeMovedDown(currentWord()) ) {
-			addLine();
-			addWord(currentWord());
-			words.shift();
-		}
-		// Word must be broken.
-		else {
-			var firstPart = currentWord().substring(0, lineCharsLeft());
-			var secondPart = currentWord().substring(lineCharsLeft());
-			
-			addWord(firstPart);
-			addLine();
-			
-			words.shift();
-			words.unshift(secondPart);
-		}
-	}
-	
-	return lines;
 }
