@@ -48,20 +48,16 @@ function justifyGreedy(message) {
 		return lines[lines.length - 1];
 	}
 	
-	function currentWord() {
-		return words[0];
+	function currentLength() {
+		return currentLine().join(" ").length;
 	}
 	
 	function addWord(word) {
 		currentLine().push(word);
 	}
 	
-	function currentLength() {
-		return currentLine().join(" ").length;
-	}
-	
-	function lineIsEmpty() {
-		return currentLength() === 0;
+	function currentWord() {
+		return words[0];
 	}
 	
 	function lineIsFull() {
@@ -71,28 +67,8 @@ function justifyGreedy(message) {
 		);
 	}
 	
-	function wordFitsLine(word) {
-		return word.length <= lineCharsLeft();
-	}
-	
-	function wordCanBeMovedDown(word) {
-		return roomNeeded() <= roomLeft() && wordFitsSingleLine(word);
-	}
-	
-	function wordFitsSingleLine(word) {
-		return word.length <= LINE_LENGTH;
-	}
-	
-	function roomNeeded() {
-		return words.join(" ").length;
-	}
-	
-	function roomLeft() {
-		return linesLeft() * LINE_LENGTH;
-	}
-	
-	function linesLeft() {
-		return LINE_COUNT - lines.length;
+	function lineIsEmpty() {
+		return currentLength() === 0;
 	}
 	
 	function lineCharsLeft() {
@@ -101,5 +77,18 @@ function justifyGreedy(message) {
 		} else {
 			return LINE_LENGTH - currentLength() - " ".length;
 		}
+	}
+	
+	function wordFitsLine(word) {
+		return word.length <= lineCharsLeft();
+	}
+	
+	function wordCanBeMovedDown(word) {
+		var roomNeeded = words.join(" ").length;
+		var linesLeft = LINE_COUNT - lines.length;
+		var roomLeft = linesLeft * LINE_LENGTH;
+		var wordFitsSingleLine = word.length <= LINE_LENGTH;
+		
+		return roomNeeded <= roomLeft && wordFitsSingleLine;
 	}
 }
