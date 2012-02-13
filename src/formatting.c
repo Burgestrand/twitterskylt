@@ -59,10 +59,10 @@ char *justify(char *words[], int word_count)
 			cursor += first_part_length;
 			current_line_length += first_part_length;
 			
-			// Replace entire word with second half.
-			//int second_part_length = word_length - first_part_length;
-			//MEMCPY_N(word, word + first_part_length, char, second_part_length);
-			//word[second_part_length + 1] = '\0';
+			// Move current string pointer and decrement word index, 
+			// "tricking" the program into thinking that we've inserted a new word.
+			words[i] += first_part_length;
+			--i;
 		}
 		
 		// If there are more words and there is room for them on this line, add a space.
@@ -83,4 +83,9 @@ char *justify(char *words[], int word_count)
 	}
 
 	return result;
+}
+
+char *add_date(char *message) {
+	MEMCPY_N(message + (164 - 15), " - dd/mm hh:ss", char, 14);
+	return message;
 }
