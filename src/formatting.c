@@ -1,18 +1,86 @@
+#include "formatting.h"
 #include "util.h"
 
-unsigned char *justify(unsigned char **words, int total_length)
+#define LINE_COUNT 4
+#define LINE_LENGTH 40
+
+static int words_length(char *words[], int word_count) {
+	int result = 0;
+	int i = 0;
+	for (i = 0; i < word_count; ++i)
+	{
+		result += strlen(words[i]);
+	}
+	result += word_count - 1; // 1 space for each word except the last.
+	
+	return result;
+}
+
+char *justify(char *words[], int word_count)
 {
-  unsigned char *result = ALLOC_USTR(160);
-  unsigned char *cursor = result;
-  unsigned char **original_words = words;
-  int i = 0;
+	char *result = ALLOC_STR(LINE_COUNT * LINE_LENGTH + LINE_COUNT);
+	char *cursor = result;
+	
+	int room_needed = words_length(words, word_count);
+	int current_line_length = 0;
+	int lines_left = LINE_COUNT - 1;
+	int i = 0;
+	for (i = 0; i < word_count; ++i)
+	{
+		char *word = words[i];
+		int word_length = strlen(word);
+		
+		int line_chars_left = LINE_LENGTH - current_line_length;
+		int room_left = lines_left * LINE_LENGTH;
+		
+		// If word fits on current line.
+		if (word_length <= line_chars_left) {
+			MEMCPY_N(cursor, word, char, word_length);
+			cursor += word_length;
+			current_line_length += word_length;
+			room_needed -= word_length;
+		}
+		// If word does not fit on current line but can be moved to next line.
+		else if (room_needed <= room_left && word_length <= LINE_LENGTH) {
+			*cursor = '\n';
+			++cursor;
+			--lines_left;
+			current_line_length = 0;
+			
+			MEMCPY_N(cursor, word, char, word_length);
+			cursor += word_length;
+			current_line_length += word_length;
+			room_needed -= word_length;
+		}
+		// Otherwise, word must be broken.
+		else {
+			int first_part_length = line_chars_left;
+			MEMCPY_N(cursor, word, char, first_part_length);
+			cursor += first_part_length;
+			current_line_length += first_part_length;
+			
+			// Replace entire word with second half.
+			//int second_part_length = word_length - first_part_length;
+			//MEMCPY_N(word, word + first_part_length, char, second_part_length);
+			//word[second_part_length + 1] = '\0';
+		}
+		
+		// If there are more words and there is room for them on this line, add a space.
+		// This means that some lines will end with a space, which should not be a problem.
+		if (i < word_count - 1 && current_line_length < LINE_LENGTH - 1) {
+			*cursor = ' ';
+			++cursor;
+			++current_line_length;
+			--room_needed;
+		}
+		// Otherwise, add a newline, even if there are no more words.
+		else {
+			*cursor = '\n';
+			++cursor;
+			--lines_left;
+			current_line_length = 0;
+		}
+	}
 
-  for (i = 0; i < total_length; ++i)
-  {
-    unsigned char *word = words[i];
-    MEMCPY_N(cursor, "hello world", unsigned char, strlen("hello world"));
-    cursor += strlen("hello world");
-  }
-
-  return result;
+	return result;
 }
