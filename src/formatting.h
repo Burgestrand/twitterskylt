@@ -1,5 +1,5 @@
 #ifndef _FORMATTING_H_
 
-unsigned char *justify(const unsigned char*);
+char *justify(char**, int);
 
 #endif
