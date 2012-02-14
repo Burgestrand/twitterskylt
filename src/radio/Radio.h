@@ -8,9 +8,6 @@
 // Size of rx buffer (bytes)
 #define bufferSize 160
 
-#include <Xbee.h>
-#include <NewSoftSerial.h>
-
 class Radio {
 	
 	public:
