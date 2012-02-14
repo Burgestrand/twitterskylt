@@ -5,13 +5,10 @@
 int
 main(void)
 {
-  tw_username *username = ALLOC_USTR(TW_SIZE_USERNAME);
-  tw_tweet    *tweet    = ALLOC_USTR(TW_SIZE_TWEET);
-  tw_error error        = ERROR_NO_ERROR;
+  tw_tweet *tweet = ALLOC_STR(TW_SIZE_TWEET);
 
-  /* Read username to fetch for */
-  printf("Username: ");
-  tweet = (unsigned char *) getstr((char *) username, TW_SIZE_TWEET + 1);
+  printf("Tweet: ");
+  tweet = getstr(tweet, TW_SIZE_TWEET);
 
   /* Print it */
   printf("(%ld) %s\n", strlen(tweet), utf8_strip(tweet));
