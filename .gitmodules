@@ -1,0 +1,3 @@
+[submodule "vendor/aJSON"]
+	path = vendor/aJSON
+	url = https://github.com/interactive-matter/aJson
