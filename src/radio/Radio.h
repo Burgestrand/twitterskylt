@@ -5,6 +5,8 @@
 #define joinCharacter ('H')
 // Baud rate for ZigBees
 #define baudrate 9600
+// Size of rx buffer (bytes)
+#define bufferSize 160
 
 #include <Xbee.h>
 #include <NewSoftSerial.h>
@@ -23,10 +25,20 @@ class Radio {
 		// Enable/Disable low power mode ('sleep')
 		void setSleepMode(bool sleep);
 		// Send string via serial port
-		void send(char *charPtr);
+		void send(String msg);
 		// Listen on serial port
-		char* receive();
+		String receive();
+		// Complete message available
+		bool msgAvailable();
+		// Read available characters
+		void Radio::readAvailable();
+		// Create new buffer
+		void newBuffer();
 	private:
-		char* rxBuffer;
+		// Input buffer
+		String rxBuffer;
+		// Flag indicating complete string read to buffer
+		bool readComplete;
+		// Pointer to serial port used
 		HardwareSerial* serialPort;
 };
