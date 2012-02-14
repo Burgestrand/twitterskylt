@@ -1,5 +1,13 @@
 # Twitterskylt
 
+## Kloning
+
+    git clone git://github.com/Burgestrand/twitterskylt.git
+    cd twitterskylt
+    git submodule update --init
+
+Det sista steget är viktigt för att man ska få ned externa bibliotek som används.
+
 ## Kompilering
 
     make

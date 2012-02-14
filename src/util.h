@@ -1,6 +1,7 @@
 #ifndef _UTIL_H_
 
 /* Required includes */
+#include <stdio.h>  /* for printf */
 #include <string.h> /* for size_t */
 
 /* Macros */
