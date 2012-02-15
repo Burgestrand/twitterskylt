@@ -32,4 +32,7 @@ void * xmalloc(size_t);
 /* like gets, but accepts a size parameter */
 char * getstr(char *, int);
 
+/* copies a string, returns a new pointer */
+char * strclone(const char *);
+
 #endif

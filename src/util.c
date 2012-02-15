@@ -2,6 +2,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+char *
+strclone(const char *string)
+{
+  char *clone = NULL;
+
+  if (string == NULL)
+  {
+    return NULL;
+  }
+
+  clone = ALLOC_STR(strlen(string));
+  strcpy(clone, string);
+  return clone;
+}
+
 void *
 xmalloc(size_t size)
 {

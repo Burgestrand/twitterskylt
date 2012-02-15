@@ -1,7 +1,12 @@
 /* file: minunit.h */
 /* source: http://www.jera.com/techinfo/jtns/jtn002.html */
+
+#define mu_assert_eq(message, test) mu_assert(message, ! test)
 #define mu_assert(message, test) do { \
-    if ( ! (test)) return message;    \
+    if ( ! (test))                    \
+    {                                 \
+      return message;                 \
+    }                                 \
   } while (0)
 
 #define mu_run_test(test) do {   \
