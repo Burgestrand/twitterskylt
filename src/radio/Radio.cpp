@@ -1,5 +1,10 @@
 #include "Radio.h"
 
+Radio::Radio() {
+	// Default serial port
+	this->serialPort = &Serial;
+}
+
 Radio::Radio(HardwareSerial* serialPort) {
 	// Set XBee serial port 
 	this->serialPort = serialPort;
@@ -9,19 +14,28 @@ Radio::Radio(HardwareSerial* serialPort) {
 	newBuffer();
 }
 
-void Radio::findPANCoordinator();
+void Radio::findPANCoordinator() {
+	
+}
 
-void Radio::permitJoining();
+void Radio::permitJoining() {
+	
+}
 
-void Radio::enterCtrlMode();
+void Radio::enterCtrlMode() {
+	serialPort->print("+++");
+		
+}
 
-void Radio::setSleepMode(bool sleep);
+void Radio::setSleepMode(bool sleep) {
+	
+}
 
 void Radio::send(String msg) {
 	// Send string
 	serialPort->print(msg);
 	// Send stop sign (nullbyte)
-	serialPort->write('\0');
+	serialPort->print('\0');
 }
 
 String* Radio::receive() {

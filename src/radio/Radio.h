@@ -8,10 +8,14 @@
 // Size of rx buffer (bytes)
 #define bufferSize 160
 
+#include <Arduino.h>
+
 class Radio {
 	
 	public:
 		// Default constructor
+		Radio();
+		// Constructor setting serial port
 		Radio(HardwareSerial* serialPort);
 		// Used by End Device to find and join network
 		void findPANCoordinator();
@@ -24,11 +28,11 @@ class Radio {
 		// Send string via serial port
 		void send(String msg);
 		// Listen on serial port
-		String receive();
+		String* receive();
 		// Complete message available
 		bool msgAvailable();
 		// Read available characters
-		void Radio::readAvailable();
+		void readAvailable();
 		// Create new buffer
 		void newBuffer();
 	private:
@@ -39,3 +43,5 @@ class Radio {
 		// Pointer to serial port used
 		HardwareSerial* serialPort;
 };
+
+#endif
