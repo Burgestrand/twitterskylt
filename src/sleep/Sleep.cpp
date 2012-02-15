@@ -4,30 +4,27 @@ Sleep::Sleep() {
 
 }
 
-void Sleep::begin() {
+void Sleep::begin(uint8_t sleepSeconds) {
+	// Store how many 8 second intervals we should sleep
+	this->sleepSeconds = sleepSeconds;
 	// Set sleep mode to Power Save
 	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 	// Clear delay counter
 	timerSeconds = 0;
-	// Initialize Timer1
 	// Disable global interrupts
-	cli();
-	TCCR1A = 0;
-	TCCR1B = 0;
-	// Timer match
-	OCR1A = 15624;
-	// Clear on timer compare (CTC) mode
-	TCCR1B |= (1 << WGM12);
-	// Prescaler 1024x
-	TCCR1B |= (1 << CS10);
-	TCCR1B |= (1 << CS12);
-	// Give interrupt on timer compare
-	TIMSK1 |= (1 << OCIE1A);
-	// Enable global interrupts
-	sei();
+	noInterrupts();
+	// Initialize watchdog
+	// Reset watch dog reset flag
+	MCUSR &= ~(1<<WDRF);
+	// Configure watchdog to be configurable
+	WDTCSR |= (1<<WDCE) | (1<<WDE);
+	// Set prescaler
+	WDTCSR = (1<<WDCE) | (1<<WDP0) | (1<<WDP3);
+	// Enable all interrupts
+	interrupts();
 }
 
-// Act on interrupt from Timer1
+// Act on interrupt from Watchdog
 bool Sleep::shouldWakeUp() {
 	timerSeconds++;
 	if (timerSeconds == sleepSeconds) {
@@ -39,5 +36,17 @@ bool Sleep::shouldWakeUp() {
 
 // Go to power save mode
 void Sleep::sleep() {
+	noInterrupts();
+	// Enable watchdog interrupts
+	WDTCSR |= (1<<WDIE);
+	interrupts();
+
+	sleep_enable();
 	sleep_mode();
+	sleep_disable();
+
+	noInterrupts();
+	// Disable watchdog interrupts
+	WDTCSR &= ~(1<<WDIE);
+	interrupts();
 }
