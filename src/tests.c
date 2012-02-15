@@ -5,6 +5,15 @@
 /* define your test cases below */
 
 /* util.c */
+
+static char * test_xfree()
+{
+  void *ptr = NULL;
+  printf("testing xfree\n"); // must be shown in case of segfault
+  xfree(ptr);
+  return NULL;
+}
+
 static char * test_strclone()
 {
   char *original = "original string";
@@ -31,6 +40,7 @@ static char * test_utf8_strip()
 
 static char * run_all_tests()
 {
+  mu_run_test(test_xfree);
   mu_run_test(test_strclone);
   mu_run_test(test_utf8_strip);
   return NULL;

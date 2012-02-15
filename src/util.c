@@ -17,6 +17,15 @@ strclone(const char *string)
   return clone;
 }
 
+void
+xfree(void *ptr)
+{
+  if (ptr != NULL)
+  {
+    free(ptr);
+  }
+}
+
 void *
 xmalloc(size_t size)
 {

@@ -29,6 +29,9 @@
 /* like malloc, but zeroes out the memory */
 void * xmalloc(size_t);
 
+/* like free, but ignores NULL pointers */
+void xfree(void *);
+
 /* like gets, but accepts a size parameter */
 char * getstr(char *, int);
 
