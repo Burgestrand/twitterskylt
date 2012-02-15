@@ -7,6 +7,8 @@
 /* Macros */
 #define true 1
 #define false 0
+#define not !
+#define show(fmt, ...) printf(fmt "\n", __VA_ARGS__)
 
 #define ALLOC(type) ALLOC_N(type, 1)
 #define ALLOC_N(type, n) ((type*) xmalloc(sizeof(type) * (n)))
