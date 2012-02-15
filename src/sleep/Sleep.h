@@ -8,13 +8,14 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 
-#include <Arduino.h>
-
 class Sleep {
 	
 	public:
 		// Default constructor
 		Sleep();
+		void begin();
+		bool shouldWakeUp();
+		void sleep();
 	private:
 		volatile uint16_t timerSeconds;
 };
