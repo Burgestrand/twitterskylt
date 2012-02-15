@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "util.h"
 #include "minunit.h"
-int tests_run = 0;
 
 /* define your test cases below */
 
@@ -47,6 +46,6 @@ int main(void)
   }
   else
   {
-    show("[PASS] %d tests.", tests_run);
+    show("[PASS] %d assertions, %d tests.", mu_assertion_count, mu_test_count);
   }
 }
