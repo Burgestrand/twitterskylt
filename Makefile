@@ -8,7 +8,7 @@ CFLAGS=-DNODEBUG -ggdb -O0 -c -Wall -pedantic -std=c99
 LDFLAGS=
 
 # Source files.
-SOURCES=util.c twitter.c formatting.c cleaning.c splitting.c bsd-strlcpy.c
+SOURCES=util.c twitter.c formatting.c cleaning.c bsd-strlcpy.c splitting.c
 OBJECTS=$(SOURCES:.c=.o)
 
 # Compilation target.

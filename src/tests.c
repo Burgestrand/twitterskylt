@@ -34,6 +34,22 @@ static char * test_utf8_strip()
   return NULL;
 }
 
+/* splitting.c */
+#include "splitting.h"
+
+static char * test_strsplit()
+{
+  int total_words = 0;
+  char **words = strsplit("  kim  is splitting     words!  ", &total_words);
+
+  mu_assert("strsplit: detects correct number of words", total_words == 4);
+  mu_assert_eq("strsplit: words[0]", strcmp(words[0], "kim"));
+  mu_assert_eq("strsplit: words[1]", strcmp(words[1], "is"));
+  mu_assert_eq("strsplit: words[2]", strcmp(words[2], "splitting"));
+  mu_assert_eq("strsplit: words[3]", strcmp(words[3], "words!"));
+  return NULL;
+}
+
 /* formatting */
 
 /* no smudge below this line! */
@@ -43,6 +59,7 @@ static char * run_all_tests()
   mu_run_test(test_xfree);
   mu_run_test(test_strclone);
   mu_run_test(test_utf8_strip);
+  mu_run_test(test_strsplit);
   return NULL;
 }
 
