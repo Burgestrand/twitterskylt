@@ -7,6 +7,8 @@
 /* Macros */
 #define true 1
 #define false 0
+#define not !
+#define show(fmt, ...) printf(fmt "\n", __VA_ARGS__)
 
 #define ALLOC(type) ALLOC_N(type, 1)
 #define ALLOC_N(type, n) ((type*) xmalloc(sizeof(type) * (n)))
@@ -27,7 +29,13 @@
 /* like malloc, but zeroes out the memory */
 void * xmalloc(size_t);
 
+/* like free, but ignores NULL pointers */
+void xfree(void *);
+
 /* like gets, but accepts a size parameter */
 char * getstr(char *, int);
+
+/* copies a string, returns a new pointer */
+char * strclone(const char *);
 
 #endif

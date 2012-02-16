@@ -2,6 +2,30 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+char *
+strclone(const char *string)
+{
+  char *clone = NULL;
+
+  if (string == NULL)
+  {
+    return NULL;
+  }
+
+  clone = ALLOC_STR(strlen(string));
+  strcpy(clone, string);
+  return clone;
+}
+
+void
+xfree(void *ptr)
+{
+  if (ptr != NULL)
+  {
+    free(ptr);
+  }
+}
+
 void *
 xmalloc(size_t size)
 {
@@ -12,17 +36,23 @@ xmalloc(size_t size)
 
 char *getstr(char *string, int size)
 {
-	char *result = fgets(string, size, stdin);
+  // ending NULL + ending newline
+  char *buffer = ALLOC_STR(size + 1);
+  char *result = fgets(buffer, size + 1, stdin);
 
-	if ( ! result)
+  if ( ! result)
   {
-		return NULL;
+    return NULL;
   }
   else
   {
-    char *last_char = string + strlen(string) - 1;
-    if (*last_char == '\n') *last_char = '\0';
+    char *newline = strchr(buffer, '\n');
+    if (newline)
+    {
+      *newline = '\0';
+    }
   }
 
-	return string;
+  MEMCPY_N(string, buffer, char, strlen(buffer));
+  return string;
 }
