@@ -1,0 +1,29 @@
+Sett ovanifrån med displayen uppåt och pinnarna åt höger:
++-------------------------+
+|                         |-- 3.3V
+|  +-------------+        |-- GND
+|  |             |        |-- 
+|  |             |        |-- Enable (R/!W strobe)
+|  |             |        |-- R/!W (Connect to GND if not used)
+|  |             |        |-- RSC (Register select DATA/!INSTRUCTION)
+|  |             |        |
+|  |             |        | 
+|  |             |        |-- 3.3V
+|  |             |        |-- GND
+|  |             |        |-- D8
+|  |             |        |-- D7
+|  |             |        |-- D6
+|  |             |        |-- D5
+|  |             |        | Notera: Pinout gäller för de pinnar som är i rad med kontakten ovan.
+|  |             |        |         Minst en utav 3.3V/GND måste kopplas in, är ihopkopplade internt.
+|  |             |        |         De 6 återstående pinnarna kan lämnas hängande.
+|  |             |        |
+|  |             |        |
+|  |             |        |
+|  |             |        |
+|  |             |        |
+|  |             |        |
+|  +-------------+        |
+|                         |
+|                         |
++-------------------------+
