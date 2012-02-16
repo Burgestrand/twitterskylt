@@ -7,7 +7,7 @@
 class EndDevice : public Radio {
 	public:
 		// Request new data from Coordinator
-		void requestData();
+		void requestData(String reqmsg);
 		// Find and join network
 		void findPANCoordinator();
 	private:
