@@ -10,8 +10,8 @@
 
 /* Data Types */
 #define tw_error int
-#define tw_username unsigned char
-#define tw_tweet unsigned char
+#define tw_username char
+#define tw_tweet char
 
 /* Functions */
 tw_error tw_fetch_tweet(const tw_username*, tw_tweet*);

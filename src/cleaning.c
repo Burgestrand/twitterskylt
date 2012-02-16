@@ -1,8 +1,8 @@
 #include "util.h"
 #include "cleaning.h"
 
-int valid_utf8(unsigned char byte);
-int is_ascii(unsigned char byte);
+static int valid_utf8(unsigned char byte);
+static int is_ascii(unsigned char byte);
 
 // maps characters to characters :)
 // charmap[actual_char] = display_char
@@ -43,13 +43,13 @@ unsigned char charmap[256] =
  *
  * Also see: http://en.wikipedia.org/wiki/Utf8
  */
-unsigned char *utf8_strip(const unsigned char *dirty)
+char *utf8_strip(const char *dirty)
 {
   // optimistic result: we end up with the same string
-  int length = strlen((const char *) dirty), ci = 0, di = 0;
+  int length = strlen(dirty), ci = 0, di = 0;
   unsigned char bytes  = 0;
-  unsigned char *cleaned = ALLOC_USTR(length);
   unsigned char current = 0x00, next = 0x00;
+  char *cleaned = ALLOC_STR(length);
 
   // iterate character by character and replace it
   for (di = 0, ci = 0; di < length; di++)
@@ -95,7 +95,7 @@ unsigned char *utf8_strip(const unsigned char *dirty)
   return cleaned;
 }
 
-int valid_utf8(unsigned char byte)
+static int valid_utf8(unsigned char byte)
 {
   if (byte == 0xC0 || byte == 0xC1)
   {
@@ -111,7 +111,7 @@ int valid_utf8(unsigned char byte)
   }
 }
 
-int is_ascii(unsigned char byte)
+static int is_ascii(unsigned char byte)
 {
   return (byte & 0x80) == 0;
 }
