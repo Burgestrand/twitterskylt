@@ -16,24 +16,6 @@ void Radio::begin(HardwareSerial* serialPort) {
 	newBuffer();
 }
 
-// End Device requests update from Coordinator
-void Radio::requestData() {
-	// Send start character
-	serialPort->print(SOMCHAR);
-	// Send Message Sequence Number
-	serialPort->print(seqNum);
-	// Send EOM character
-	serialPort->print(EOMCHAR);
-}
-
-void Radio::findPANCoordinator() {
-	
-}
-
-void Radio::permitJoining() {
-	
-}
-
 void Radio::enterCtrlMode() {
 	serialPort->print("+++");
 		
@@ -41,15 +23,6 @@ void Radio::enterCtrlMode() {
 
 void Radio::setSleepMode(bool sleep) {
 	
-}
-
-void Radio::send(String msg) {
-	// Send start character
-	serialPort->print(SOMCHAR);
-	// Send message body
-	serialPort->print(msg);
-	// Send end character
-	serialPort->print(EOMCHAR);
 }
 
 String* Radio::receive() {
