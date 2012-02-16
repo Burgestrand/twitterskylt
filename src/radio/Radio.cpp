@@ -9,9 +9,21 @@ Radio::Radio(HardwareSerial* serialPort) {
 	// Set XBee serial port 
 	this->serialPort = serialPort;
 	// Set baud rate
-	(this->serialPort)->begin(baudrate);
+	(this->serialPort)->begin(BAUDRATE);
+	// Intiate sequence numbering
+	seqNum = 0;
 	// Allocate rx buffer
 	newBuffer();
+}
+
+// End Device requests update from Coordinator
+void Radio::requestData() {
+	// Send start character
+	serialPort->print(SOMCHAR);
+	// Send Message Sequence Number
+	serialPort->print(seqNum);
+	// Send EOM character
+	serialPort->print(EOMCHAR);
 }
 
 void Radio::findPANCoordinator() {
@@ -32,10 +44,12 @@ void Radio::setSleepMode(bool sleep) {
 }
 
 void Radio::send(String msg) {
-	// Send string
+	// Send start character
+	serialPort->print(SOMCHAR)
+	// Send message body
 	serialPort->print(msg);
-	// Send stop sign (nullbyte)
-	serialPort->print('\0');
+	// Send end character
+	serialPort->print(EOMCHAR);
 }
 
 String* Radio::receive() {
@@ -47,17 +61,35 @@ bool Radio::msgAvailable() {
 }
 
 void Radio::readAvailable() {
-	while(serialPort->available() > 0) {
-   		char inChar = (char)serialPort->read(); 
-     	rxBuffer += inChar;
-     	if (inChar == '\0') {
-       		readComplete = true;
-     	}
+	// Incoming data and buffer available
+	while(serialPort->available() > 0 && readComplete == false) {
+   		char inChar = (char)serialPort->read();
+   		 // Valid start of message character received
+   		 if(inChar == SOMCHAR) {
+   		 	// If already reading message, discard old buffer and read new message
+   		 	if(readInProgress == true) {
+   		 		newBuffer();
+   		 	}
+   		 	readInProgress = true;
+   		 }
+	     else if (readInProgress) {
+	     	// End of message character received, lock buffer
+	    	if (inChar == EOMCHAR) {
+	     		readComplete = true;
+	     		readInProgress = false;
+	     	}
+   		 	// Read body of message
+	     	else {
+	     		rxBuffer += inChar;
+	     	}
+	     }
    	}
 }
 
+// Discard old buffer and prepare for next message
 void Radio::newBuffer() {
 	readComplete = false;
+	readInProgress = false;
 	rxBuffer = "";
-	rxBuffer.reserve(bufferSize);
+	rxBuffer.reserve(BUFFERSIZE);
 }
