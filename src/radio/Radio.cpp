@@ -5,7 +5,7 @@ Radio::Radio() {
 	this->serialPort = &Serial;
 }
 
-Radio::Radio(HardwareSerial* serialPort) {
+void Radio::begin(HardwareSerial* serialPort) {
 	// Set XBee serial port 
 	this->serialPort = serialPort;
 	// Set baud rate
@@ -45,7 +45,7 @@ void Radio::setSleepMode(bool sleep) {
 
 void Radio::send(String msg) {
 	// Send start character
-	serialPort->print(SOMCHAR)
+	serialPort->print(SOMCHAR);
 	// Send message body
 	serialPort->print(msg);
 	// Send end character

@@ -19,8 +19,8 @@ class Radio {
 	public:
 		// Default constructor
 		Radio();
-		// Constructor setting serial port
-		Radio(HardwareSerial* serialPort);
+		// Intialize, setting serial port
+		void begin(HardwareSerial* serialPort);
 		// End Device requests new data from Coordinator
 		void requestData();
 		// Used by End Device to find and join network
