@@ -1,36 +1,57 @@
 #ifndef Radio_h
 #define Radio_h
 
-#include <Xbee.h>
-#include <NewSoftSerial.h>
+// Character used for modem pair-up
+#define JOINCHAR ('H')
+// Start of Message Character
+#define SOMCHAR ('\001')
+// End of Message Character 
+#define EOMCHAR ('\004')
+// Baud rate for ZigBees
+#define BAUDRATE 9600
+// Size of rx buffer (bytes)
+#define BUFFERSIZE 160
 
-// Error codes
-# define unknownResponseFormat 3
-# define errorResponse 4
-
-#define ON HIGH
-#define OFF LOW
-
- // Delay time for LEDs (in ms)
-#define delayTime 500
-
-// LED Pin definitions
-#define statusLed 11
-#define errorLed 12
-#define dataLed 10
+#include <Arduino.h>
 
 class Radio {
 	
 	public:
-		 // Default constructor
+		// Default constructor
 		Radio();
-		void displayError(uint8_t errorCode);
+		// Constructor setting serial port
+		Radio(HardwareSerial* serialPort);
+		// End Device requests new data from Coordinator
+		void requestData();
+		// Used by End Device to find and join network
+		void findPANCoordinator();
+		// Used by Coordinator to listen for End Devices
+		void permitJoining();
+		// Puts modem into control mode, accepting commands
+		void enterCtrlMode();
+		// Enable/Disable low power mode ('sleep')
+		void setSleepMode(bool sleep);
+		// Send string via serial port
+		void send(String msg);
+		// Listen on serial port
+		String* receive();
+		// Complete message available
+		bool msgAvailable();
+		// Read available characters
+		void readAvailable();
+		// Create new buffer
+		void newBuffer();
 	private:
-		uint8_t option;
-		uint8_t data;
-		bool dFlag;
-		XBee xbee;
-		XBeeResponse response;
-		Rx16Response rx16;
-		Rx64Response rx64 ;
+		// Input buffer
+		String rxBuffer;
+		// Pointer to serial port used
+		HardwareSerial* serialPort;
+		// Flag indicating complete string read to buffer
+		bool readComplete;
+		// Flag indicating ŕadio reading message
+		bool readInProgress;
+		// Sequence numbering for messages
+		uint8_t seqNum;
 };
+
+#endif

@@ -1,69 +1,95 @@
-/**
- * XBee Test
- */
-
 #include "Radio.h"
 
 Radio::Radio() {
+	// Default serial port
+	this->serialPort = &Serial;
+}
 
-	xbee = XBee();
-	response = XBeeResponse();
+Radio::Radio(HardwareSerial* serialPort) {
+	// Set XBee serial port 
+	this->serialPort = serialPort;
+	// Set baud rate
+	(this->serialPort)->begin(BAUDRATE);
+	// Intiate sequence numbering
+	seqNum = 0;
+	// Allocate rx buffer
+	newBuffer();
+}
 
-	// Response holders
-	rx16 = Rx16Response();
-	rx64 = Rx64Response();
+// End Device requests update from Coordinator
+void Radio::requestData() {
+	// Send start character
+	serialPort->print(SOMCHAR);
+	// Send Message Sequence Number
+	serialPort->print(seqNum);
+	// Send EOM character
+	serialPort->print(EOMCHAR);
+}
 
-	pinMode(statusLed, OUTPUT);
-	pinMode(errorLed, OUTPUT);
-	pinMode(dataLed,  OUTPUT);
+void Radio::findPANCoordinator() {
 	
-	// Initiate serial communication with radio module
-	xbee.begin(9600);
-
-	// Data carried by signal
-	option = 0;
-	data = 0;
-	dFlag = 0;
 }
 
-bool Radio::dataAvailable() {
-	return dFlag;
+void Radio::permitJoining() {
+	
 }
 
-void Radio::displayError(int pin = errorLed, int errorCode) {
-		// Flash error code on Error LED
-		for (int i = 0; i < errorCode; i++) {
-			digitalWrite(pin, HIGH);
-			delay(delayTime);
-			digitalWrite(pin, LOW);
-		}
+void Radio::enterCtrlMode() {
+	serialPort->print("+++");
+		
 }
 
-void Radio::Rx() {
-    	xbee.readPacket();
-    
-   	 if (xbee.getResponse().isAvailable()) {
-      
-      		if (xbee.getResponse().getApiId() == RX_16_RESPONSE || xbee.getResponse().getApiId() == RX_64_RESPONSE) {
+void Radio::setSleepMode(bool sleep) {
+	
+}
 
-      				dFlag = 1;
-        
-       			if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {
-                			xbee.getResponse().getRx16Response(rx16);
-        				option = rx16.getOption();
-        				data = rx16.getData(0);
-        			} 
-        			else {
-               			xbee.getResponse().getRx64Response(rx64);
-        				option = rx64.getOption();
-        				data = rx64.getData(0);
-       			 }
-     		 } 
-     		 else {
-        			displayError(unknownResponseFormat);    
-     		}
-    	} 
-    	else if (xbee.getResponse().isError()) {
-      		displayError(errorResponse);
-	} 
+void Radio::send(String msg) {
+	// Send start character
+	serialPort->print(SOMCHAR)
+	// Send message body
+	serialPort->print(msg);
+	// Send end character
+	serialPort->print(EOMCHAR);
+}
+
+String* Radio::receive() {
+	return(readComplete ? &rxBuffer : NULL);
+}
+
+bool Radio::msgAvailable() {
+	return readComplete;
+}
+
+void Radio::readAvailable() {
+	// Incoming data and buffer available
+	while(serialPort->available() > 0 && readComplete == false) {
+   		char inChar = (char)serialPort->read();
+   		 // Valid start of message character received
+   		 if(inChar == SOMCHAR) {
+   		 	// If already reading message, discard old buffer and read new message
+   		 	if(readInProgress == true) {
+   		 		newBuffer();
+   		 	}
+   		 	readInProgress = true;
+   		 }
+	     else if (readInProgress) {
+	     	// End of message character received, lock buffer
+	    	if (inChar == EOMCHAR) {
+	     		readComplete = true;
+	     		readInProgress = false;
+	     	}
+   		 	// Read body of message
+	     	else {
+	     		rxBuffer += inChar;
+	     	}
+	     }
+   	}
+}
+
+// Discard old buffer and prepare for next message
+void Radio::newBuffer() {
+	readComplete = false;
+	readInProgress = false;
+	rxBuffer = "";
+	rxBuffer.reserve(BUFFERSIZE);
 }
