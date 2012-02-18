@@ -14,14 +14,43 @@ void Radio::begin(HardwareSerial* serialPort) {
 	seqNum = 0;
 	// Allocate rx buffer
 	newBuffer();
+	// Set start time
+	lastSendTime = millis();
+	// Not in control mode on start
+	inControlMode = false;
 }
 
-void Radio::enterCtrlMode() {
-	serialPort->print("+++");
-		
+bool Radio::enterCtrlMode() {
+	if(!inCtrlMode && (millis() - lastSendTime) > CTRLPADDING) {
+		serialPort->print("+++");
+		inCtrlMode = true;
+		lastSendTime = millis();
+	}
+	if(inCtrlMode && (millis() - lastSendTime) > CTRLPADDING) {
+		return true;
+	}
+	return false;
 }
 
-void Radio::setSleepMode(bool sleep) {
+void Radio::sendCtrlCmd(String cmd) {
+	String sCmd = "AT";
+	sCmd += cmd;
+	sCmd += "\r";
+	serialPort->print(sCmd);
+	lastSendTime = millis();
+}
+
+void Radio::exitCtrlMode() {
+	serialPort->print("ATCN\r");
+	lastSendTime = millis();
+	inCtrlMode = false;	
+}
+
+bool Radio::isInCtrlMode() {
+	return inCtrlMode;
+}
+
+void Radio::readResponse() {
 	
 }
 
@@ -37,8 +66,8 @@ void Radio::readAvailable() {
 	// Incoming data and buffer available
 	while(serialPort->available() > 0 && readComplete == false) {
    		char inChar = (char)serialPort->read();
-   		 // Valid start of message character received
-   		 if(inChar == SOMCHAR) {
+   		// Valid start of message character received
+   		if(inChar == SOMCHAR) {
    		 	// If already reading message, discard old buffer and read new message
    		 	if(readInProgress == true) {
    		 		newBuffer();

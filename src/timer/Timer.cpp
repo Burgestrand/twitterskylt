@@ -1,5 +1,9 @@
 #include "Timer.h"
 
+Timer::Timer() {
+	
+}
+
 void Timer::begin() {
 
 	noInterrupts();
