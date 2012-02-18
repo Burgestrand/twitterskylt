@@ -36,6 +36,9 @@ class Radio {
 		void exitCtrlMode();
 		// Return in-control-mode flag
 		bool isInCtrlMode();
+
+		char returnedOK();
+
 		// Read control command response from XBee
 		void readResponse();
 

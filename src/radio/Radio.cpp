@@ -17,7 +17,7 @@ void Radio::begin(HardwareSerial* serialPort) {
 	// Set start time
 	lastSendTime = millis();
 	// Not in control mode on start
-	inControlMode = false;
+	inCtrlMode = false;
 }
 
 bool Radio::enterCtrlMode() {
@@ -50,8 +50,31 @@ bool Radio::isInCtrlMode() {
 	return inCtrlMode;
 }
 
+char Radio::returnedOK () {
+  // this function checks the response on the serial port to see if it was an "OK" or not
+  char incomingChar[3];
+  char okString[] = "OK";
+  char result = 'n';
+  int startTime = millis();
+  while (millis() - startTime < 2000 && result == 'n') {  // use a timeout of 10 seconds
+    if (Serial.available() > 1) {
+      // read three incoming bytes which should be "O", "K", and a linefeed:
+      for (int i=0; i<3; i++) {
+        incomingChar[i] = Serial.read();
+      }
+      if ( strstr(incomingChar, okString) != NULL ) { // check to see if the respose is "OK"
+//      if (incomingChar[0] == 'O' && incomingChar[1] == 'K') { // check to see if the first two characters are "OK"
+        result = 'T'; // return T if "OK" was the response
+      }  
+      else {
+        result = 'F'; // otherwise return F
+      }
+    }
+  }
+  return result;
+}
+
 void Radio::readResponse() {
-	
 }
 
 String* Radio::receive() {
