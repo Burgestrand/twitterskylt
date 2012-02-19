@@ -1,5 +1,5 @@
 #include "formatting.h"
-#include "util.h"
+#include "helper.h"
 
 #define LINE_COUNT 4
 #define LINE_LENGTH 40
@@ -16,8 +16,11 @@ static int words_length(char *words[], int word_count) {
 	return result;
 }
 
-char *justify(char *words[], int word_count)
+char *justify(char **original_words, int word_count)
 {
+  char **words = ALLOC_N(char *, word_count);
+  MEMCPY_N(words, original_words, char *, word_count);
+
 	char *result = ALLOC_STR(LINE_COUNT * LINE_LENGTH + LINE_COUNT);
 	char *cursor = result;
 	

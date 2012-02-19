@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "util.h"
+#include "helper.h"
 #include "minunit.h"
 
 /* define your test cases below */
@@ -47,6 +47,14 @@ static char * test_strsplit()
   mu_assert_eq("strsplit: words[1]", strcmp(words[1], "is"));
   mu_assert_eq("strsplit: words[2]", strcmp(words[2], "splitting"));
   mu_assert_eq("strsplit: words[3]", strcmp(words[3], "words!"));
+
+  char *hashtag = "#Hashtaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag";
+  total_words = 0;
+  words = strsplit(hashtag, &total_words);
+  mu_assert("strsplit: single word, total", total_words == 1);
+  mu_assert_eq("strsplit: single word, result", strcmp(words[0], hashtag));
+  mu_assert("strsplit: single word, length", strlen(words[0]) == 140);
+
   return NULL;
 }
 

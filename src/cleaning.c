@@ -1,4 +1,4 @@
-#include "util.h"
+#include "helper.h"
 #include "cleaning.h"
 
 static int valid_utf8(unsigned char byte);
@@ -55,7 +55,6 @@ char *utf8_strip(const char *dirty)
   for (di = 0, ci = 0; di < length; di++)
   {
     current = dirty[di];
-    debug("di:%d, ci:%d, current: %c", di, ci, current);
 
     if ( ! valid_utf8(current)) // invalid byte
     {
@@ -86,11 +85,10 @@ char *utf8_strip(const char *dirty)
       }
     }
 
-    debug("append %c", current);
     cleaned[ci++] = charmap[current];
   }
 
-  cleaned[++ci] = '\0';
+  cleaned[ci] = '\0';
 
   return cleaned;
 }

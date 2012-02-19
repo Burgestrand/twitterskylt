@@ -1,4 +1,5 @@
 #ifndef _TWITTER_H_
+#define _TWITTER_H_
 
 /* Constants */
 #define TW_SIZE_USERNAME 15
