@@ -104,6 +104,15 @@ static char * test_justify()
 	return NULL;
 }
 
+static char * test_convert_date()
+{
+	mu_assert("first month", strcmp(convert_date("Sat Jan 12 23:34:45 +0000 2012"), "12/1 23:34") == 0);
+	mu_assert("last month", strcmp(convert_date("Sat Dec 12 23:34:45 +0000 2012"), "12/12 23:34") == 0);
+	
+	mu_assert("zero day", strcmp(convert_date("Sat Dec 01 23:34:45 +0000 2012"), "1/12 23:34") == 0);
+	mu_assert("non-zero day", strcmp(convert_date("Sat Dec 25 23:34:45 +0000 2012"), "25/12 23:34") == 0);
+}
+
 static char * test_add_date()
 {
 	char first_line[164] = "abc def 0123456789abc";
@@ -136,8 +145,6 @@ static char * test_add_date()
 	return NULL;
 }
 
-/* formatting */
-
 /* no smudge below this line! */
 
 static char * run_all_tests()
@@ -148,6 +155,7 @@ static char * run_all_tests()
   mu_run_test(test_strsplit);
   mu_run_test(test_justify);
   mu_run_test(test_add_date);
+  mu_run_test(test_convert_date);
   return NULL;
 }
 

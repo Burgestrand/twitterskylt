@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "formatting.h"
 #include "helper.h"
 
@@ -89,6 +91,39 @@ char *justify(char **original_words, int word_count)
 		}
 	}
 
+	return result;
+}
+
+static char *month_names[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+char *convert_date(char *twitter_date) {
+	// Sample Twitter date: Sat Jan 12 23:34:45 +0000 2012
+	//                      012345678901234567890123456789
+	//                      0         1         2
+	
+	char *month_name = ALLOC_STR(3);
+	MEMCPY_N(month_name, twitter_date + 4, char, 3);
+	int month = 0;
+	while (strcmp(month_name, month_names[month]) != 0 && month < 11) {
+		++month;
+	}
+	++month; // Put date within interval 1-12 instead of 0-11.
+	
+	int day = strtol(twitter_date + 8, NULL, 10);
+	
+	char *time_string = ALLOC_STR(5);
+	time_string = MEMCPY_N(time_string, twitter_date + 11, char, 5);
+	
+	int result_length = 8;
+	if (day > 9) { ++result_length; }
+	if (month > 9) { ++result_length; }
+	
+	char *result = ALLOC_STR(result_length);
+	sprintf(result, "%d/%d %s", day, month, time_string);
+	
+	xfree(month_name);
+	xfree(time_string);
+	
 	return result;
 }
 
