@@ -1,20 +1,18 @@
 #ifndef Radio_h
 #define Radio_h
 
-// Character used for modem pair-up
-#define JOINCHAR ('H')
-// Start of Message Character
-#define SOMCHAR ('\001')
-// End of Message Character 
-#define EOMCHAR ('\004')
-// Baud rate for ZigBees
 #define BAUDRATE 9600
-// Size of rx buffer (bytes)
-#define BUFFERSIZE 160
-// Time (in ms) padding for enter control mode command
-#define CTRLPADDING 1200
+
+// Error codes
+#define SUCCESS 0
+#define REMOTE_READ_ERROR 1
+#define LOCAL_READ_ERROR 2
+#define RESPONSE_TIME_ERROR 3
 
 #include <Arduino.h>
+#include <XBee.h>
+#include <SoftwareSerial.h>
+#include <alloca.h>
 
 class Radio {
 	
@@ -23,49 +21,39 @@ class Radio {
 		Radio();
 		// Intialize, setting serial port
 		void begin(HardwareSerial* serialPort);
-
-		/* Tries to modem into control mode, accepting commands.
-		 * If successful, raises flag 'inControlMode'. 
-		 * Take care to check this flag, and not to send anything
-		 * for at least a second after entering control mode.
-		 */ 
-		bool enterCtrlMode();
-		// Send control command
-		void sendCtrlCmd(String cmd);
-		// Exit control mode
-		void exitCtrlMode();
-		// Return in-control-mode flag
-		bool isInCtrlMode();
-
-		char returnedOK();
-
-		// Read control command response from XBee
-		void readResponse();
-
-		// Listen on serial port
-		String* receive();
-		// Complete message available
-		bool msgAvailable();
-		// Read available characters
-		void readAvailable();
-		// Create new buffer
-		void newBuffer();
+		// Send string over radio link
+		void send(String msg);
+		// Send AT Command to local XBee
+		void sendATCommand(uint8_t *cmd);
+		// Receive data
+		void receive();
 	protected:
-		// Sequence numbering for messages
-		uint8_t seqNum;
 		// Pointer to serial port used
 		HardwareSerial* serialPort;
-		// Number of ms since last sent on serial port
-		unsigned long lastSendTime;
-		// Flag indicating XBee in control mode
-		bool inCtrlMode;
+		// XBee module object for use by XBee library
+		XBee xbee;
+		// Destination Address
+		XBeeAddress64 destAddr64;
+
+		// Reusable response and request objects
+		// TX
+		ZBTxRequest zbTx;
+		ZBTxStatusResponse txStatus;
+		// RX
+		XBeeResponse response;
+		ZBRxResponse zbRx;
+
+		// Modem status response
+		ModemStatusResponse msr;
+		
+		// AT Command objects
+		AtCommandRequest atRequest;
+		AtCommandResponse atResponse;
 	private:
-		// Input buffer
-		String rxBuffer;
-		// Flag indicating complete string read to buffer
-		bool readComplete;
-		// Flag indicating ŕadio reading message
-		bool readInProgress;
+		// SS Debug
+		uint8_t ssRX;
+		uint8_t ssTX;
+		SoftwareSerial *nss;
 };
 
 #endif

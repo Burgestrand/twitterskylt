@@ -1,17 +1,19 @@
 #include "Coordinator.h"
 
-// Red flag - code copying (EndDevice) ?
-void Coordinator::send(String msg) {
-	// Send start character
-	serialPort->print(SOMCHAR);
-	// Send message body
-	serialPort->print(msg);
-	// Send end character
-	serialPort->print(EOMCHAR);
-	// Update time for last send
-	lastSendTime = millis();
+Coordinator::Coordinator() {
+	XBeeAddress64 destAddr64 = XBeeAddress64(0x0, 0xFFFF);
 }
 
-void Coordinator::permitJoining() {
+void Coordinator::formNetwork() {
+			
+}
+
+void Coordinator::permitJoining(uint8_t seconds) {
 	
 }
+
+/*
+void Coordinator::broadcastPresence() {
+		
+}
+*/
