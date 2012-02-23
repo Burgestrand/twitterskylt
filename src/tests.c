@@ -111,6 +111,8 @@ static char * test_convert_date()
 	
 	mu_assert("zero day", strcmp(convert_date("Sat Dec 01 23:34:45 +0000 2012"), "1/12 23:34") == 0);
 	mu_assert("non-zero day", strcmp(convert_date("Sat Dec 25 23:34:45 +0000 2012"), "25/12 23:34") == 0);
+
+  return NULL;
 }
 
 static char * test_add_date()

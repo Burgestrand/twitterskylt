@@ -1,5 +1,6 @@
 #include "helper.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 char *
 strclone(const char *string)
