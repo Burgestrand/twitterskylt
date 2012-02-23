@@ -164,14 +164,23 @@ void Radio::receive() {
 				// Modem disassociated (left network)
 				nss->print("Disassociated");
 			} 
+			else if (msr.getStatus() == COORDINATOR_STARTED) {
+				// Coordinator has setup network
+				nss->print("Coordinator started!");
+			}
+			else if (msr.getStatus() == HARDWARE_RESET) {
+				// Hardware reset signal
+				nss->println("Hardware reset");
+			}
 			else {
 				// Something else
-				nss->print("Another command response received from modem");
+				nss->println("Another command response received from modem: ");
+				nss->print(msr.getStatus());
 			}
 		}
 		else {
 			// Unexpected response   
-			nss->print("Unexpected response");
+			nss->println("Unexpected response from modem");
 		}
 	}
 	else if (xbee.getResponse().isError()) {
