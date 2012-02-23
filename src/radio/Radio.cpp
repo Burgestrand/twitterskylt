@@ -124,7 +124,7 @@ struct ZBRxStruct Radio::receive() {
 	xbee.reset();
 	SoftwareSerial nss(ssRX, ssTX);
 	nss.begin(9600);
-
+	nss.println(" ");
 	nss.println("Reading incoming data...");
 	// Read incoming data
 	//xbee.readPacket(2000);
@@ -184,5 +184,8 @@ struct ZBRxStruct Radio::receive() {
 	
 	//struct ZBRxStruct response = {0,0};
 	struct ZBRxStruct response = {zbRx.getDataLength(), zbRx.getData()};
+	zbRx.getData()[zbRx.getDataLength()] = 0;
+	nss.print("Received data:     ");
+	nss.println((char*)zbRx.getData());
 	return response;
 }
