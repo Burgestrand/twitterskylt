@@ -6,10 +6,12 @@
 // ZigBee End Device
 class EndDevice : public Radio {
 	public:
-		// Request new data from Coordinator
-		void requestData(String reqmsg);
+		// Default constructor
+		EndDevice();
+		// Request new display data from Coordinator
+		void requestData();
 		// Find and join network
-		void findPANCoordinator();
+		void findCoordinator();
 	private:
 };
 

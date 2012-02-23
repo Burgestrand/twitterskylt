@@ -3,118 +3,179 @@
 Radio::Radio() {
 	// Default serial port
 	this->serialPort = &Serial;
+	this->xbee = XBee();
 }
 
 void Radio::begin(HardwareSerial* serialPort) {
 	// Set XBee serial port 
 	this->serialPort = serialPort;
 	// Set baud rate
-	(this->serialPort)->begin(BAUDRATE);
-	// Intiate sequence numbering
-	seqNum = 0;
-	// Allocate rx buffer
-	newBuffer();
-	// Set start time
-	lastSendTime = millis();
-	// Not in control mode on start
-	inCtrlMode = false;
+	// (this->serialPort)->begin(BAUDRATE);
+	// Set XBee Baud Rate
+	this->xbee.begin(BAUDRATE);
+
+	// Debug over serial 
+	ssRX = 9;
+	// Connect Arduino pin 10 to RX of usb-serial device
+	ssTX = 10;
+	// Remember to connect all devices to a common Ground: XBee, Arduino and USB-Serial device
+	nss = new SoftwareSerial(ssRX, ssTX);
+	nss->begin(9600);
 }
 
-bool Radio::enterCtrlMode() {
-	if(!inCtrlMode && (millis() - lastSendTime) > CTRLPADDING) {
-		serialPort->print("+++");
-		inCtrlMode = true;
-		lastSendTime = millis();
+void Radio::send(String msg) {
+
+	uint8_t payloadLength = msg.length();
+	uint8_t *payload = (uint8_t*)alloca(payloadLength*sizeof(uint8_t));
+
+	for(int i=0; i<payloadLength; i++) {
+		payload[i] = msg.charAt(i);
 	}
-	if(inCtrlMode && (millis() - lastSendTime) > CTRLPADDING) {
-		return true;
+
+	zbTx = ZBTxRequest(destAddr64, payload, sizeof(payload));
+	txStatus = ZBTxStatusResponse();
+
+	xbee.send(zbTx);
+
+	// After sending a tx request, we expect a status response,
+	// wait up to half second for the status response
+	if (xbee.readPacket(500)) {
+	// Got a response!
+
+		// Should be a znet tx status          	
+		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+			xbee.getResponse().getZBTxStatusResponse(txStatus);
+
+			// get the delivery status, the fifth byte
+			if (txStatus.getDeliveryStatus() == SUCCESS) {
+				// Success!
+			} 
+			else {
+				// The remote XBee did not receive our packet.
+			}
+		}
+	} 
+	else if (xbee.getResponse().isError()) {
+		// Error reading package
+	} 
+	else {
+		// Local XBee did not provide a timely TX Status Response
 	}
-	return false;
 }
 
-void Radio::sendCtrlCmd(String cmd) {
-	String sCmd = "AT";
-	sCmd += cmd;
-	sCmd += "\r";
-	serialPort->print(sCmd);
-	lastSendTime = millis();
+void Radio::sendATCommand(uint8_t *cmd) {
+
+	atResponse = AtCommandResponse();
+	atRequest = AtCommandRequest(cmd);
+  	
+  	// Send command
+  	nss->print("Sending AT Command...");
+  	xbee.send(atRequest);
+
+  	// Wait a max of 5s for response
+	if (xbee.readPacket(5000)) {
+
+		// Should be an AT command response
+		if (xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
+
+			xbee.getResponse().getAtCommandResponse(atResponse);
+
+			if (atResponse.isOk()) {
+				// Command successful!
+		        nss->print("Command [");
+        		nss->print(atResponse.getCommand()[0]);
+        		nss->print(atResponse.getCommand()[1]);
+        		nss->println("] was successful!");
+
+				// Read 
+				/*
+				for (int i = 0; i < atResponse.getValueLength(); i++) {
+					uint8_t responseChar = atResponse.getValue()[i];
+				}
+				*/
+			} 
+			else {
+				// Command failed, got error code
+				uint8_t errorCode = atResponse.getStatus();
+		        nss->print("Received error code [");
+        		nss->print(errorCode);
+        		nss->println("]");
+			}
+		} 
+		else {
+			// Got unexpected frame type
+			uint8_t frameId = xbee.getResponse().getApiId();
+		    nss->print("Received unexpected frame type [");
+			nss->print(frameId);
+        	nss->println("]");
+		}
+	}
+	else {
+		// Command failed
+		if (xbee.getResponse().isError()) {
+			uint8_t errorCode = xbee.getResponse().getErrorCode();
+			nss->print("Command failed with error code [");
+			nss->print(errorCode);
+        	nss->println("]");
+		} 
+		else {
+			// Got nothing, should not happen here
+			nss->print("Got nothing. Something is terribly wrong! [");
+		}
+	}
 }
 
-void Radio::exitCtrlMode() {
-	serialPort->print("ATCN\r");
-	lastSendTime = millis();
-	inCtrlMode = false;	
-}
+void Radio::receive() {
 
-bool Radio::isInCtrlMode() {
-	return inCtrlMode;
-}
+	// Read incoming data
+	xbee.readPacket();
 
-char Radio::returnedOK () {
-  // this function checks the response on the serial port to see if it was an "OK" or not
-  char incomingChar[3];
-  char okString[] = "OK";
-  char result = 'n';
-  int startTime = millis();
-  while (millis() - startTime < 2000 && result == 'n') {  // use a timeout of 10 seconds
-    if (Serial.available() > 1) {
-      // read three incoming bytes which should be "O", "K", and a linefeed:
-      for (int i=0; i<3; i++) {
-        incomingChar[i] = Serial.read();
-      }
-      if ( strstr(incomingChar, okString) != NULL ) { // check to see if the respose is "OK"
-//      if (incomingChar[0] == 'O' && incomingChar[1] == 'K') { // check to see if the first two characters are "OK"
-        result = 'T'; // return T if "OK" was the response
-      }  
-      else {
-        result = 'F'; // otherwise return F
-      }
-    }
-  }
-  return result;
-}
+    if (xbee.getResponse().isAvailable()) {
+		// Got a package
 
-void Radio::readResponse() {
-}
+		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+			// Detected ZigBee packet
+		    nss->print("Detected ZigBee packet");
 
-String* Radio::receive() {
-	return(readComplete ? &rxBuffer : NULL);
-}
+			xbee.getResponse().getZBRxResponse(zbRx);
 
-bool Radio::msgAvailable() {
-	return readComplete;
-}
+			if (zbRx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
+				// The sender got an ACK
+				nss->print("ACK Successful!");
+			}
+			else {
+				// Sender did not get an ACK
+				nss->print("ACK Failed");
+			}
+		
+			// Pick out first byte of data... and so on
+			uint8_t firstByte = zbRx.getData(0);
 
-void Radio::readAvailable() {
-	// Incoming data and buffer available
-	while(serialPort->available() > 0 && readComplete == false) {
-   		char inChar = (char)serialPort->read();
-   		// Valid start of message character received
-   		if(inChar == SOMCHAR) {
-   		 	// If already reading message, discard old buffer and read new message
-   		 	if(readInProgress == true) {
-   		 		newBuffer();
-   		 	}
-   		 	readInProgress = true;
-   		 }
-	     else if (readInProgress) {
-	     	// End of message character received, lock buffer
-	    	if (inChar == EOMCHAR) {
-	     		readComplete = true;
-	     		readInProgress = false;
-	     	}
-   		 	// Read body of message
-	     	else {
-	     		rxBuffer += inChar;
-	     	}
-	     }
-   	}
-}
+		}
+		else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
+			xbee.getResponse().getModemStatusResponse(msr);
+			// Local XBee responding to certain events (assoc and so on)
 
-// Discard old buffer and prepare for next message
-void Radio::newBuffer() {
-	readComplete = false;
-	readInProgress = false;
-	rxBuffer = "";
-	rxBuffer.reserve(BUFFERSIZE);
+			if (msr.getStatus() == ASSOCIATED) {
+				// Modem associated with network
+				nss->print("Association Successful!");
+			} 
+			else if (msr.getStatus() == DISASSOCIATED) {
+				// Modem disassociated (left network)
+				nss->print("Disassociated");
+			} 
+			else {
+				// Something else
+				nss->print("Another command response received from modem");
+			}
+		}
+		else {
+			// Unexpected response   
+			nss->print("Unexpected response");
+		}
+	}
+	else if (xbee.getResponse().isError()) {
+		// Got and error
+		nss->print("Modem response error!");
+	}
 }
