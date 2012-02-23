@@ -25,7 +25,7 @@ class Radio {
 		// Default constructor
 		Radio();
 		// Intialize, setting serial port
-		void begin(HardwareSerial* serialPort);
+		void begin(HardwareSerial &serialPort);
 		// Send string over radio link
 		void send(String msg);
 		// Send AT Command to local XBee
