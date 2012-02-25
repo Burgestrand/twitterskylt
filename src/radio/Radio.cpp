@@ -17,6 +17,10 @@ void Radio::begin(HardwareSerial &serialPort) {
 	ssRX = 9;
 	// Arduino pin 10 to Rx of USB-Serial device
 	ssTX = 10;
+
+	// Addresses
+	XBeeAddress64 destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
+	uint16_t destAddr16 = 0xFFFF;
 }
 
 void Radio::send(String msg) {
@@ -33,7 +37,7 @@ void Radio::send(String msg) {
 	}
 
 	XBeeAddress64 destAddr64_n = XBeeAddress64(0x00000000, 0x0000FFFF);
-	
+
 	zbTx = ZBTxRequest(destAddr64_n, payload, payloadLength);
 	txStatus = ZBTxStatusResponse();
 

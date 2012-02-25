@@ -39,8 +39,10 @@ class Radio {
 		HardwareSerial* serialPort;
 		// XBee module object for use by XBee library
 		XBee xbee;
-		// Destination Address
+		// 64 bit Destination Address
 		XBeeAddress64 destAddr64;
+		// 16 bit Destination Address
+		uint16_t destAddr16;
 
 		// Reusable response and request objects
 
@@ -57,11 +59,13 @@ class Radio {
 		// AT Command objects
 		AtCommandRequest atRequest;
 		AtCommandResponse atResponse;
-
-	private:
+		
 		// Software serial debug pins
 		uint8_t ssRX;
 		uint8_t ssTX;
+
+	private:
+
 };
 
 #endif
