@@ -14,6 +14,7 @@
 #include <SoftwareSerial.h>
 #include <alloca.h>
 
+// Struct for read data
 struct ZBRxStruct {
 	uint8_t length;	
 	uint8_t *data;
@@ -32,6 +33,7 @@ class Radio {
 		void sendATCommand(uint8_t *cmd);
 		// Receive data
 		struct ZBRxStruct receive();
+
 	protected:
 		// Pointer to serial port used
 		HardwareSerial* serialPort;
@@ -41,6 +43,7 @@ class Radio {
 		XBeeAddress64 destAddr64;
 
 		// Reusable response and request objects
+
 		// TX
 		ZBTxRequest zbTx;
 		ZBTxStatusResponse txStatus;
@@ -54,8 +57,9 @@ class Radio {
 		// AT Command objects
 		AtCommandRequest atRequest;
 		AtCommandResponse atResponse;
+
 	private:
-		// SS Debug
+		// Software serial debug pins
 		uint8_t ssRX;
 		uint8_t ssTX;
 };

@@ -9,13 +9,11 @@ class Coordinator : public Radio {
 		// Default Constructor
 		Coordinator();
 		// Send string to network (broadcast)
-		//void send(String msg);
-		// Forms new ZigBee network
+		void broadcast(String msg);
+		// Forms a new ZigBee network, discarding old network configuration
 		void formNetwork();
-		// Permits joining the network for a given period of time
+		// Permits joining the network for a given period of time (in seconds)
 		void permitJoining(uint8_t seconds);
-		// Broadcasts coordinator's presence on network
-		// void broadcastPresence();
 	private:
 };
 
