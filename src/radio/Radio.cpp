@@ -23,11 +23,10 @@ void Radio::begin(HardwareSerial &serialPort) {
 	uint16_t destAddr16 = 0xFFFF;
 }
 
-void Radio::send(String msg) {
+void Radio::send(uint8_t *payload, uint8_t payloadLength) {
+	xbee.reset();
 
-	SoftwareSerial nss(ssRX, ssTX);
-	nss.begin(9600);
-
+/*
 	uint8_t payloadLength = msg.length();
 	uint8_t length = payloadLength*sizeof(uint8_t);
 	uint8_t *payload = (uint8_t*)alloca(length);
@@ -35,110 +34,19 @@ void Radio::send(String msg) {
 	for(int i=0; i<payloadLength; i++) {
 		payload[i] = msg.charAt(i);
 	}
-
+*/
 	XBeeAddress64 destAddr64_n = XBeeAddress64(0x00000000, 0x0000FFFF);
 
 	zbTx = ZBTxRequest(destAddr64_n, payload, payloadLength);
-	txStatus = ZBTxStatusResponse();
-
-	nss.println(" ");
-
-	nss.println("Sending data...");
 
 	xbee.send(zbTx);
-	/*
-	// After sending a tx request, we expect a status response
-
-	// Wait up to half second for the status response
-	xbee.readPacket(2000);
-
-	if (xbee.getResponse().isAvailable()) {
-	// Got a response!
-	
-  		nss.println("Got a response on sent data...");
-  		// Should be a ZNet Tx status 
-  		
-		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
-			xbee.getResponse().getZBTxStatusResponse(txStatus);
-
-			nss.print("Got delivery status: ");
-			nss.println(txStatus.getDeliveryStatus(), HEX);
-
-			// Get the delivery status, the fifth byte
-			if (txStatus.getDeliveryStatus() == SUCCESS) {
-				// Success!
-  				nss.println("Delivery was successful!");
-			} 
-			else {
-				// The remote XBee did not receive our packet.
-  				nss.println("Remote modem did not receive sent packet!");
-			}
-		}
-		else if (xbee.getResponse().isError()) {
-			// Error reading package
-			nss.println("Error reading response");
-		} 
-		else {
-			// Local XBee did not provide a timely TX Status Response
-			nss.println("Local XBee did not provide Tx response");
-		}
-	}
-	*/
 }
 
 void Radio::sendATCommand(uint8_t *cmd) {
-
 	xbee.reset();
-	SoftwareSerial nss(ssRX, ssTX);
-	nss.begin(9600);
-
-	atResponse = AtCommandResponse();
-	atRequest = AtCommandRequest(cmd);
-  	
-  	// Send command
-  	nss.println("Sending AT Command...");
+	
+	AtCommandRequest atRequest = AtCommandRequest(cmd);
   	xbee.send(atRequest);
-  	/*
-  	// Wait a max of 5s for response
-  	xbee.readPacket(2000);
-
-	if (xbee.getResponse().isAvailable()) {
-
-		// Should be an AT command response
-		if (xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
-
-			xbee.getResponse().getAtCommandResponse(atResponse);
-
-			if (atResponse.isOk()) {
-				// Command successful!
-		        nss.print("Command [");
-        		nss.print(atResponse.getCommand()[0]);
-        		nss.print(atResponse.getCommand()[1]);
-        		nss.println("] was successful!");
-
-        		uint8_t valueLength = atResponse.getValueLength();
-
-        		if(valueLength > 0) {
-        			nss.print("AT Command returned value [");
-        		}
-        		for(int i=0; i<atResponse.getValueLength(); i++) {
-        			nss.print(atResponse.getValue()[i]);
-        		}
-        		if(valueLength > 0) {
-        			nss.println("]");
-        		}
-			} 
-			else {
-				// Command failed, got error code
-		        nss.println("Received error code");
-			}
-		} 
-		else {
-			// Got unexpected frame type
-		    nss.println("Received unexpected frame type");
-		}
-	}
-	*/
 }
 
 struct ZBRxStruct Radio::receive() {

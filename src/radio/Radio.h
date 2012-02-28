@@ -57,7 +57,6 @@ class Radio {
 		ModemStatusResponse msr;
 		
 		// AT Command objects
-		AtCommandRequest atRequest;
 		AtCommandResponse atResponse;
 		
 		// Software serial debug pins

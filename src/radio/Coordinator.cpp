@@ -5,56 +5,133 @@ Coordinator::Coordinator() {
 	uint16_t destAddr16 = 0xFFFF;
 }
 
-void Coordinator::broadcast(String msg) {
-	send(msg);
-}
+void tick() {
+	// enum State {Start, Init, NetworkFormation, PermitJoining, AwaitJoin, Idle, ModemStatus, Send, Error};
+	// enum State {Start, Init, NetworkFormationSend, NetworkFormationReceive, PermitJoiningSend, PermitJoiningReceive, AwaitJoin, Idle, ModemStatus, Send, Error};
 
-void Coordinator::formNetwork() {
-	uint8_t idCmd[] = {'I','D', 0x129};
-	uint8_t wrCmd[] = {'W','R'};
-	uint8_t resetCmd[] = {'N','R', 0x0};
-	//receive();
-	//sendATCommand(idCmd);
-	//receive();
-	sendATCommand(resetCmd);
-	//receive();
-	//sendATCommand(wrCmd);
-}
+	xbee.readPacket();
 
-bool Coordinator::permitJoining(uint8_t seconds) {
-
-	SoftwareSerial nss(ssRX, ssTX);
-	nss.begin(9600);
-
-	uint8_t joinCmd[] = {'N','J', seconds};
-	sendATCommand(joinCmd);
-	uint8_t a = 0;
-
-	while(a<3) {
+	switch(State) {
 		
-		xbee.readPacket(seconds*1000);
-		
-		if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+		case Start:
+			State = Init;
+		case Init:
+			init();
+		case NetworkFormationSend:
+			uint8_t cmd[] = {'N', 'R', 0x0};
+			sendAtCommand(NetworkFormationReceive);
+		case NetworkFormationReceive:
+			awaitAtResponse(PermitJoiningSend);
+		case PermitJoiningSend:
+			uint8_t cmd[] = {'N', 'J', PERMIT_JOIN_TIME};
+			sendAtCommand(PermitJoiningReceive);
+		case PermitJoiningReceive:
+			awaitAtReponse(AwaitJoin);
+			startTimeOut();
+		case AwaitJoin:
+			awaitJoin();
+		case JoinResponse:
+			joinResponse();
+		case JoinResponseDelivery:
+			joinResponseDelivery();
+		case Idle:
+			idle();
+		case ModemStatus:
 			
-			xbee.getResponse().getZBRxResponse(zbRx);
-			if(zbRx.getDataLength() > 0 && zbRx.getData()[0] == 'J') {
+		case Send:
 
-				// Indentity confirmed, store address
-				nss.print("Received End Device Join Request");
-				this->destAddr64 = zbRx.getRemoteAddress64();
-				this->destAddr16 = zbRx.getRemoteAddress16();
-				uint8_t payload[] = {'K'};
-				uint8_t payloadLength = sizeof(payload);
-				zbTx = ZBTxRequest(zbRx.getRemoteAddress64(), payload, payloadLength);
-				xbee.send(zbTx);	
-				return true;
-			}
-		}		
-		a++;
+		case Error:
+
+			State = Error;
+		case ATResponse:
+
+		default:
 	}
-	return false;
+	
 }
 
-bool Coordinator::gotDataRequest() {
+void init() {
 	
+}
+
+void startTimeOut() {
+	// Set timeout five seconds from now
+	timeOutFlag = true;
+	timeOut = millis() + 5000;
+}
+
+void checkTimeOut() {
+	if(millis() >= timeOut) {
+		timeOutFlag = false;
+		State = Error;
+	}
+}
+
+void Coordinator::sendAtCommand(uint8_t *cmd, State nextState) {
+	uint8_t joinCmd[] = {'N','J', PERMIT_JOIN_TIME};
+	sendATCommand(joinCmd);
+	startTimeOut();
+	State = nextState;
+}
+
+void Coordinator::awaitAtResponse(State nextState) {
+	// Timeout before any response was received - go to error state
+	checkTimeOut();
+
+	if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
+		// Got a response from Local XBee
+		timeOutFlag = false;
+		xbee.getResponse().getAtCommandResponse(atResponse);
+		if(atResponse.isOk()) {
+			// Command was successful!
+			State = nextState;
+		}
+		else {
+			// Command failed - go to error state
+			State = Error;
+		}
+	}	
+}
+
+void awaitJoin() {
+	// No join requests within timeout time - go to error state
+	checkTimeOut();
+	if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+		// Got a response from Local XBee
+		timeOutFlag = false;
+		xbee.getResponse().getZBRxResponse(zbRx);
+		if(zbRx.getDataLength() == 1 && zbRx.getData()[0] = 'J') {
+			// End device identified, give response
+			State = JoinResponse;
+		}
+	}
+}
+
+void joinResponse() {
+	uint8_t msg[] = {'K'};
+	send(msg, sizeof(msg));
+	State = JoinResponseDelivery;
+	startTimeOut();
+}
+
+void joinResponseDelivery() {
+	checkTimeOut();
+	// ZigBee Tx Response ('Delivery Report')
+	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {	
+		timeOutFlag = false;
+		xbee.getResponse().getZBTxStatusResponse(txStatus);
+		// Get the delivery status, the fifth byte
+		if (txStatus.getDeliveryStatus() == SUCCESS) {
+			// Delivery Successful!
+			State = Idle;
+		} 
+		else {
+			// The remote XBee did not receive our packet.
+ 			State = Error;	
+ 		}
+	}
+}
+
+void idle() {
+	// The art of being idle!
 }
