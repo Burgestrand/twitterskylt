@@ -1,14 +1,11 @@
 #include "Coordinator.h"
 
 Coordinator::Coordinator() {
-	XBeeAddress64 destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
-	uint16_t destAddr16 = 0xFFFF;
 }
 
-void tick() {
-	// enum State {Start, Init, NetworkFormation, PermitJoining, AwaitJoin, Idle, ModemStatus, Send, Error};
-	// enum State {Start, Init, NetworkFormationSend, NetworkFormationReceive, PermitJoiningSend, PermitJoiningReceive, AwaitJoin, Idle, ModemStatus, Send, Error};
+void Coordinator::tick() {
 
+	// Attempt to read new incoming packages (without timeout!)
 	xbee.readPacket();
 
 	switch(State) {
@@ -33,9 +30,13 @@ void tick() {
 		case JoinResponse:
 			joinResponse();
 		case JoinResponseDelivery:
-			joinResponseDelivery();
+			dataDeliveryStatus();
 		case Idle:
 			idle();
+		case SendData:
+			sendData();
+		case SendDataDelivery:
+			dataDeliveryStatus();
 		case ModemStatus:
 			
 		case Send:
@@ -50,17 +51,17 @@ void tick() {
 	
 }
 
-void init() {
+void Coordinator::init() {
 	
 }
 
-void startTimeOut() {
+void Coordinator::startTimeOut() {
 	// Set timeout five seconds from now
 	timeOutFlag = true;
 	timeOut = millis() + 5000;
 }
 
-void checkTimeOut() {
+void Coordinator::checkTimeOut() {
 	if(millis() >= timeOut) {
 		timeOutFlag = false;
 		State = Error;
@@ -93,7 +94,7 @@ void Coordinator::awaitAtResponse(State nextState) {
 	}	
 }
 
-void awaitJoin() {
+void Coordinator::awaitJoin() {
 	// No join requests within timeout time - go to error state
 	checkTimeOut();
 	if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
@@ -107,14 +108,14 @@ void awaitJoin() {
 	}
 }
 
-void joinResponse() {
+void Coordinator::joinResponse() {
 	uint8_t msg[] = {'K'};
 	send(msg, sizeof(msg));
-	State = JoinResponseDelivery;
 	startTimeOut();
+	State = JoinResponseDelivery;
 }
 
-void joinResponseDelivery() {
+void Coordinator::dataDeliveryStatus() {
 	checkTimeOut();
 	// ZigBee Tx Response ('Delivery Report')
 	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {	
@@ -132,6 +133,44 @@ void joinResponseDelivery() {
 	}
 }
 
-void idle() {
-	// The art of being idle!
+void Coordinator::idle() {
+	// Idle state. Coordinator is listening for all possible types of incoming packages
+	if(xbee.getResponse().isAvailable()) {
+		// Got a package! Wonder what type it is...?
+		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+			// ZigBee Rx Response ('Incoming data package from remote XBee')
+		
+		}
+		else if(xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
+			// Modem Status Response ('Notification from local XBee')
+		
+		}
+		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+			// ZigBee Tx Response ('Delivery Report')
+			
+		}
+		else if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
+			// AT Command Response ('Confirmation of command from local XBee')
+			
+		}
+		else {
+			// Unexpected Response type!
+
+		}
+	}
+	else if (xbee.getResponse().isError()) {
+		// Got an error!
+		State = Error;
+	}
+}
+
+void Coordinator::sendData() {
+	// Send data stored in private data field over XBee link
+	send(this->data, sizeof(this->data));
+	startTimeOut();
+	State = SendDataDelivery;
+}
+
+void Coordinator::modemStatusAction() {
+	
 }
