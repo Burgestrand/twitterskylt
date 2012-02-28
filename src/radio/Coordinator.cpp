@@ -206,39 +206,55 @@ void Coordinator::tick() {
 	switch(State) {
 		case NoStart:
 			state = NoStart;
+			break;
 		case Start:
 			// Move along, nothing to see here...
 			state = Init;
+			break;
 		case Init:
 			init();
+			break;
 		case NetworkFormationSend:
 			uint8_t cmd[] = {'N', 'R', 0x0};
 			sendAtCommand(NetworkFormationReceive);
+			break;
 		case NetworkFormationReceive:
 			awaitAtResponse(PermitJoiningSend);
+			break;
 		case PermitJoiningSend:
 			uint8_t cmd[] = {'N', 'J', PERMIT_JOIN_TIME};
 			sendAtCommand(PermitJoiningReceive);
+			break;
 		case PermitJoiningReceive:
 			awaitAtReponse(AwaitJoin);
 			startTimeOut();
+			break;
 		case AwaitJoin:
 			awaitJoin();
+			break;
 		case JoinResponse:
 			joinResponse();
+			break;
 		case JoinResponseDelivery:
 			dataDeliveryStatus();
+			break;
 		case Idle:
 			idle();
+			break;
 		case SendData:
 			sendData();
+			break;
 		case SendDataDelivery:
 			dataDeliveryStatus();
+			break;
 		case ModemStatusAction:
 			modemStatusAction();
+			break;
 		case Error:
 			error();
+			break;
 		default:
 			// Stay in current state (should never be here, really)
+			break;
 	}
 }

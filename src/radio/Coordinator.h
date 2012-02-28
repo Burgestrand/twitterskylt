@@ -15,8 +15,22 @@
 #include "Radio.h"
 
 // Internal states for Coordinator
-enum State {NoStart, Start, Init, NetworkFormationSend, NetworkFormationReceive, PermitJoiningSend, PermitJoiningReceive, 
-AwaitJoin, JoinResponse, JoinResponseDelivery, Idle, SendData, SendDataDelivery, ModemStatusAction, Error};
+enum State {	NoStart, 
+		Start, 
+		Init, 
+		NetworkFormationSend, 
+		NetworkFormationReceive, 
+		PermitJoiningSend, 
+		PermitJoiningReceive, 
+		AwaitJoin, 
+		JoinResponse, 
+		JoinResponseDelivery, 
+		Idle, 
+		SendData, 
+		SendDataDelivery, 
+		ModemStatusAction, 
+		Error
+	};
 
 // ZigBee Network Coordinator
 class Coordinator : public Radio {
@@ -29,6 +43,8 @@ class Coordinator : public Radio {
 		void pairUp();
 		/* Set data to be sent to end device upon request */
 		void setData(uint8_t *data);
+		/* Step State Machine */
+		void tick();
 		/* Return current status,
 		 *
 		 * 0 - Everything OK!
@@ -69,8 +85,6 @@ class Coordinator : public Radio {
 		void modemStatusAction();
 		// Signal error code and wait for reset
 		void error();
-		// Step State Machine
-		void tick();
 };
 
 #endif
