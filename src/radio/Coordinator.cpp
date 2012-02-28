@@ -1,39 +1,55 @@
 #include "Coordinator.h"
 
 Coordinator::Coordinator() {
+	state = NoStart;
+	super();
 }
 
 void Coordinator::begin() {
-	
+	state = Start;
 }
 
 void Coordinator::pairUp() {
-	
+	state = NetworkFormationSend;
 }
 
 void Coordinator::setData(uint8_t *data) {
-	
+	this->data = data;
 }
 
 uint8_t Coordinator::status() {
-	
+	if(status>3) {
+		return 
+	}
+	// Status codes
+	#define COORDINATOR_OK 0
+	#define COORDINATOR_ERROR_NETWORK 1
+	#define COORDINATOR_ERROR_AT_COMMAND 2
+	#define COORDINATOR_ERROR_UNEXPECTED 3
 }
 
 void Coordinator::init() {
 	
+	uint8_t initLength = 5;
+	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
+
+	this->status = 0;
+	this->timeOutFlag = false;
+	this->timeOut = 0;
 }
 
 void Coordinator::startTimeOut() {
 	// Set timeout five seconds from now
 	timeOutFlag = true;
-	timeOut = millis() + 5000;
+	timeOut = millis() + TIMEOUT_TIME;
 }
 
 void Coordinator::checkTimeOut() {
 	// Did we go over the time limit?
 	if(millis() >= timeOut) {
 		timeOutFlag = false;
-		State = Error;
+		state = Error;
 	}
 }
 
@@ -41,7 +57,7 @@ void Coordinator::sendAtCommand(uint8_t *cmd, State nextState) {
 	uint8_t joinCmd[] = {'N','J', PERMIT_JOIN_TIME};
 	sendATCommand(joinCmd);
 	startTimeOut();
-	State = nextState;
+	state = nextState;
 }
 
 void Coordinator::awaitAtResponse(State nextState) {
@@ -54,11 +70,11 @@ void Coordinator::awaitAtResponse(State nextState) {
 		xbee.getResponse().getAtCommandResponse(atResponse);
 		if(atResponse.isOk()) {
 			// Command was successful!
-			State = nextState;
+			state = nextState;
 		}
 		else {
 			// Command failed - go to error state
-			State = Error;
+			state = Error;
 		}
 	}	
 }
@@ -72,7 +88,7 @@ void Coordinator::awaitJoin() {
 		xbee.getResponse().getZBRxResponse(zbRx);
 		if(zbRx.getDataLength() == 1 && zbRx.getData()[0] = 'J') {
 			// End device identified, give response
-			State = JoinResponse;
+			state = JoinResponse;
 		}
 	}
 }
@@ -81,7 +97,7 @@ void Coordinator::joinResponse() {
 	uint8_t msg[] = {'K'};
 	send(msg, sizeof(msg));
 	startTimeOut();
-	State = JoinResponseDelivery;
+	state = JoinResponseDelivery;
 }
 
 void Coordinator::dataDeliveryStatus() {
@@ -93,11 +109,11 @@ void Coordinator::dataDeliveryStatus() {
 		// Get the delivery status, the fifth byte
 		if (txStatus.getDeliveryStatus() == SUCCESS) {
 			// Delivery Successful!
-			State = Idle;
+			state = Idle;
 		} 
 		else {
 			// The remote XBee did not receive our packet
- 			State = Error;	
+ 			state = Error;	
  		}
 	}
 }
@@ -111,32 +127,32 @@ void Coordinator::idle() {
 			xbee.getResponse().getZBRxResponse(zbRx);
 			if(zbRx.getDataLength() == 1 && zbRx.getData()[0] == 'R') {
 				// Data request from End Device
-				State = SendData;
+				state = SendData;
 			}
 		}
 		else if(xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			// Modem Status Response ('Notification from local XBee')
-			State = ModemStatusAction;
+			state = ModemStatusAction;
 		
 		}
 		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			// ZigBee Tx Response ('Delivery Report')
 			// Something is wrong... should never get this type of package here!
-			State = Error;
+			state = Error;
 		}
 		else if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			// AT Command Response ('Confirmation of command from local XBee')
 			// Something is wrong... should never get this type of package here!
-			State = Error;
+			state = Error;
 		}
 		else {
 			// Unexpected Response type!
-			State = Error;
+			state = Error;
 		}
 	}
 	else if (xbee.getResponse().isError()) {
 		// Got an error!
-		State = Error;
+		state = Error;
 	}
 }
 
@@ -144,7 +160,7 @@ void Coordinator::sendData( ) {
 	// Send data stored in private data field over XBee link
 	send(this->data, sizeof(this->data));
 	startTimeOut();
-	State = SendDataDelivery;
+	state = SendDataDelivery;
 }
 
 void Coordinator::modemStatusAction() {
@@ -153,24 +169,24 @@ void Coordinator::modemStatusAction() {
 
 	if (msr.getStatus() == ASSOCIATED) {
 		// Modem associated with network
-		State = Idle;
+		state = Idle;
 	} 
 	else if (msr.getStatus() == DISASSOCIATED) {
 		// Modem disassociated (left network)
 		// Something is wrong,  give error and wait for network reset
-		State = Error;
+		state = Error;
 	} 
 	else if (msr.getStatus() == COORDINATOR_STARTED) {
 		// Coordinator has setup network
-		State = Idle;
+		state = Idle;
 	}
 	else if (msr.getStatus() == HARDWARE_RESET) {
 		// Hardware reset signal
-		State = Start;
+		state = Start;
 	}
 	else {
 		// Something else (certainly not something we were expecting!)
-		State = Error;
+		state = Error;
 	}	
 }
 
@@ -184,8 +200,11 @@ void Coordinator::tick() {
 	xbee.readPacket();
 
 	switch(State) {
+		case NoStart:
+			state = NoStart;
 		case Start:
-			State = Init;
+			// Move along, nothing to see here...
+			state = Init;
 		case Init:
 			init();
 		case NetworkFormationSend:

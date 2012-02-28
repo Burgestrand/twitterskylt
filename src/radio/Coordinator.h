@@ -6,6 +6,12 @@
 // Timeout time (in milliseconds) to wait for command and delivery responses
 #define TIMEOUT_TIME 5000
 
+// Status codes
+#define COORDINATOR_OK 0
+#define COORDINATOR_ERROR_NETWORK 1
+#define COORDINATOR_ERROR_AT_COMMAND 2
+#define COORDINATOR_ERROR_UNEXPECTED 3
+
 #include "Radio.h"
 
 // Internal states for Coordinator
@@ -35,6 +41,7 @@ class Coordinator : public Radio {
 		State state;
 		uint8_t *data;
 		uint8_t *dataBuffer;
+		uint8_t status;
 		bool timeOutFlag;
 		long timeOut;
 			
