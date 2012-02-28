@@ -15,7 +15,7 @@
 #include "Radio.h"
 
 // Internal states for Coordinator
-enum State {Start, Init, NetworkFormationSend, NetworkFormationReceive, PermitJoiningSend, PermitJoiningReceive, 
+enum State {NoStart, Start, Init, NetworkFormationSend, NetworkFormationReceive, PermitJoiningSend, PermitJoiningReceive, 
 AwaitJoin, JoinResponse, JoinResponseDelivery, Idle, SendData, SendDataDelivery, ModemStatusAction, Error};
 
 // ZigBee Network Coordinator

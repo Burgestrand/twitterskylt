@@ -1,15 +1,19 @@
 #include "Coordinator.h"
 
 Coordinator::Coordinator() {
+	// FSM not started
 	state = NoStart;
+	destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
 	super();
 }
 
 void Coordinator::begin() {
+	// Start FSM
 	state = Start;
 }
 
 void Coordinator::pairUp() {
+	// Reset network
 	state = NetworkFormationSend;
 }
 
@@ -18,20 +22,21 @@ void Coordinator::setData(uint8_t *data) {
 }
 
 uint8_t Coordinator::status() {
-	if(status>3) {
-		return 
-	}
-	// Status codes
-	#define COORDINATOR_OK 0
-	#define COORDINATOR_ERROR_NETWORK 1
-	#define COORDINATOR_ERROR_AT_COMMAND 2
-	#define COORDINATOR_ERROR_UNEXPECTED 3
+	return status;
 }
 
 void Coordinator::init() {
 	
-	uint8_t initLength = 5;
+	// Allocate some memory for our pointers
+	uint8_t initLength = 4;
 	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	
+	// Stick some characters in there for good measure
+	this->data[0] = 'I';
+	this->data[1] = 'N';
+	this->data[2] = 'I';
+	this->data[3] = 'T';
+
 	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
 
 	this->status = 0;
@@ -54,8 +59,7 @@ void Coordinator::checkTimeOut() {
 }
 
 void Coordinator::sendAtCommand(uint8_t *cmd, State nextState) {
-	uint8_t joinCmd[] = {'N','J', PERMIT_JOIN_TIME};
-	sendATCommand(joinCmd);
+	sendATCommand(cmd);
 	startTimeOut();
 	state = nextState;
 }
@@ -191,7 +195,7 @@ void Coordinator::modemStatusAction() {
 }
 
 void Coordinator::error() {
-	
+	// Something is awfully wrong! We should lay low for a little while and wait for a reset.
 }
 
 void Coordinator::tick() {
