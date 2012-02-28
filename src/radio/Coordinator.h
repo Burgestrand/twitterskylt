@@ -13,7 +13,10 @@ class Coordinator : public Radio {
 		// Forms a new ZigBee network, discarding old network configuration
 		void formNetwork();
 		// Permits joining the network for a given period of time (in seconds)
-		void permitJoining(uint8_t seconds);
+		// Returns true iff an end device joins the network
+		bool permitJoining(uint8_t seconds);
+		// Check for data request from end device
+		bool gotDataRequest();
 	private:
 };
 

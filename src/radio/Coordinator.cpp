@@ -21,7 +21,7 @@ void Coordinator::formNetwork() {
 	//sendATCommand(wrCmd);
 }
 
-void Coordinator::permitJoining(uint8_t seconds) {
+bool Coordinator::permitJoining(uint8_t seconds) {
 
 	SoftwareSerial nss(ssRX, ssTX);
 	nss.begin(9600);
@@ -47,9 +47,14 @@ void Coordinator::permitJoining(uint8_t seconds) {
 				uint8_t payloadLength = sizeof(payload);
 				zbTx = ZBTxRequest(zbRx.getRemoteAddress64(), payload, payloadLength);
 				xbee.send(zbTx);	
-				return;
+				return true;
 			}
 		}		
 		a++;
 	}
+	return false;
+}
+
+bool Coordinator::gotDataRequest() {
+	
 }
