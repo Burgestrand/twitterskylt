@@ -3,16 +3,55 @@
 
 #include "Radio.h"
 
-// ZigBee End Device
+/*
+o
+States:
+Start
+Forming network
+Joining send
+Joining wait
+Idle
+Error
+RequesSend
+RequesWait
+o
+*/
+
+enum EndDeviceState { Start
+                    , FormingNetwork
+                    , JoiningSend
+                    , JoiningWait
+                    , Idle
+                    , Error
+                    , RequestSend
+                    , RequestWait
+                    };
+
 class EndDevice : public Radio {
 	public:
-		// Default constructor
 		EndDevice();
-		// Request new display data from Coordinator
-		void requestData();
-		// Find and join network
-		void findCoordinator();
+		void joinNetwork();
+		void getNewestMessage();
+		void tick();
+		void begin();
+	protected:
 	private:
+		uint8_t * data;
+		bool timeOutFlag;
+		long timeOut;
+		Xbee xbee;
+
+		// State handling
+		EndDeviceState State;
+		void start();
+		void formingNetwork();
+		void joiningSend();
+		void joiningStatus();
+		void joiningWait();
+		void idle();
+		void error();
+		void requestSend();
+		void requestWait();
 };
 
 #endif
