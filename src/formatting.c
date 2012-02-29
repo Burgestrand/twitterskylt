@@ -94,37 +94,49 @@ char *justify(char **original_words, int word_count)
 	return result;
 }
 
+#define DATE_FORMAT "- %u/%u %02u:%02u"
 static char *month_names[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-char *convert_date(char *twitter_date) {
-	// Sample Twitter date: Sat Jan 12 23:34:45 +0000 2012
-	//                      012345678901234567890123456789
-	//                      0         1         2
-	
-	char *month_name = ALLOC_STR(3);
-	MEMCPY_N(month_name, twitter_date + 4, char, 3);
-	int month = 0;
-	while (strcmp(month_name, month_names[month]) != 0 && month < 11) {
-		++month;
-	}
-	++month; // Put date within interval 1-12 instead of 0-11.
-	
-	int day = strtol(twitter_date + 8, NULL, 10);
-	
-	char *time_string = ALLOC_STR(5);
-	time_string = MEMCPY_N(time_string, twitter_date + 11, char, 5);
-	
-	int result_length = 8;
-	if (day > 9) { ++result_length; }
-	if (month > 9) { ++result_length; }
-	
-	char *result = ALLOC_STR(result_length);
-	sprintf(result, "%d/%d %s", day, month, time_string);
-	
-	xfree(month_name);
-	xfree(time_string);
-	
-	return result;
+char *convert_date(char *twitter_date, int utc_offset)
+{
+  // Sample Twitter date: Sat Jan 12 23:34:45 +0000 2012
+  //                      012345678901234567890123456789
+  //                      0         1         2
+  unsigned int year = strtol(twitter_date + 26, NULL, 10);
+  
+  char *month_name = ALLOC_STR(3);
+  MEMCPY_N(month_name, twitter_date + 4, char, 3);
+  uint8_t month = 0;
+  while (strcmp(month_name, month_names[month]) != 0 && month < 11) {
+    ++month;
+  }
+  ++month; // Put date within interval 1-12 instead of 0-11.
+  xfree(month_name);
+  
+  TimeElements utc_date;
+  utc_date.Year = year - 1970; // Offset from 1970 as required by TimeElements.
+  utc_date.Month = month;
+  utc_date.Day = strtol(twitter_date + 8, NULL, 10);
+  utc_date.Hour = strtol(twitter_date + 11, NULL, 10);
+  utc_date.Minute = strtol(twitter_date + 14, NULL, 10);
+  utc_date.Second = 0;
+  
+  time_t utc_time = makeTime(utc_date);
+  time_t other_time = utc_time + utc_offset;
+  
+  TimeElements other_date;
+  breakTime(other_time, other_date);
+  
+  // "- d/m hh:mm"
+  //  12345678901
+  unsigned int result_length = 11;
+  if (other_date.Day >= 10) { ++result_length; }
+  if (other_date.Month >= 10) { ++result_length; }
+  
+  char *result = ALLOC_STR(result_length);
+  sprintf(result, DATE_FORMAT, other_date.Day, other_date.Month, other_date.Hour, other_date.Minute);
+  
+  return result;
 }
 
 char *add_date(char *message, char *date) {
@@ -146,6 +158,7 @@ char *add_date(char *message, char *date) {
 	}
 	++p;
 	
+	int spaces_needed = 0;
 	// If the message occupies every line, we must pad with proper amount of spaces.
 	if (newline_count == LINE_COUNT - 1) {
 		// Count the number of characters on this line preceding the dummy date string.
@@ -157,16 +170,7 @@ char *add_date(char *message, char *date) {
 		}
 		--line_chars; // Don't count the newline.
 		
-		// Pad with spaces.
-		int spaces_needed = LINE_LENGTH - line_chars - date_length;
-		int space_index = 0;
-		for (; space_index < spaces_needed; ++space_index) {
-			*p = ' ';
-			++p;
-		}
-		
-		// Insert the date.
-		MEMCPY_N(p, date, char, date_length);
+		spaces_needed = LINE_LENGTH - line_chars - date_length;
 	}
 	// Otherwise we must move it down to the last line and pad with a fixed amount of spaces.
 	else {
@@ -178,17 +182,18 @@ char *add_date(char *message, char *date) {
 			++p;
 		}
 		
-		// Pad with spaces.
-		int space_count = LINE_LENGTH - date_length;
-		int space_index = 0;
-		for (; space_index < space_count; ++space_index) {
-			*p = ' ';
-			++p;
-		};
-		
-		// Insert the date.
-		MEMCPY_N(p, date, char, date_length);
+		spaces_needed = LINE_LENGTH - date_length;
 	}
+	
+	// Pad with spaces.
+	int space_index = 0;
+	for (; space_index < spaces_needed; ++space_index) {
+		*p = ' ';
+		++p;
+	};
+	
+	// Insert the date.
+	MEMCPY_N(p, date, char, date_length);
 	
 	return message;
 }
