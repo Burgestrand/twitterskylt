@@ -2,7 +2,7 @@
 
 
 // TODO: Implement
-bool EndDevicc::hasTimedOut() {
+bool EndDevice::hasTimedOut() {
 	return false;
 }
 
@@ -56,6 +56,7 @@ void EndDevice::tick() {
 void EndDevice::start() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
+			// Has modem message
 			ModemStatusResponse msr();
 			xbee.getResponse().getModemStatusResponse(msr);
 			if (msr.getStatus() == HARDWARE_RESET()) {

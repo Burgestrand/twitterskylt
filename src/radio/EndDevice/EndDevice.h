@@ -41,6 +41,7 @@ class EndDevice : public Radio {
 		uint8_t * data;
 		bool timeOutFlag;
 		long timeOut;
+		bool hasTimedOut();
 		XBee xbee;
 
 		// State handling
