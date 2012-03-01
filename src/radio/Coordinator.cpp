@@ -4,6 +4,22 @@ Coordinator::Coordinator() {
 	// FSM not started
 	state = NoStart;
 	destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
+
+	// Initialize callback function pointers to default error handling
+	callbackPt = &error; 
+
+	// Allocate some memory for our pointers
+	uint8_t initLength = 4;
+	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	
+	// Stick some characters in there for good measure
+	this->data[0] = 'I';
+	this->data[1] = 'N';
+	this->data[2] = 'I';
+	this->data[3] = 'T';
+
+	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));	
+	
 	super();
 }
 
@@ -21,25 +37,11 @@ void Coordinator::setData(uint8_t *data) {
 	this->data = data;
 }
 
-uint8_t Coordinator::status() {
-	return status;
+void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
+	this->callbackPt = callbackPt;
 }
 
 void Coordinator::init() {
-	
-	// Allocate some memory for our pointers
-	uint8_t initLength = 4;
-	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
-	
-	// Stick some characters in there for good measure
-	this->data[0] = 'I';
-	this->data[1] = 'N';
-	this->data[2] = 'I';
-	this->data[3] = 'T';
-
-	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
-
-	this->status = 0;
 	this->timeOutFlag = false;
 	this->timeOut = 0;
 }
@@ -251,7 +253,7 @@ void Coordinator::tick() {
 			modemStatusAction();
 			break;
 		case Error:
-			error();
+			callbackPt();
 			break;
 		default:
 			// Stay in current state (should never be here, really)

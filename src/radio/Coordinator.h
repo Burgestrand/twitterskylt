@@ -6,12 +6,6 @@
 // Timeout time (in milliseconds) to wait for command and delivery responses
 #define TIMEOUT_TIME 5000
 
-// Status codes
-#define COORDINATOR_OK 0
-#define COORDINATOR_ERROR_NETWORK 1
-#define COORDINATOR_ERROR_AT_COMMAND 2
-#define COORDINATOR_ERROR_UNEXPECTED 3
-
 #include "Radio.h"
 
 // Internal states for Coordinator
@@ -43,28 +37,22 @@ class Coordinator : public Radio {
 		void pairUp();
 		/* Set data to be sent to end device upon request */
 		void setData(uint8_t *data);
+		/* Set callback function for when an error is encountered */
+		void setErrorCallback(void (*callbackPt)(void));
 		/* Step State Machine */
 		void tick();
-		/* Return current status,
-		 *
-		 * 0 - Everything OK!
-		 * 1 - Network/Connection Error
-		 * 2 - AT Command Error
-		 * 3 - Unexpected Error
-		 */
-		uint8_t status();
 	private:
 		State state;
 		uint8_t *data;
 		uint8_t *dataBuffer;
-		uint8_t status;
 		bool timeOutFlag;
 		long timeOut;
+		void (*callbackPt)(void);
 			
 		// Initialization
-		void init();
+		void init(); 
 		// Start timeout timer
-		void startTimeOut();
+		void startTimeOut(); 
 		// Check timer to see if we've timed out
 		void checkTimeOut();
 		// Send AT command cmd, then move on to nextState
