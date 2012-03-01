@@ -37,11 +37,14 @@ class EndDevice : public Radio {
 		void tick();
 		//void begin(long baud);
 		void setDebug(void (*debug_callback)(char *));
+		void setMsg(void (*msg_callback)(char *));
 	protected:
 	private:
 		bool debugActivated;
 		void (*debug_callback)(char *);
+		void (*msg_callback)(char *);
 		void debug(char *);
+		bool updateFlag;
 
 		uint8_t * data;
 		bool timeOutFlag;
