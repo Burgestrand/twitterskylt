@@ -2,28 +2,29 @@
 #define Coordinator_h
 
 // Time (in seconds) during which new end devices are allowed to join the network
-#define PERMIT_JOIN_TIME 5
+#define PERMIT_JOIN_TIME 0xFF
 // Timeout time (in milliseconds) to wait for command and delivery responses
-#define TIMEOUT_TIME 5000
+#define TIMEOUT_TIME 1200000
 
-#include "Radio.h"
+#include "../Radio/Radio.h"	
 
 // Internal states for Coordinator
-enum State {	NoStart, 
-		Start, 
-		Init, 
-		NetworkFormationSend, 
-		NetworkFormationReceive, 
-		PermitJoiningSend, 
-		PermitJoiningReceive, 
-		AwaitJoin, 
-		JoinResponse, 
-		JoinResponseDelivery, 
-		Idle, 
-		SendData, 
-		SendDataDelivery, 
-		ModemStatusAction, 
-		Error
+enum CoordinatorState {	
+		CoordinatorNoStart, 
+		CoordinatorStart, 
+		CoordinatorInit, 
+		CoordinatorNetworkFormationSend, 
+		CoordinatorNetworkFormationReceive, 
+		CoordinatorPermitJoiningSend, 
+		CoordinatorPermitJoiningReceive, 
+		CoordinatorAwaitJoin, 
+		CoordinatorJoinResponse, 
+		CoordinatorJoinResponseDelivery, 
+		CoordinatorIdle, 
+		CoordinatorSendData, 
+		CoordinatorSendDataDelivery, 
+		CoordinatorModemStatusAction, 
+		CoordinatorError
 	};
 
 // ZigBee Network Coordinator
@@ -32,23 +33,32 @@ class Coordinator : public Radio {
 		/* Default constructor */
 		Coordinator();
 		/* Begin coordinator operation */
- 		void begin();
+ 		void begin(HardwareSerial &serialPort);
 		/* Pair-up of coordinator and end device */
 		void pairUp();
 		/* Set data to be sent to end device upon request */
-		void setData(uint8_t *data);
+		void setData(uint8_t *data, uint8_t dataSize);
 		/* Set callback function for when an error is encountered */
 		void setErrorCallback(void (*callbackPt)(void));
 		/* Step State Machine */
 		void tick();
+
+		// Debug functions
+		uint8_t getState();
+		String getStateName(uint8_t stateNum);
+		bool getAssoc();
+
 	private:
-		State state;
+		CoordinatorState state;
 		uint8_t *data;
+		uint8_t dataSize;
 		uint8_t *dataBuffer;
 		bool timeOutFlag;
 		long timeOut;
 		void (*callbackPt)(void);
 			
+		bool assoc;
+
 		// Initialization
 		void init(); 
 		// Start timeout timer
@@ -56,9 +66,9 @@ class Coordinator : public Radio {
 		// Check timer to see if we've timed out
 		void checkTimeOut();
 		// Send AT command cmd, then move on to nextState
-		void sendAtCommand(uint8_t *cmd, State nextState);
+		void sendAtCommand(uint8_t *cmd, CoordinatorState nextState);
 		// Await response from a sent AT command, then move to nextState
-		void awaitAtResponse(State nextState) ;
+		void awaitAtResponse(CoordinatorState nextState) ;
 		// Wait for an end device to join network
 		void awaitJoin(); 
 		// Send confirmation to end device attempting to join
