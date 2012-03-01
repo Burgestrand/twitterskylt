@@ -4,9 +4,9 @@
 #define BAUDRATE 9600
 
 #include <Arduino.h>
-#include <XBee.h>
 #include <SoftwareSerial.h>
 #include <alloca.h>
+#include <XBee.h>
 
 class Radio {
 	
@@ -21,7 +21,7 @@ class Radio {
 		void sendATCommand(uint8_t *cmd);
 	protected:
 		// Pointer to serial port used
-		HardwareSerial* serialPort;
+		//HardwareSerial serialPort;
 		// XBee module object for use by XBee library
 		XBee xbee;
 		// 64-bit destination address
