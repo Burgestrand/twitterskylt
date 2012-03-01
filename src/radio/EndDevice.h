@@ -17,14 +17,16 @@ RequesWait
 o
 */
 
-enum EndDeviceState { Start
-                    , FormingNetwork
-                    , JoiningSend
-                    , JoiningWait
-                    , Idle
-                    , Error
-                    , RequestSend
-                    , RequestWait
+enum EndDeviceState { EndDeviceStart
+                    , EndDeviceFormingNetwork
+                    , EndDeviceJoiningSend
+                    , EndDeviceJoiningWait
+                    , EndDeviceJoiningWaitResponse
+                    , EndDeviceIdle
+                    , EndDeviceError
+                    , EndDeviceRequestSend
+                    , EndDeviceRequestStatus
+                    , EndDeviceRequestWait
                     };
 
 class EndDevice : public Radio {
@@ -39,7 +41,7 @@ class EndDevice : public Radio {
 		uint8_t * data;
 		bool timeOutFlag;
 		long timeOut;
-		Xbee xbee;
+		XBee xbee;
 
 		// State handling
 		EndDeviceState State;
@@ -52,6 +54,7 @@ class EndDevice : public Radio {
 		void error();
 		void requestSend();
 		void requestWait();
+		void requestStatus();
 };
 
 #endif
