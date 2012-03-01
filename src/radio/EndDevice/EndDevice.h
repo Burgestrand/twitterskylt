@@ -35,7 +35,7 @@ class EndDevice : public Radio {
 		void joinNetwork();
 		void getNewestMessage();
 		void tick();
-		void begin();
+		void begin(long baud);
 	protected:
 	private:
 		uint8_t * data;
@@ -51,6 +51,7 @@ class EndDevice : public Radio {
 		void joiningSend();
 		void joiningStatus();
 		void joiningWait();
+		void joiningWaitResponse();
 		void idle();
 		void error();
 		void requestSend();

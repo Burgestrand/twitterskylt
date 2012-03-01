@@ -16,20 +16,20 @@ void EndDevice::joinNetwork() {
 void EndDevice::getNewestMessage() {
 }
 
-void EndDevice::begin() {
-	xbee.begin();
+void EndDevice::begin(long baud) {
+	xbee.begin(baud);
 }
 
 // Internal state handling
 void EndDevice::tick() {
 
-	xbee.getPacket();
+	xbee.readPacket();
 
 	switch(State) {
 		case EndDeviceStart:
 			start();
 			break;
-		case EndDeviceFormingNetwork;
+		case EndDeviceFormingNetwork:
 			break;
 		case EndDeviceJoiningSend:
 			break;
@@ -57,27 +57,28 @@ void EndDevice::start() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			// Has modem message
-			ModemStatusResponse msr();
+			ModemStatusResponse msr;
 			xbee.getResponse().getModemStatusResponse(msr);
-			if (msr.getStatus() == HARDWARE_RESET()) {
-				State = FormingNetwork;
+			if (msr.getStatus() == HARDWARE_RESET) {
+				State = EndDeviceFormingNetwork;
 			} else {
 				// TODO: Other modem status, should not happen?
 			}
 		} else {
 			// TODO: Other message type
+		}
 	}
 }
 
 void EndDevice::formingNetwork() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
-			ModemStatusResponse msr();
+			ModemStatusResponse msr;
 			xbee.getResponse().getModemStatusResponse(msr);
 			if (msr.getStatus() == ASSOCIATED) {
-				State = JoiningSend;
+				State = EndDeviceJoiningSend;
 			} else {
-				// TODO: Not associated meddelande
+				// TODO: Not associated meddeltnde
 			}
 		} else {
 			// TODO: Annan meddelande-typ
@@ -87,7 +88,7 @@ void EndDevice::formingNetwork() {
 
 void EndDevice::joiningSend() {
 	XBeeAddress64 addr64(0x0, 0x0);
-	uint8_r payload[] = {'J'};
+	uint8_t payload[] = {'J'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
 	xbee.send(zbtxr);
 }
@@ -101,7 +102,7 @@ void EndDevice::joiningWait() {
 				// TODO Message received
 				timeOutFlag = true;
 				timeOut = millis() + 5000; // XXX Actual time for timeout?
-				State = JoiningWaitResponse;
+				State = EndDeviceJoiningWaitResponse;
 			} else {
 				// TODO Message not received
 			}
