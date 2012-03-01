@@ -53,6 +53,7 @@ void EndDevice::tick() {
 	}
 }
 
+// Initial state, waits for the "Hardware reset" modem status message
 void EndDevice::start() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
@@ -70,6 +71,8 @@ void EndDevice::start() {
 	}
 }
 
+// Waits for the "Associated" modem status message 
+// TODO: What should be done if this does not arrive?
 void EndDevice::formingNetwork() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
@@ -116,14 +119,20 @@ void EndDevice::joiningWaitResponse() {
 	if (hasTimedOut()) {
 		// TODO: Got no response, but could send message?
 	} else if (xbee.getResponse().isAvailable()) {
-			if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-			// TODO: Got response
+		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+		// TODO: Got response
+			ZBRxResponse zbrr;
+			xbee.getResponse().getZBRxResponse(zbrr);
+			if (zbrr.getDataLength() == 1 && zbrr.getData()[0] == 'K') {
+				// TODO: Got correct response
+			} else {
+				// TODO: Got wrong response
+			}
 		} else {
 			// TODO: Other type of message
 		}
-	} else {
-		// TODO: Check for bad messages etc.
 	}
+	// TODO: Check for bad messages etc.
 }
 
 void EndDevice::idle() {
