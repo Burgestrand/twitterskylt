@@ -13,15 +13,15 @@ EndDevice::EndDevice() : xbee(){
 void EndDevice::joinNetwork() {
 }
 
-void enddevice::getNewestMessage() {
+void EndDevice::getNewestMessage() {
 }
 
-void enddevice::begin() {
+void EndDevice::begin() {
 	xbee.begin();
 }
 
 // Internal state handling
-void enddevice::tick() {
+void EndDevice::tick() {
 
 	xbee.getPacket();
 
@@ -53,7 +53,7 @@ void enddevice::tick() {
 	}
 }
 
-void enddevice::start() {
+void EndDevice::start() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			ModemStatusResponse msr();
@@ -68,7 +68,7 @@ void enddevice::start() {
 	}
 }
 
-void enddevice::formingNetwork() {
+void EndDevice::formingNetwork() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			ModemStatusResponse msr();
@@ -84,14 +84,14 @@ void enddevice::formingNetwork() {
 	}
 }
 
-void enddevice::joiningSend() {
+void EndDevice::joiningSend() {
 	XBeeAddress64 addr64(0x0, 0x0);
 	uint8_r payload[] = {'J'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
 	xbee.send(zbtxr);
 }
 
-void enddevice::joiningWait() {
+void EndDevice::joiningWait() {
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			ZBTxStatusResponse zbtxsr;
@@ -124,22 +124,22 @@ void EndDevice::joiningWaitResponse() {
 	}
 }
 
-void enddevice::idle() {
+void EndDevice::idle() {
 	// TODO Have nothing to do, put radio to sleep
 }
 
-void enddevice::error() {
+void EndDevice::error() {
 	// TODO: Report error.
 }
 
-void enddevice::requestSend() {
+void EndDevice::requestSend() {
 	// TODO: Send message requesting data
 }
 
-void enddevice::requestStatus() {
+void EndDevice::requestStatus() {
 	// TODO: Wait for status for request packet
 }
 
-void enddevice::requestWait() {
+void EndDevice::requestWait() {
 	// TODO: Wait for response with data from coordinator
 }
