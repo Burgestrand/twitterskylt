@@ -1,7 +1,7 @@
 #ifndef EndDevice_h
 #define EndDevice_h
 
-#include "Radio.h"
+#include "../Radio/Radio.h"
 
 /*
 o
@@ -35,7 +35,7 @@ class EndDevice : public Radio {
 		void joinNetwork();
 		void getNewestMessage();
 		void tick();
-		void begin(long baud);
+		//void begin(long baud);
 		void setDebug(void (*debug_callback)(char *));
 	protected:
 	private:
