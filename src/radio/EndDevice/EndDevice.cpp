@@ -6,8 +6,21 @@ bool EndDevice::hasTimedOut() {
 	return false;
 }
 
+void EndDevice::debug(char *data) {
+	if (debugActivated) {
+		debug_callback(data);
+	}
+}
+
 // Public
 EndDevice::EndDevice() : xbee(){
+	debugActivated = 0;
+}
+
+// Add debug callback and activate debugging
+void EndDevice::setDebug(void (*dbgcb)(char *)) {
+	debug_callback = dbgcb;
+	debugActivated = true;
 }
 
 void EndDevice::joinNetwork() {

@@ -36,8 +36,13 @@ class EndDevice : public Radio {
 		void getNewestMessage();
 		void tick();
 		void begin(long baud);
+		void setDebug(void (*debug_callback)(char *));
 	protected:
 	private:
+		bool debugActivated;
+		void (*debug_callback)(char *);
+		void debug(char *);
+
 		uint8_t * data;
 		bool timeOutFlag;
 		long timeOut;
