@@ -105,8 +105,8 @@ void Coordinator::pairUp() {
 }
 
 void Coordinator::setData(uint8_t *data, uint8_t dataSize) {
-	this->data = data;
-	this->dataSize = dataSize;
+	this->dataBuffer = data;
+	this->dataBufferSize = dataSize;
 }
 
 void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
@@ -118,10 +118,10 @@ void Coordinator::init() {
 	this->timeOut = 0;
 }
 
-void Coordinator::startTimeOut() {
+void Coordinator::startTimeOut(uint16_t timeoutTime) {
 	// Set timeout five seconds from now
 	timeOutFlag = true;
-	timeOut = millis() + TIMEOUT_TIME;
+	timeOut = millis() + timeoutTime;
 }
 
 void Coordinator::checkTimeOut() {
@@ -185,13 +185,20 @@ void Coordinator::dataDeliveryStatus() {
 		timeOutFlag = false;
 		xbee.getResponse().getZBTxStatusResponse(txStatus);
 		// Get the delivery status, the fifth byte
-		if (txStatus.getDeliveryStatus() == SUCCESS) {
+		//if (txStatus.getDeliveryStatus() == SUCCESS) {
+		if(txStatus.isSuccess()) {
 			// Delivery Successful!
+			SoftwareSerial nss = SoftwareSerial(9, 10);
+			nss.begin(9600);
+			nss.println("Delivery successful!");
 			state = CoordinatorIdle;
 		} 
 		else {
+			SoftwareSerial nss = SoftwareSerial(9, 10);
+			nss.begin(9600);
+			nss.println("Remote XBee did not receive packet - Failed delivery!");
 			// The remote XBee did not receive our packet
- 			state = CoordinatorError;	
+ 			state = CoordinatorError;
  		}
 	}
 }
@@ -205,6 +212,7 @@ void Coordinator::idle() {
 			xbee.getResponse().getZBRxResponse(zbRx);
 			if(zbRx.getDataLength() == 1 && zbRx.getData()[0] == 'R') {
 				// Data request from End Device
+				delay(50);
 				state = CoordinatorSendData;
 			}
 		}
@@ -303,7 +311,7 @@ void Coordinator::tick() {
 			break;
 		case CoordinatorPermitJoiningReceive:
 			awaitAtResponse(CoordinatorAwaitJoin);
-			startTimeOut();
+			startTimeOut(65000);
 			break;
 		case CoordinatorAwaitJoin:
 			awaitJoin();

@@ -1,10 +1,12 @@
 #ifndef Coordinator_h
 #define Coordinator_h
 
+// PAN ID 129
 // Time (in seconds) during which new end devices are allowed to join the network
 #define PERMIT_JOIN_TIME 0xFF
 // Timeout time (in milliseconds) to wait for command and delivery responses
-#define TIMEOUT_TIME 1200000
+#define TIMEOUT_TIME 1000
+#define JOIN_INTERVAL 65000;
 
 #include "../Radio/Radio.h"	
 
@@ -53,6 +55,7 @@ class Coordinator : public Radio {
 		uint8_t *data;
 		uint8_t dataSize;
 		uint8_t *dataBuffer;
+		uint8_t dataBufferSize;
 		bool timeOutFlag;
 		long timeOut;
 		void (*callbackPt)(void);
@@ -62,7 +65,7 @@ class Coordinator : public Radio {
 		// Initialization
 		void init(); 
 		// Start timeout timer
-		void startTimeOut(); 
+		void startTimeOut(uint16_t timeoutTime = TIMEOUT_TIME); 
 		// Check timer to see if we've timed out
 		void checkTimeOut();
 		// Send AT command cmd, then move on to nextState
