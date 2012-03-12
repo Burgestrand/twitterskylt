@@ -1,5 +1,9 @@
 #include "EndDevice.h"
 
+// TODO: Implement a lot of things
+// Some helpers
+// Error things
+
 
 // TODO: Implement
 bool EndDevice::hasTimedOut() {
@@ -16,6 +20,7 @@ void EndDevice::debug(char *data) {
 EndDevice::EndDevice() : xbee(){
 	debugActivated = false;
 	timeOutFlag = false;
+	updateFlag = false;
 	State = EndDeviceStart;
 }
 
@@ -25,10 +30,18 @@ void EndDevice::setDebug(void (*dbgcb)(char *)) {
 	debugActivated = true;
 }
 
+// Set new message callback
+void EndDevice::setMsg(void (*msgcb)(char *)) {
+	msg_callback = msgcb;
+}
+
 void EndDevice::joinNetwork() {
 }
 
 void EndDevice::getNewestMessage() {
+	if (State == EndDeviceIdle) {
+		updateFlag = true;
+	}
 }
 
 //void EndDevice::begin(long baud) {
@@ -62,10 +75,13 @@ void EndDevice::tick() {
 		case EndDeviceError:
 			break;
 		case EndDeviceRequestSend:
+			requestSend();
 			break;
 		case EndDeviceRequestStatus:
+			requestStatus();
 			break;
 		case EndDeviceRequestWait:
+			requestWait();
 			break;
 		default:
 			// XXX: Should not happen
@@ -177,6 +193,11 @@ void EndDevice::joiningWaitResponse() {
 void EndDevice::idle() {
 	// TODO Have nothing to do, put radio to sleep
 	debug("In state IDLE\n");
+	if (updateFlag) {
+		updateFlag = false;
+		debug("Got update request from user\n");
+		State = EndDeviceRequestSend;
+	}
 }
 
 void EndDevice::error() {
@@ -184,13 +205,70 @@ void EndDevice::error() {
 }
 
 void EndDevice::requestSend() {
-	// TODO: Send message requesting data
+	// Send message requesting data
+	debug("In state REQUEST SEND\n");
+	debug("Sending data request\n");
+	XBeeAddress64 addr64(0x0, 0x0);
+	uint8_t payload[] = {'R'};
+	ZBTxRequest zbtxr(addr64, payload, 1);
+	xbee.send(zbtxr);
+	State = EndDeviceRequestStatus;
 }
 
 void EndDevice::requestStatus() {
-	// TODO: Wait for status for request packet
+	// Wait for status for request packet
+	debug("In state REQUEST STATUS\n");
+	if (xbee.getResponse().isAvailable()) {
+		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+			ZBTxStatusResponse zbtxsr;
+			xbee.getResponse().getZBTxStatusResponse(zbtxsr);
+			if (zbtxsr.isSuccess()) {
+				// Status message of request message received 
+				debug("Got status of request msg, awaiting response\n");
+				timeOutFlag = true;
+				timeOut = millis() + 5000; // XXX Actual time for timeout?
+				State = EndDeviceRequestWait;
+			} else {
+				// TODO Request Message not received
+				debug("Data request message not received\n");
+			}
+		} else {
+			// TODO: Message of other type
+			debug("Other message type\n");
+		}
+	}
 }
 
 void EndDevice::requestWait() {
-	// TODO: Wait for response with data from coordinator
+	// Wait for response with data from coordinator
+	debug("In state REQUEST WAIT\n");
+	if (hasTimedOut()) {
+		// TODO: Got no response, but could send the message?
+	} else if (xbee.getResponse().isAvailable()) {
+		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+			// Got response
+			ZBRxResponse zbrr;
+			xbee.getResponse().getZBRxResponse(zbrr);
+
+			char len[3];
+			debug("Got data response\n");
+			debug((char *) zbrr.getData());
+			len[0] = ((char) zbrr.getDataLength()) + '0';
+			len[1] = '\n';
+			len[2] = '\0';
+			debug(len);
+			
+			for (int i=0; i < zbrr.getDataLength(); i++) {
+				len[0] = zbrr.getData(i);
+				debug(len);
+			}
+			String str = "";
+			msg_callback((char *) zbrr.getData());
+			timeOutFlag = false;
+			State = EndDeviceIdle;
+		} else {
+			// TODO: Other type of message
+			debug("Other message type\n");
+		}
+	}
 }
