@@ -21,7 +21,12 @@ Coordinator::Coordinator() {
 	this->data[3] = '\0';
 	this->dataSize = 4;
 
-	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	this->sending = false;
+	this->currentPacket = 0;
+
+	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(*uint8_t));
+	this->dataBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
 }
 
 uint8_t Coordinator::getState() {
@@ -105,8 +110,19 @@ void Coordinator::pairUp() {
 }
 
 void Coordinator::setData(uint8_t *data, uint8_t dataSize) {
-	this->dataBuffer = data;
-	this->dataBufferSize = dataSize;
+
+	uint8_t nPackets = ((dataSize/MAX_PACKET_SIZE)+1);
+	this->dataBuffer =  (uint8_t*)alloca(nPackets*sizeof(*uint8_t));
+	this->packetBufferSize =  (uint8_t*)alloca(nPackets*sizeof(uint8_t));
+	this->dataBufferSize = nPackets;
+
+	int i = 0; 
+	for(i=0; i<dataSize/MAX_PACKET_SIZE; i++) {
+		dataBuffer[i] = data[i*MAX_PACKET_SIZE];
+		packetBufferSize[i] = MAX_PACKET_SIZE;
+	}
+	dataBuffer[i] = data[(i*MAX_PACKET_SIZE) + (i%MAX_PACKET_SIZE)]
+	packetBufferSize[i] = dataSize-(i*MAX_PACKET_SIZE);
 }
 
 void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
@@ -191,7 +207,8 @@ void Coordinator::dataDeliveryStatus() {
 			SoftwareSerial nss = SoftwareSerial(9, 10);
 			nss.begin(9600);
 			nss.println("Delivery successful!");
-			state = CoordinatorIdle;
+			// Go back to (potentially) send next packet
+			state = CoordinatorSendData;
 		} 
 		else {
 			SoftwareSerial nss = SoftwareSerial(9, 10);
@@ -244,7 +261,32 @@ void Coordinator::idle() {
 
 void Coordinator::sendData() {
 	// Send data stored in private data field over XBee link
-	send(this->data, this->dataSize);
+	// Data may be sent as multiple packets
+
+	// Move buffer pointer to data pointer
+	if(!sending) {
+		data = dataBuffer;
+		dataSize = dataBufferSize;
+		packetSize = packetBufferSize;
+		currentPacket = 0;
+	}
+
+	if(currentPacket < dataSize) {
+		// Send packet
+		sending = true;
+		sendPacket(currentPacket)
+		currentPacket++;
+	}
+	else {
+		// Done sending last packet
+		sending = false;
+		state = Idle;
+	}
+}
+
+void Coordinator::sendPacket(uint8_t packet) {
+	// Send a single packet over the XBee Link
+	send(this->data[packet], this->packetSize[packet]);
 	startTimeOut();
 	state = CoordinatorSendDataDelivery;
 }

@@ -8,6 +8,9 @@
 #define TIMEOUT_TIME 1000
 #define JOIN_INTERVAL 65000;
 
+// The maximum number of bytes that fit in a single XBee packet
+#define MAX_PACKET_SIZE 72;
+
 #include "../Radio/Radio.h"	
 
 // Internal states for Coordinator
@@ -52,10 +55,14 @@ class Coordinator : public Radio {
 
 	private:
 		CoordinatorState state;
-		uint8_t *data;
+		uint8_t **data;
 		uint8_t dataSize;
-		uint8_t *dataBuffer;
+		uint8_t *packetSize;
+		uint8_t **dataBuffer;
 		uint8_t dataBufferSize;
+		uint8_t *packetBufferSize;
+		uint8_t currentPacket;
+		bool sending;
 		bool timeOutFlag;
 		long timeOut;
 		void (*callbackPt)(void);
@@ -82,6 +89,8 @@ class Coordinator : public Radio {
 		void idle();
 		// Send data to end device
 		void sendData();
+		// Send single packet
+		sendPacket(uint8_t packet);
 		// Act on modem status response from local XBee
 		void modemStatusAction();
 		// Signal error code and wait for reset
