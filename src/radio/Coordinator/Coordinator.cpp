@@ -11,22 +11,18 @@ Coordinator::Coordinator() {
 	callbackPt = NULL; 
 
 	// Allocate some memory for our pointers
-	uint8_t initLength = 4;
-	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	uint8_t initLength = 1;
+	this->data = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
+	this->dataBuffer = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
+	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
 	
 	// Stick some characters in there for good measure
-	this->data[0] = 'A';
-	this->data[1] = 'B';
-	this->data[2] = 'C';
-	this->data[3] = '\0';
-	this->dataSize = 4;
+	uint8_t initStr[] = {'I','N','I','T'};
+	this->data[0] = initStr;
+	this->dataSize = 1;
 
 	this->sending = false;
 	this->currentPacket = 0;
-
-	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(*uint8_t));
-	this->dataBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
-	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
 }
 
 uint8_t Coordinator::getState() {
@@ -109,26 +105,30 @@ void Coordinator::pairUp() {
 	state = CoordinatorNetworkFormationSend;
 }
 
-void Coordinator::setData(uint8_t *data, uint8_t dataSize) {
-
-	uint8_t fP = size/MAX_PACKET_SIZE;	// Number of full-length packets
-	uint8_t rP = size%MAX_PACKET_SIZE;	// Size of remainder packet
+void Coordinator::setData(uint8_t *data, uint8_t size) {
+	const int maxPacketSize = 72;
+	uint8_t fP = size/maxPacketSize;	// Number of full-length packets
+	uint8_t rP = size%maxPacketSize;	// Size of remainder packet
 	uint8_t tP = (rP>0 ? fP+1 : fP);	// Total number of packets
-	char ** msgP = (char**)alloca(tP*sizeof(char*));
+	uint8_t ** msgP = (uint8_t**)alloca(tP*sizeof(uint8_t*));
 	uint8_t * msgLen = (uint8_t*)alloca(tP*sizeof(uint8_t));
 
 	// Fill up full-length packets
 	for(int i=0; i<fP; i++) {
-		msgP[i] = (char*)alloca((MAX_PACKET_SIZE+1)*sizeof(char));
-		strncpy(msgP[i], source+(sizeof(char)*i*MAX_PACKET_SIZE), MAX_PACKET_SIZE);
-		msgP[i][MAX_PACKET_SIZE] = '\0';
-		msgLen[i] = MAX_PACKET_SIZE+1;
+		msgP[i] = (uint8_t*)alloca((maxPacketSize+1)*sizeof(uint8_t));
+		for(int j=0; j<maxPacketSize; j++) {
+			msgP[i][j] = *(data+(sizeof(uint8_t)*i*maxPacketSize)+j);
+		}
+		msgP[i][maxPacketSize] = '\0';
+		msgLen[i] = maxPacketSize+1;
 	}
 
 	// Fill up (potential) remainder packet
 	if(tP != fP) {
-		msgP[fP] = (char*)alloca((rP+1)*sizeof(char));
-		strncpy(msgP[fP], source+(fP*MAX_PACKET_SIZE), rP);
+		msgP[fP] = (uint8_t*)alloca((rP+1)*sizeof(uint8_t));
+		for(int j=0; j<maxPacketSize; j++) {
+			msgP[fP][j] = *(data+(sizeof(uint8_t)*fP*maxPacketSize)+j);
+		}
 		msgP[fP][rP] = '\0';
 		msgLen[fP] = rP+1;
 	} 
@@ -278,10 +278,13 @@ void Coordinator::sendData() {
 
 	// Move buffer pointer to data pointer
 	if(!sending) {
-		data = char ** msgP = (char**)alloca(dataBufferSize*sizeof(char*));
-		for(int i=0; i<dataBufferSize) {
-			memcpy(data[i], dataBuffer[i], (packetSizeBuffer[i]*sizeof(char));
-			memcpy(packetSize[i], packetSizeBuffer[i], sizeof(uint8_t));
+		data = (uint8_t**)alloca(dataBufferSize*sizeof(uint8_t*));
+		for(int i=0; i<dataBufferSize; i++) {
+			data[i] = (uint8_t*)alloca(packetBufferSize[i]*sizeof(uint8_t));
+			packetSize[i] = packetBufferSize[i];
+			for(int j=0; j<packetBufferSize[i]; j++) {
+				data[i][j] = dataBuffer[i][j];
+			}
 		}
 		dataSize = dataBufferSize;
 		currentPacket = 0;
@@ -290,13 +293,13 @@ void Coordinator::sendData() {
 	if(currentPacket < dataSize) {
 		// Send packet
 		sending = true;
-		sendPacket(currentPacket)
+		sendPacket(currentPacket);
 		currentPacket++;
 	}
 	else {
 		// Done sending last packet
 		sending = false;
-		state = Idle;
+		state = CoordinatorIdle;
 	}
 }
 
