@@ -90,7 +90,7 @@ class Coordinator : public Radio {
 		// Send data to end device
 		void sendData();
 		// Send single packet
-		sendPacket(uint8_t packet);
+		void sendPacket(uint8_t packet);
 		// Act on modem status response from local XBee
 		void modemStatusAction();
 		// Signal error code and wait for reset
