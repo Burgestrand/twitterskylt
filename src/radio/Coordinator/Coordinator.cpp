@@ -278,9 +278,12 @@ void Coordinator::sendData() {
 
 	// Move buffer pointer to data pointer
 	if(!sending) {
-		data = dataBuffer;
+		data = char ** msgP = (char**)alloca(dataBufferSize*sizeof(char*));
+		for(int i=0; i<dataBufferSize) {
+			memcpy(data[i], dataBuffer[i], (packetSizeBuffer[i]*sizeof(char));
+			memcpy(packetSize[i], packetSizeBuffer[i], sizeof(uint8_t));
+		}
 		dataSize = dataBufferSize;
-		packetSize = packetBufferSize;
 		currentPacket = 0;
 	}
 
