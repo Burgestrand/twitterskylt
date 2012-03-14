@@ -111,18 +111,31 @@ void Coordinator::pairUp() {
 
 void Coordinator::setData(uint8_t *data, uint8_t dataSize) {
 
-	uint8_t nPackets = ((dataSize/MAX_PACKET_SIZE)+1);
-	this->dataBuffer =  (uint8_t*)alloca(nPackets*sizeof(*uint8_t));
-	this->packetBufferSize =  (uint8_t*)alloca(nPackets*sizeof(uint8_t));
-	this->dataBufferSize = nPackets;
+	uint8_t fP = size/MAX_PACKET_SIZE;	// Number of full-length packets
+	uint8_t rP = size%MAX_PACKET_SIZE;	// Size of remainder packet
+	uint8_t tP = (rP>0 ? fP+1 : fP);	// Total number of packets
+	char ** msgP = (char**)alloca(tP*sizeof(char*));
+	uint8_t * msgLen = (uint8_t*)alloca(tP*sizeof(uint8_t));
 
-	int i = 0; 
-	for(i=0; i<dataSize/MAX_PACKET_SIZE; i++) {
-		dataBuffer[i] = data[i*MAX_PACKET_SIZE];
-		packetBufferSize[i] = MAX_PACKET_SIZE;
+	// Fill up full-length packets
+	for(int i=0; i<fP; i++) {
+		msgP[i] = (char*)alloca((MAX_PACKET_SIZE+1)*sizeof(char));
+		strncpy(msgP[i], source+(sizeof(char)*i*MAX_PACKET_SIZE), MAX_PACKET_SIZE);
+		msgP[i][MAX_PACKET_SIZE] = '\0';
+		msgLen[i] = MAX_PACKET_SIZE+1;
 	}
-	dataBuffer[i] = data[(i*MAX_PACKET_SIZE) + (i%MAX_PACKET_SIZE)]
-	packetBufferSize[i] = dataSize-(i*MAX_PACKET_SIZE);
+
+	// Fill up (potential) remainder packet
+	if(tP != fP) {
+		msgP[fP] = (char*)alloca((rP+1)*sizeof(char));
+		strncpy(msgP[fP], source+(fP*MAX_PACKET_SIZE), rP);
+		msgP[fP][rP] = '\0';
+		msgLen[fP] = rP+1;
+	} 
+
+	this->dataBuffer = msgP;			// Data buffer (array of char arrays)
+	this->packetBufferSize = msgLen;	// Array containing packet sizes
+	this->dataBufferSize = tP;			// Number of packets
 }
 
 void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
