@@ -1,8 +1,7 @@
 #include "Coordinator.h"
 
 Coordinator::Coordinator() {
-	// Debug
-	assoc = false;
+
 	// FSM not started
 	state = CoordinatorNoStart;
 	destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
@@ -10,17 +9,16 @@ Coordinator::Coordinator() {
 	// Initialize callback function pointers to default error handling
 	callbackPt = NULL; 
 
+	uint8_t initLength = 1
+	uint8_t initStr[] = {'I','N','I','T'};
+
 	// Allocate some memory for our pointers
-	uint8_t initLength = 1;
 	this->data = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
 	this->dataBuffer = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
 	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
-	
-	// Stick some characters in there for good measure
-	uint8_t initStr[] = {'I','N','I','T'};
 	this->data[0] = initStr;
 	this->dataSize = 1;
-
+	this->assoc = false;
 	this->sending = false;
 	this->currentPacket = 0;
 }
@@ -35,54 +33,12 @@ bool Coordinator::getAssoc() {
 
 String Coordinator::getStateName(uint8_t stateNum) {
 	String retStr = "Not a state!";
-	switch(stateNum) {
-		case 0:
-			retStr = "NoStart";
-			break;
-		case 1:
-			retStr = "Start";
-			break;
-		case 2:
-			retStr = "\n **************** \n COORDINATOR RESET \n **************** \n Init";
-			break;
-		case 3:
-			retStr = "Network Formation Send";
-			break;
-		case 4:
-			retStr = "Network Formation Receive";
-			break;
-		case 5:
-			retStr = "Permit Joining Send";
-			break;
-		case 6:
-			retStr = "Permit Joining Receive";
-			break;
-		case 7:
-			retStr = "Await Join";
-			break;
-		case 8:
-			retStr = "Join Response";
-			break;
-		case 9:
-			retStr = "Join Response Delivery Report";
-			break;
-		case 10:
-			retStr = "Idle";
-			break;
-		case 11:
-			retStr = "Send Data";
-			break;
-		case 12:
-			retStr = "Send Data Delivery Report";
-			break;
-		case 13:
-			retStr = "Modem Status Action";
-			break;
-		case 14:
-			retStr = "Error";
-			break;
-		default:
-			break;
+	String stateStr[] = {"NoStart", "Start", "Init", "Network Formation Send",
+	"Network Formation Receive", "Permit Joining Send", "Permit Joining Receive",
+	"Await Join", "Join Response", "Join Response Delivery Report", "Idle",
+	"Send Data", "Send Data Delivery Report", "Modem Status Action", "Error"};
+	if(stateNum >= 0 && stateNum <= 14) {
+		retStr = stateStr[stateNum];
 	}
 	return retStr;
 }
@@ -90,8 +46,6 @@ String Coordinator::getStateName(uint8_t stateNum) {
 void Coordinator::begin(HardwareSerial &serialPort) {
 	// Initialize XBee
 	this->xbee = XBee();
-	// Set serial Port
-	//this->serialPort = serialPort;
 	// Set XBee serial port 
 	this->xbee.setSerial(serialPort);
 	// Set XBee Baud Rate
@@ -148,7 +102,7 @@ void Coordinator::init() {
 }
 
 void Coordinator::startTimeOut(uint16_t timeoutTime) {
-	// Set timeout five seconds from now
+	// Set timeout
 	timeOutFlag = true;
 	timeOut = millis() + timeoutTime;
 }
@@ -213,8 +167,7 @@ void Coordinator::dataDeliveryStatus() {
 	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {	
 		timeOutFlag = false;
 		xbee.getResponse().getZBTxStatusResponse(txStatus);
-		// Get the delivery status, the fifth byte
-		//if (txStatus.getDeliveryStatus() == SUCCESS) {
+		// Get the delivery status (fifth byte of packet)
 		if(txStatus.isSuccess()) {
 			// Delivery Successful!
 			SoftwareSerial nss = SoftwareSerial(9, 10);
@@ -251,13 +204,10 @@ void Coordinator::idle() {
 			state = CoordinatorModemStatusAction;
 		
 		}
-		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE ||
+				xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			// ZigBee Tx Response ('Delivery Report')
-			// Something is wrong... should never get this type of package here!
-			state = CoordinatorError;
-		}
-		else if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
-			// AT Command Response ('Confirmation of command from local XBee')
+			// Or AT Command Response
 			// Something is wrong... should never get this type of package here!
 			state = CoordinatorError;
 		}
@@ -291,7 +241,7 @@ void Coordinator::sendData() {
 	}
 
 	if(currentPacket < dataSize) {
-		// Send packet
+		// Send next packet
 		sending = true;
 		sendPacket(currentPacket);
 		currentPacket++;
