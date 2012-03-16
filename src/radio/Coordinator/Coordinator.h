@@ -97,8 +97,6 @@ class Coordinator : public Radio {
 		void sendPacket(packet dataPacket);
 		// Act on modem status response from local XBee
 		void modemStatusAction();
-		// Signal error code and wait for reset
-		void error();
 };
 
 #endif

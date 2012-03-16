@@ -266,12 +266,7 @@ void Coordinator::modemStatusAction() {
 	}	
 }
 
-void Coordinator::error() {
-	// Something is awfully wrong! We should lay low for a little while and wait for a reset.
-}
-
 void Coordinator::tick() {
-
 	// Attempt to read new incoming packages (without timeout or block!)
 	xbee.readPacket();
 
