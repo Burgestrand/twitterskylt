@@ -11,6 +11,8 @@ EndDevice::EndDevice() : xbee(){
 	updateFlag = false;
 	timesTimeout = 0;
 	State = EndDeviceInit;
+	data[0] = 0;
+	dataEnd = data;
 }
 
 // Set new message callback
@@ -19,7 +21,7 @@ void EndDevice::setMsg(void (*msgcb)(char *)) {
 }
 
 // Set the status change callback
-void EndDevice::setStatus(void (*statuscb)(uint8_t *)) {
+void EndDevice::setStatus(void (*statuscb)(uint8_t)) {
 	status_callback = statuscb;
 }
 
@@ -287,6 +289,10 @@ void EndDevice::requestWait() {
 	if (hasTimedOut()) {
 		disableTimeout();
 		DEBUG_MSG("Timed out waiting for request data response\n");
+
+		// Discard old data
+		dataEnd = data;
+
 		timesTimeout++;
 		if (timesTimeout > 3) {
 			State = EndDeviceError;
@@ -302,6 +308,7 @@ void EndDevice::requestWait() {
 			ZBRxResponse zbrr;
 			xbee.getResponse().getZBRxResponse(zbrr);
 
+			/*
 			// TODO: Reformat debug code
 			char len[3];
 			DEBUG_MSG((char *) zbrr.getData());
@@ -314,10 +321,20 @@ void EndDevice::requestWait() {
 				len[0] = zbrr.getData(i);
 				DEBUG_MSG(len);
 			}
-			String str = "";
-			msg_callback((char *) zbrr.getData());
-			timesTimeout = 0;
-			State = EndDeviceIdle;
+			*/
+
+			uint8_t *packetData = zbrr.getData();
+			uint8_t len = zbrr.getDataLength();
+
+			memcpy(dataEnd, packetData, len);
+			dataEnd += len;
+			if (packetData[len] == 0) {
+				dataEnd = data;
+				State = EndDeviceIdle;
+				msg_callback((char *)data);
+			} else {
+				setTimeout(5000);
+			}
 		} else {
 			// TODO: Other type of message
 			DEBUG_MSG("Other message type\n");

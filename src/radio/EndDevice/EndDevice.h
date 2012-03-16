@@ -38,7 +38,7 @@ class EndDevice : public Radio {
 
 		// Set the callback to use when the status of the 
 		// network changes (associated, failed to deliver message...)
-		void setStatus(void (*status_callback)(uint8_t *));
+		void setStatus(void (*status_callback)(uint8_t));
 
 		// Start communicating with the xbee
 		void begin(long baud);
@@ -54,17 +54,19 @@ class EndDevice : public Radio {
 		void tick();
 	protected:
 	private:
-		uint8_t timesTimeout;
 
-		// The newest known message
-		uint8_t * data;
+		// Storage area for messages
+		uint8_t data[216];
+
+		// Pointer to the end of the current data
+		uint8_t * dataEnd;
 
 		// The xbee instance to communicate with the radio
 		XBee xbee;
 
 		// Callbacks
 		void (*msg_callback)(char *);
-		void (*status_callback)(uint8_t *);
+		void (*status_callback)(uint8_t);
 
 		// True if we should request a message update
 		bool updateFlag;
@@ -75,6 +77,8 @@ class EndDevice : public Radio {
 		bool hasTimedOut();
 		void setTimeout(unsigned long msecs);
 		void disableTimeout();
+		// Number of times the curreent operation has timed out
+		uint8_t timesTimeout;
 
 		// State handling
 		EndDeviceState State;
