@@ -9,15 +9,9 @@ Coordinator::Coordinator() {
 	// Initialize callback function pointers to default error handling
 	callbackPt = NULL; 
 
-	uint8_t initLength = 1
+	uint8_t initLength = 1;
 	uint8_t initStr[] = {'I','N','I','T'};
 
-	// Allocate some memory for our pointers
-	this->data = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
-	this->dataBuffer = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
-	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
-	this->data[0] = initStr;
-	this->dataSize = 1;
 	this->assoc = false;
 	this->sending = false;
 	this->currentPacket = 0;
@@ -60,36 +54,27 @@ void Coordinator::pairUp() {
 }
 
 void Coordinator::setData(uint8_t *data, uint8_t size) {
-	const int maxPacketSize = 72;
+	const int maxPacketSize = 10;
 	uint8_t fP = size/maxPacketSize;	// Number of full-length packets
 	uint8_t rP = size%maxPacketSize;	// Size of remainder packet
 	uint8_t tP = (rP>0 ? fP+1 : fP);	// Total number of packets
-	uint8_t ** msgP = (uint8_t**)alloca(tP*sizeof(uint8_t*));
-	uint8_t * msgLen = (uint8_t*)alloca(tP*sizeof(uint8_t));
 
 	// Fill up full-length packets
 	for(int i=0; i<fP; i++) {
-		msgP[i] = (uint8_t*)alloca((maxPacketSize+1)*sizeof(uint8_t));
 		for(int j=0; j<maxPacketSize; j++) {
-			msgP[i][j] = *(data+(sizeof(uint8_t)*i*maxPacketSize)+j);
+			bufferPackets[i].data[j] = *(data+(i*maxPacketSize)+j);
 		}
-		msgP[i][maxPacketSize] = '\0';
-		msgLen[i] = maxPacketSize+1;
+		bufferPackets[i].length = maxPacketSize;
 	}
 
 	// Fill up (potential) remainder packet
 	if(tP != fP) {
-		msgP[fP] = (uint8_t*)alloca((rP+1)*sizeof(uint8_t));
-		for(int j=0; j<maxPacketSize; j++) {
-			msgP[fP][j] = *(data+(sizeof(uint8_t)*fP*maxPacketSize)+j);
+		for(int j=0; j<rP; j++) {
+			bufferPackets[fP].data[j] = *(data+(fP*maxPacketSize)+j);
 		}
-		msgP[fP][rP] = '\0';
-		msgLen[fP] = rP+1;
+		bufferPackets[fP].data[rP] = '\0';
+		bufferPackets[fP].length = rP+1;
 	} 
-
-	this->dataBuffer = msgP;			// Data buffer (array of char arrays)
-	this->packetBufferSize = msgLen;	// Array containing packet sizes
-	this->dataBufferSize = tP;			// Number of packets
 }
 
 void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
@@ -226,24 +211,18 @@ void Coordinator::sendData() {
 	// Send data stored in private data field over XBee link
 	// Data may be sent as multiple packets
 
-	// Move buffer pointer to data pointer
+	// Switch data and buffer pointers
 	if(!sending) {
-		data = (uint8_t**)alloca(dataBufferSize*sizeof(uint8_t*));
-		for(int i=0; i<dataBufferSize; i++) {
-			data[i] = (uint8_t*)alloca(packetBufferSize[i]*sizeof(uint8_t));
-			packetSize[i] = packetBufferSize[i];
-			for(int j=0; j<packetBufferSize[i]; j++) {
-				data[i][j] = dataBuffer[i][j];
-			}
+		for(int i=0; i<3; i++) {
+			dataPackets[i] = bufferPackets[i];
 		}
-		dataSize = dataBufferSize;
 		currentPacket = 0;
 	}
 
-	if(currentPacket < dataSize) {
+	if(dataPackets[currentPacket].length > 0) {
 		// Send next packet
 		sending = true;
-		sendPacket(currentPacket);
+		sendPacket(dataPackets[currentPacket]);
 		currentPacket++;
 	}
 	else {
@@ -253,9 +232,9 @@ void Coordinator::sendData() {
 	}
 }
 
-void Coordinator::sendPacket(uint8_t packet) {
+void Coordinator::sendPacket(packet dataPacket) {
 	// Send a single packet over the XBee Link
-	send(this->data[packet], this->packetSize[packet]);
+	send(dataPacket.data, dataPacket.length);
 	startTimeOut();
 	state = CoordinatorSendDataDelivery;
 }
