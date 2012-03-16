@@ -1,8 +1,7 @@
 #include "Coordinator.h"
 
 Coordinator::Coordinator() {
-	// Debug
-	assoc = false;
+
 	// FSM not started
 	state = CoordinatorNoStart;
 	destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
@@ -10,18 +9,18 @@ Coordinator::Coordinator() {
 	// Initialize callback function pointers to default error handling
 	callbackPt = NULL; 
 
-	// Allocate some memory for our pointers
-	uint8_t initLength = 4;
-	this->data = (uint8_t*)alloca(initLength*sizeof(uint8_t));
-	
-	// Stick some characters in there for good measure
-	this->data[0] = 'A';
-	this->data[1] = 'B';
-	this->data[2] = 'C';
-	this->data[3] = '\0';
-	this->dataSize = 4;
+	uint8_t initLength = 1
+	uint8_t initStr[] = {'I','N','I','T'};
 
-	this->dataBuffer =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	// Allocate some memory for our pointers
+	this->data = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
+	this->dataBuffer = (uint8_t**)alloca(initLength*sizeof(uint8_t*));
+	this->packetBufferSize =  (uint8_t*)alloca(initLength*sizeof(uint8_t));
+	this->data[0] = initStr;
+	this->dataSize = 1;
+	this->assoc = false;
+	this->sending = false;
+	this->currentPacket = 0;
 }
 
 uint8_t Coordinator::getState() {
@@ -34,54 +33,12 @@ bool Coordinator::getAssoc() {
 
 String Coordinator::getStateName(uint8_t stateNum) {
 	String retStr = "Not a state!";
-	switch(stateNum) {
-		case 0:
-			retStr = "NoStart";
-			break;
-		case 1:
-			retStr = "Start";
-			break;
-		case 2:
-			retStr = "\n **************** \n COORDINATOR RESET \n **************** \n Init";
-			break;
-		case 3:
-			retStr = "Network Formation Send";
-			break;
-		case 4:
-			retStr = "Network Formation Receive";
-			break;
-		case 5:
-			retStr = "Permit Joining Send";
-			break;
-		case 6:
-			retStr = "Permit Joining Receive";
-			break;
-		case 7:
-			retStr = "Await Join";
-			break;
-		case 8:
-			retStr = "Join Response";
-			break;
-		case 9:
-			retStr = "Join Response Delivery Report";
-			break;
-		case 10:
-			retStr = "Idle";
-			break;
-		case 11:
-			retStr = "Send Data";
-			break;
-		case 12:
-			retStr = "Send Data Delivery Report";
-			break;
-		case 13:
-			retStr = "Modem Status Action";
-			break;
-		case 14:
-			retStr = "Error";
-			break;
-		default:
-			break;
+	String stateStr[] = {"NoStart", "Start", "Init", "Network Formation Send",
+	"Network Formation Receive", "Permit Joining Send", "Permit Joining Receive",
+	"Await Join", "Join Response", "Join Response Delivery Report", "Idle",
+	"Send Data", "Send Data Delivery Report", "Modem Status Action", "Error"};
+	if(stateNum >= 0 && stateNum <= 14) {
+		retStr = stateStr[stateNum];
 	}
 	return retStr;
 }
@@ -89,8 +46,6 @@ String Coordinator::getStateName(uint8_t stateNum) {
 void Coordinator::begin(HardwareSerial &serialPort) {
 	// Initialize XBee
 	this->xbee = XBee();
-	// Set serial Port
-	//this->serialPort = serialPort;
 	// Set XBee serial port 
 	this->xbee.setSerial(serialPort);
 	// Set XBee Baud Rate
@@ -104,9 +59,37 @@ void Coordinator::pairUp() {
 	state = CoordinatorNetworkFormationSend;
 }
 
-void Coordinator::setData(uint8_t *data, uint8_t dataSize) {
-	this->data = data;
-	this->dataSize = dataSize;
+void Coordinator::setData(uint8_t *data, uint8_t size) {
+	const int maxPacketSize = 72;
+	uint8_t fP = size/maxPacketSize;	// Number of full-length packets
+	uint8_t rP = size%maxPacketSize;	// Size of remainder packet
+	uint8_t tP = (rP>0 ? fP+1 : fP);	// Total number of packets
+	uint8_t ** msgP = (uint8_t**)alloca(tP*sizeof(uint8_t*));
+	uint8_t * msgLen = (uint8_t*)alloca(tP*sizeof(uint8_t));
+
+	// Fill up full-length packets
+	for(int i=0; i<fP; i++) {
+		msgP[i] = (uint8_t*)alloca((maxPacketSize+1)*sizeof(uint8_t));
+		for(int j=0; j<maxPacketSize; j++) {
+			msgP[i][j] = *(data+(sizeof(uint8_t)*i*maxPacketSize)+j);
+		}
+		msgP[i][maxPacketSize] = '\0';
+		msgLen[i] = maxPacketSize+1;
+	}
+
+	// Fill up (potential) remainder packet
+	if(tP != fP) {
+		msgP[fP] = (uint8_t*)alloca((rP+1)*sizeof(uint8_t));
+		for(int j=0; j<maxPacketSize; j++) {
+			msgP[fP][j] = *(data+(sizeof(uint8_t)*fP*maxPacketSize)+j);
+		}
+		msgP[fP][rP] = '\0';
+		msgLen[fP] = rP+1;
+	} 
+
+	this->dataBuffer = msgP;			// Data buffer (array of char arrays)
+	this->packetBufferSize = msgLen;	// Array containing packet sizes
+	this->dataBufferSize = tP;			// Number of packets
 }
 
 void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
@@ -118,10 +101,10 @@ void Coordinator::init() {
 	this->timeOut = 0;
 }
 
-void Coordinator::startTimeOut() {
-	// Set timeout five seconds from now
+void Coordinator::startTimeOut(uint16_t timeoutTime) {
+	// Set timeout
 	timeOutFlag = true;
-	timeOut = millis() + TIMEOUT_TIME;
+	timeOut = millis() + timeoutTime;
 }
 
 void Coordinator::checkTimeOut() {
@@ -184,14 +167,21 @@ void Coordinator::dataDeliveryStatus() {
 	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {	
 		timeOutFlag = false;
 		xbee.getResponse().getZBTxStatusResponse(txStatus);
-		// Get the delivery status, the fifth byte
-		if (txStatus.getDeliveryStatus() == SUCCESS) {
+		// Get the delivery status (fifth byte of packet)
+		if(txStatus.isSuccess()) {
 			// Delivery Successful!
-			state = CoordinatorIdle;
+			SoftwareSerial nss = SoftwareSerial(9, 10);
+			nss.begin(9600);
+			nss.println("Delivery successful!");
+			// Go back to (potentially) send next packet
+			state = CoordinatorSendData;
 		} 
 		else {
+			SoftwareSerial nss = SoftwareSerial(9, 10);
+			nss.begin(9600);
+			nss.println("Remote XBee did not receive packet - Failed delivery!");
 			// The remote XBee did not receive our packet
- 			state = CoordinatorError;	
+ 			state = CoordinatorError;
  		}
 	}
 }
@@ -205,6 +195,7 @@ void Coordinator::idle() {
 			xbee.getResponse().getZBRxResponse(zbRx);
 			if(zbRx.getDataLength() == 1 && zbRx.getData()[0] == 'R') {
 				// Data request from End Device
+				delay(50);
 				state = CoordinatorSendData;
 			}
 		}
@@ -213,13 +204,10 @@ void Coordinator::idle() {
 			state = CoordinatorModemStatusAction;
 		
 		}
-		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE ||
+				xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			// ZigBee Tx Response ('Delivery Report')
-			// Something is wrong... should never get this type of package here!
-			state = CoordinatorError;
-		}
-		else if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
-			// AT Command Response ('Confirmation of command from local XBee')
+			// Or AT Command Response
 			// Something is wrong... should never get this type of package here!
 			state = CoordinatorError;
 		}
@@ -236,7 +224,38 @@ void Coordinator::idle() {
 
 void Coordinator::sendData() {
 	// Send data stored in private data field over XBee link
-	send(this->data, this->dataSize);
+	// Data may be sent as multiple packets
+
+	// Move buffer pointer to data pointer
+	if(!sending) {
+		data = (uint8_t**)alloca(dataBufferSize*sizeof(uint8_t*));
+		for(int i=0; i<dataBufferSize; i++) {
+			data[i] = (uint8_t*)alloca(packetBufferSize[i]*sizeof(uint8_t));
+			packetSize[i] = packetBufferSize[i];
+			for(int j=0; j<packetBufferSize[i]; j++) {
+				data[i][j] = dataBuffer[i][j];
+			}
+		}
+		dataSize = dataBufferSize;
+		currentPacket = 0;
+	}
+
+	if(currentPacket < dataSize) {
+		// Send next packet
+		sending = true;
+		sendPacket(currentPacket);
+		currentPacket++;
+	}
+	else {
+		// Done sending last packet
+		sending = false;
+		state = CoordinatorIdle;
+	}
+}
+
+void Coordinator::sendPacket(uint8_t packet) {
+	// Send a single packet over the XBee Link
+	send(this->data[packet], this->packetSize[packet]);
 	startTimeOut();
 	state = CoordinatorSendDataDelivery;
 }
@@ -303,7 +322,7 @@ void Coordinator::tick() {
 			break;
 		case CoordinatorPermitJoiningReceive:
 			awaitAtResponse(CoordinatorAwaitJoin);
-			startTimeOut();
+			startTimeOut(65000);
 			break;
 		case CoordinatorAwaitJoin:
 			awaitJoin();

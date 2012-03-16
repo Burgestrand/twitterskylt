@@ -1,10 +1,15 @@
 #ifndef Coordinator_h
 #define Coordinator_h
 
+// PAN ID 129
 // Time (in seconds) during which new end devices are allowed to join the network
 #define PERMIT_JOIN_TIME 0xFF
 // Timeout time (in milliseconds) to wait for command and delivery responses
-#define TIMEOUT_TIME 1200000
+#define TIMEOUT_TIME 1000
+#define JOIN_INTERVAL 65000;
+
+// The maximum number of bytes that fit in a single XBee packet
+#define MAX_PACKET_SIZE 72;
 
 #include "../Radio/Radio.h"	
 
@@ -50,9 +55,14 @@ class Coordinator : public Radio {
 
 	private:
 		CoordinatorState state;
-		uint8_t *data;
+		uint8_t **data;
 		uint8_t dataSize;
-		uint8_t *dataBuffer;
+		uint8_t *packetSize;
+		uint8_t **dataBuffer;
+		uint8_t dataBufferSize;
+		uint8_t *packetBufferSize;
+		uint8_t currentPacket;
+		bool sending;
 		bool timeOutFlag;
 		long timeOut;
 		void (*callbackPt)(void);
@@ -62,7 +72,7 @@ class Coordinator : public Radio {
 		// Initialization
 		void init(); 
 		// Start timeout timer
-		void startTimeOut(); 
+		void startTimeOut(uint16_t timeoutTime = TIMEOUT_TIME); 
 		// Check timer to see if we've timed out
 		void checkTimeOut();
 		// Send AT command cmd, then move on to nextState
@@ -79,6 +89,8 @@ class Coordinator : public Radio {
 		void idle();
 		// Send data to end device
 		void sendData();
+		// Send single packet
+		void sendPacket(uint8_t packet);
 		// Act on modem status response from local XBee
 		void modemStatusAction();
 		// Signal error code and wait for reset
