@@ -13,6 +13,14 @@
 
 #include "../Radio/Radio.h"	
 
+typedef struct struct_packet packet; 
+
+// ZigBee Data Packet
+struct struct_packet {
+	uint8_t data[72];
+	uint8_t length;
+};
+
 // Internal states for Coordinator
 enum CoordinatorState {	
 		CoordinatorNoStart, 
@@ -55,12 +63,8 @@ class Coordinator : public Radio {
 
 	private:
 		CoordinatorState state;
-		uint8_t **data;
-		uint8_t dataSize;
-		uint8_t *packetSize;
-		uint8_t **dataBuffer;
-		uint8_t dataBufferSize;
-		uint8_t *packetBufferSize;
+		packet dataPackets[3];
+		packet bufferPackets[3];
 		uint8_t currentPacket;
 		bool sending;
 		bool timeOutFlag;
@@ -90,11 +94,9 @@ class Coordinator : public Radio {
 		// Send data to end device
 		void sendData();
 		// Send single packet
-		void sendPacket(uint8_t packet);
+		void sendPacket(packet dataPacket);
 		// Act on modem status response from local XBee
 		void modemStatusAction();
-		// Signal error code and wait for reset
-		void error();
 };
 
 #endif
