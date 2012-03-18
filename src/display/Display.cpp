@@ -44,6 +44,12 @@ void Display::write(uint8_t c) {
 	}
 }
 
+void Display::write(String str) {
+	for(int i=0; i<str.length(); i++) {
+		write(str.charAt(i));
+	}
+}
+
 void Display::clear() {
 	_disp.clear();
 	_row = 0;

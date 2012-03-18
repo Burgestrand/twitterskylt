@@ -13,6 +13,7 @@ void Sleep::begin(uint8_t sleepSeconds) {
 	timerSeconds = 0;
 	// Disable global interrupts
 	noInterrupts();
+	
 	// Initialize watchdog
 	// Reset watch dog reset flag
 	MCUSR &= ~(1<<WDRF);
@@ -20,6 +21,7 @@ void Sleep::begin(uint8_t sleepSeconds) {
 	WDTCSR |= (1<<WDCE) | (1<<WDE);
 	// Set prescaler
 	WDTCSR = (1<<WDCE) | (1<<WDP0) | (1<<WDP3);
+
 	// Enable all interrupts
 	interrupts();
 }

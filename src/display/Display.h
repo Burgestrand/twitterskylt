@@ -17,6 +17,7 @@ class Display {
 		void new_line();
 		void clear();
 		void write(uint8_t c);
+		void write(String str);
 	private:
 		LiquidCrystal _disp;
 		uint8_t _row;
