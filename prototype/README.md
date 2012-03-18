@@ -1,1 +1,0 @@
-This directory contains JavaScript used for testing some of the program logic in a high-level language before implementing it in C.
