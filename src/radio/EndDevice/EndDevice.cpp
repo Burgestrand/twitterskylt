@@ -1,8 +1,9 @@
 #include "EndDevice.h"
 
-// TODO: Handle sleeping
-// TODO: Handle long messages and message ID:s
-// TODO: Handle errors
+// TODO: joinNetwork
+// TODO: tick reading packets and states possibly not consuming them
+// TODO: More robust long message handling?
+// TODO: Handle errors better
 
 
 // Public ---------------------------------------------------------------------
@@ -10,6 +11,7 @@ EndDevice::EndDevice() : xbee(){
 	timeOutFlag = false;
 	updateFlag = false;
 	timesTimeout = 0;
+	wakeupFlag = false;
 	State = EndDeviceInit;
 	data[0] = 0;
 	dataEnd = data;
@@ -41,6 +43,11 @@ void EndDevice::getNewestMessage() {
 
 void EndDevice::begin(long baud) {
 	xbee.begin(baud);
+}
+
+// Tell the radio to wake up
+void EndDevice::wakeup() {
+	wakeupFlag = true;
 }
 
 // Private --------------------------------------------------------------------
@@ -77,10 +84,10 @@ void EndDevice::disableTimeout() {
 void EndDevice::tick() {
 	xbee.readPacket();
 	if (xbee.getResponse().isAvailable()) {
-		DEBUG_MSG("Tick: got a packet\n");
+		DEBUG_MSG("[Tick]: got a packet");
 	}
 	if (xbee.getResponse().isError()) {
-		DEBUG_MSG("Tick: got a bad packet\n");
+		DEBUG_MSG("[Tick]: got a bad packet");
 	}
 	switch(State) {
 		case EndDeviceInit:
@@ -133,22 +140,22 @@ void EndDevice::init() {
 
 // Initial state, waits for the "Hardware reset" modem status message
 void EndDevice::start() {
-	DEBUG_MSG("In state START\n");
+	DEBUG_MSG("[START]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			// Has modem message
 			ModemStatusResponse msr;
 			xbee.getResponse().getModemStatusResponse(msr);
 			if (msr.getStatus() == HARDWARE_RESET) {
-				DEBUG_MSG("Got HW Reset\n");
+				DEBUG_MSG("[START]: Got HW Reset");
 				State = EndDeviceFormingNetwork;
 			} else {
 				// TODO: Other modem status, should not happen?
-				DEBUG_MSG("Other modem status\n");
+				DEBUG_MSG("[START]: Other modem status");
 			}
 		} else {
 			// TODO: Other message type
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[START]: Other message type");
 		}
 	}
 }
@@ -156,28 +163,27 @@ void EndDevice::start() {
 // Waits for the "Associated" modem status message 
 // TODO: What should be done if this does not arrive?
 void EndDevice::formingNetwork() {
-	DEBUG_MSG("In state FORMING NETWORK\n");
+	DEBUG_MSG("[FORMING NETWORK]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			ModemStatusResponse msr;
 			xbee.getResponse().getModemStatusResponse(msr);
 			if (msr.getStatus() == ASSOCIATED) {
-				DEBUG_MSG("Got Associated\n");
+				DEBUG_MSG("[FORMING NETWORK]: Got Associated");
 				State = EndDeviceJoiningSend;
 			} else {
 				// TODO: Not associated meddelande
-				DEBUG_MSG("Other modem status\n");
+				DEBUG_MSG("[FORMING NETWORK]: Other modem status");
 			}
 		} else {
 			// TODO: Annan meddelande-typ
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[FORMING NETWORK]: Other message type");
 		}
 	}
 }
 
 void EndDevice::joiningSend() {
-	DEBUG_MSG("In state JOINING SEND\n");
-	DEBUG_MSG("Sending join message\n");
+	DEBUG_MSG("[JOINING SEND]: Sending join message");
 	XBeeAddress64 addr64(0x0, 0x0);
 	uint8_t payload[] = {'J'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
@@ -186,73 +192,101 @@ void EndDevice::joiningSend() {
 }
 
 void EndDevice::joiningWait() {
-	DEBUG_MSG("In state JOINING WAIT\n");
+	DEBUG_MSG("[JOINING WAIT]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			ZBTxStatusResponse zbtxsr;
 			xbee.getResponse().getZBTxStatusResponse(zbtxsr);
 			if (zbtxsr.isSuccess()) {
 				// Status message of join message received 
-				DEBUG_MSG("Got status of joining msg, awaiting response\n");
+				DEBUG_MSG("[JOINING WAIT]: Got status of joining msg");
 				setTimeout(5000);
 				State = EndDeviceJoiningWaitResponse;
 			} else {
 				// TODO Message not received
-				DEBUG_MSG("Joining message not received\n");
+				DEBUG_MSG("[JOINING WAIT]: Joining message not received");
 			}
 		} else {
 			// TODO: Message of other type
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[JOINING WAIT]: Other message type");
 		}
 	}
 }
 
 void EndDevice::joiningWaitResponse() {
-	DEBUG_MSG("In state JOINING WAIT RESPONSE\n");
+	DEBUG_MSG("[JOINING WAIT RESPONSE]");
 	if (hasTimedOut()) {
 		disableTimeout();
-		DEBUG_MSG("Got no joining response\n");
+		DEBUG_MSG("[JOINING WAIT RESPONSE]: Timeout, got no joining response");
 		State = EndDeviceError;
 	} else if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-			DEBUG_MSG("Got a data response\n");
 			// Got response
 			ZBRxResponse zbrr;
 			xbee.getResponse().getZBRxResponse(zbrr);
 			if (zbrr.getDataLength() == 1 && zbrr.getData()[0] == 'K') {
-				DEBUG_MSG("Got correct join response\n");
+				DEBUG_MSG("[JOINING WAIT RESPONSE]: Got correct join response");
 				disableTimeout();
 				State = EndDeviceIdle;
 			} else {
 				// TODO: Got wrong response
-				DEBUG_MSG("Got wrong join response\n");
+				DEBUG_MSG("[JOINING WAIT RESPONSE]: Got wrong join response");
 			}
 		} else {
 			// TODO: Other type of message
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[JOINING WAIT RESPONSE]: Other message type");
 		}
 	}
 }
 
 void EndDevice::idle() {
 	// TODO Have nothing to do, put radio to sleep
-	DEBUG_MSG("In state IDLE\n");
+	DEBUG_MSG("[IDLE]");
 	if (updateFlag) {
 		updateFlag = false;
-		DEBUG_MSG("Got update request from user\n");
+		DEBUG_MSG("[IDLE]: Got update request from user");
 		State = EndDeviceRequestSend;
+	} else {
+		DEBUG_MSG("[IDLE]: Putting radio to sleep");
+		State = EndDeviceSleepTell;
+	}
+}
+
+void EndDevice::sleepTell() {
+	DEBUG_MSG("[SLEEP TELL]: Telling radio to go to sleep");
+	digitalWrite(SLEEP_RQ_PIN, HIGH);
+	State = EndDeviceSleepWait;
+	wakeupFlag = false;
+}
+
+void EndDevice::sleepWait() {
+	if (xbee.getResponse().isAvailable()) { // Consume waiting messages
+		DEBUG_MSG("[SLEEP WAIT]: Consuming packet");
+		// TODO: Check message for bad things
+	} else if (!digitalRead(SLEEP_STATUS_PIN)) { // Radio is sleeping
+		DEBUG_MSG("[SLEEP WAIT]: Radio is sleeping");
+		State = EndDeviceSleeping;
+		status_callback(STATUS_SLEEPING);
+	}
+}
+
+void EndDevice::sleeping() {
+	DEBUG_MSG("[SLEEPING]");
+	if (wakeupFlag) {
+		DEBUG_MSG("[SLEEPING]: Waking radio");
+		digitalWrite(SLEEP_RQ_PIN, LOW);
+		State = EndDeviceIdle;
 	}
 }
 
 void EndDevice::error() {
-	DEBUG_MSG("In state ERROR\n");
-	// TODO: Report error.
+	DEBUG_MSG("[ERROR]");
+	status_callback(STATUS_ERROR);
 }
 
 void EndDevice::requestSend() {
 	// Send message requesting data
-	DEBUG_MSG("In state REQUEST SEND\n");
-	DEBUG_MSG("Sending data request\n");
+	DEBUG_MSG("[REQUEST SEND]: Sending data request");
 	XBeeAddress64 addr64(0x0, 0x0);
 	uint8_t payload[] = {'R'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
@@ -262,33 +296,33 @@ void EndDevice::requestSend() {
 
 void EndDevice::requestStatus() {
 	// Wait for status for request packet
-	DEBUG_MSG("In state REQUEST STATUS\n");
+	DEBUG_MSG("[REQUEST STATUS]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			ZBTxStatusResponse zbtxsr;
 			xbee.getResponse().getZBTxStatusResponse(zbtxsr);
 			if (zbtxsr.isSuccess()) {
 				// Status message of request message received 
-				DEBUG_MSG("Got status of request msg, awaiting response\n");
+				DEBUG_MSG("[REQUEST STATUS]: Got status of request msg");
 				setTimeout(5000);
 				State = EndDeviceRequestWait;
 			} else {
 				// TODO Request Message not received
-				DEBUG_MSG("Data request message not received\n");
+				DEBUG_MSG("[REQUEST STATUS]: Data request message not received");
 			}
 		} else {
 			// TODO: Message of other type
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[REQUEST STATUS]: Other message type");
 		}
 	}
 }
 
 void EndDevice::requestWait() {
 	// Wait for response with data from coordinator
-	DEBUG_MSG("In state REQUEST WAIT\n");
+	DEBUG_MSG("[REQUEST WAIT]");
 	if (hasTimedOut()) {
 		disableTimeout();
-		DEBUG_MSG("Timed out waiting for request data response\n");
+		DEBUG_MSG("[REQUEST WAIT]: Timed out waiting for request data response");
 
 		// Discard old data
 		dataEnd = data;
@@ -300,23 +334,20 @@ void EndDevice::requestWait() {
 			State = EndDeviceRequestSend;
 		}
 	} else if (xbee.getResponse().isAvailable()) {
-		DEBUG_MSG("Got a message!\n");
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
 			disableTimeout();
-			DEBUG_MSG("Got data response\n");
 			// Got response
 			ZBRxResponse zbrr;
 			xbee.getResponse().getZBRxResponse(zbrr);
 
-			/*
 			// TODO: Reformat debug code
-			char len[3];
-			DEBUG_MSG((char *) zbrr.getData());
-			len[0] = ((char) zbrr.getDataLength()) + '0';
-			len[1] = '\n';
-			len[2] = '\0';
-			DEBUG_MSG(len);
+			char lenn[10];
+			//DEBUG_MSG((char *) zbrr.getData());
+			itoa(zbrr.getDataLength(), lenn, 10);
+			DEBUG_MSG("[REQUEST WAIT]: Package length:");
+			DEBUG_MSG(lenn);
 			
+			/*
 			for (int i=0; i < zbrr.getDataLength(); i++) {
 				len[0] = zbrr.getData(i);
 				DEBUG_MSG(len);
@@ -328,16 +359,20 @@ void EndDevice::requestWait() {
 
 			memcpy(dataEnd, packetData, len);
 			dataEnd += len;
-			if (packetData[len] == 0) {
-				dataEnd = data;
+			if (packetData[len-1] == 0) {
 				State = EndDeviceIdle;
 				msg_callback((char *)data);
+				DEBUG_MSG("[REQUEST WAIT]: Has complete message of length:");
+				itoa(dataEnd - data, lenn, 10);
+				DEBUG_MSG(lenn);
+				dataEnd = data;
 			} else {
+				DEBUG_MSG("[REQUEST WAIT]: Has partial message");
 				setTimeout(5000);
 			}
 		} else {
 			// TODO: Other type of message
-			DEBUG_MSG("Other message type\n");
+			DEBUG_MSG("[REQUEST WAIT]: Other message type");
 		}
 	}
 }
