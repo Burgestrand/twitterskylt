@@ -8,8 +8,8 @@
 #define STATUS_SLEEPING 2
 
 // Sleep related pins
-#define SLEEP_RQ_PIN 9
-#define SLEEP_STATUS_PIN 10
+#define SLEEP_RQ_PIN 10
+#define SLEEP_STATUS_PIN 11
 
 // If DEBUG_MSG_FUN is set then DEBUG_MSG will call it with its argument
 // DEBUG_MSG_FUN should be a function returning void, taking a char pointer
