@@ -220,34 +220,53 @@ int DhcpClass::renew() {
   if (_timeOfLease > time) {
     // millis overflow
     // request new
-    return 1;
+    if (_renewCount == 0)
+      return doT1();
+    else if (_renewCount == 1)
+      return doT2();
+    else
+      return doLeaseOut(); // T2 har passerat, ny lease!      
   }
-  else if ((time - _timeOfLease)/1000 > _dhcpLeaseTime) {
-    _dhcp_state = STATE_DHCP_START;
-    return requestLease();
-  }
-  else if ((time - _timeOfLease)/1000 > _dhcpT2 && _renewCount < 2) {
+  else if ((time - _timeOfLease)/1000 > _dhcpLeaseTime)
+    return doLeaseOut();
+
+  else if ((time - _timeOfLease)/1000 > _dhcpT2 && _renewCount < 2)
+    return doT2();
+
+  else if ((time - _timeOfLease)/1000 > _dhcpT1 && _renewCount < 1)
+    return doT1();
+
+  else
+    return 2;
+}
+
+int DhcpClass::doT1()
+{
+  _dhcp_state = STATE_DHCP_REREQUEST;
+  int ret = requestLease();
+    // counts renewals, so it doesn't repeat
+    _renewCount++;
+    if (ret == 1)
+      return 2;
+    else
+      return 0;
+}
+
+int DhcpClass::doT2()
+{
     _dhcp_state = STATE_DHCP_REBINDING;
     _renewCount++;
     int ret = requestLease();
-    if (ret == 0)
+    if (ret == 1)
       return 2;
     else
-      return 1;
-    
-  }
-  else if ((time - _timeOfLease)/1000 > _dhcpT1 && _renewCount < 1) {
-    _dhcp_state = STATE_DHCP_REREQUEST;
-    int ret = requestLease();
-    // counts renewals, so it doesn't repeat
-    _renewCount++;
-    if (ret == 0)
-      return 2;
-    else
-      return 1;
-  }
-  else
-    return 2;
+      return 0;
+}
+
+int DhcpClass::doLeaseOut()
+{
+    _dhcp_state = STATE_DHCP_START;
+    return requestLease();
 }
 
 void DhcpClass::presend_DHCP()

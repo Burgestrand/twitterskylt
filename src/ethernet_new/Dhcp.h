@@ -157,6 +157,9 @@ private:
   void presend_DHCP();
   void send_DHCP_MESSAGE(uint8_t, uint16_t, bool unicast = false);
   int requestLease();
+  int doT1();
+  int doT2();
+  int doLeaseOut();
   
   uint8_t parseDHCPResponse(unsigned long responseTimeout, uint32_t& transactionId);
 public:

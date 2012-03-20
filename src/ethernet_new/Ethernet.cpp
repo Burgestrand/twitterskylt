@@ -11,7 +11,6 @@ uint16_t EthernetClass::_server_port[MAX_SOCK_NUM] = {
 
 int EthernetClass::begin(uint8_t *mac_address)
 {
-gg
   // Initialise the basic info
   W5100.init();
   W5100.setMACAddress(mac_address);
@@ -20,7 +19,7 @@ gg
 
   // Now try to get our config info from a DHCP server
   int ret = _dhcp.beginWithDHCP(mac_address);
-  if(ret == 1)
+  if(ret == 0) // ++
   {
     // We've successfully found a DHCP server and got our configuration info, so set things
     // accordingly
@@ -79,16 +78,16 @@ int EthernetClass::renew()
 
   int ret = _dhcp.renew();
 
-  if (ret == 1) {
+  if (ret == 0) { // ++
     setIpInfo();
     return 0;
   }
 
-  else if (ret == 2)
+  else if (ret == 2) // ++
     return 0;
 
   else
-    return 1;
+    return 1; // ++
     
 }
 
