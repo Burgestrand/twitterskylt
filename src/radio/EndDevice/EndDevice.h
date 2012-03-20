@@ -11,6 +11,21 @@
 #define SLEEP_RQ_PIN 10
 #define SLEEP_STATUS_PIN 11
 
+// Tick return values
+#define TICK_OK 0
+#define TICK_ASSOC_FAIL 1
+// TODO: Probably merge the ways to fail joining
+#define TICK_JOIN_BAD_MSG 2
+#define TICK_JOIN_TIMEOUT 3
+#define TICK_JOIN_NOT_DELIVERED 9
+#define TICK_JOIN_OK 8
+// TODO: Probably merge the ways to fail the update
+#define TICK_UPDATE_NO_DELIVERY 4
+#define TICK_UPDATE_TIMEOUT 5
+#define TICK_NEW_MSG 6
+#define TICK_UNKNOWN_ERROR 7
+#define TICK_SLEEPING 10
+
 // If DEBUG_MSG_FUN is set then DEBUG_MSG will call it with its argument
 // DEBUG_MSG_FUN should be a function returning void, taking a char pointer
 // as its only argument
@@ -44,13 +59,6 @@ class EndDevice : public Radio {
 		// Default constructor, does nothing special
 		EndDevice();
 
-		// Set the callback to use when new message has arrived
-		void setMsg(void (*msg_callback)(char *));
-
-		// Set the callback to use when the status of the 
-		// network changes (associated, failed to deliver message...)
-		void setStatus(void (*status_callback)(uint8_t));
-
 		// Start communicating with the xbee
 		void begin(long baud);
 
@@ -65,7 +73,11 @@ class EndDevice : public Radio {
 		void wakeup();
 
 		// Call often.
-		void tick();
+		uint8_t tick();
+
+		// Returns a pointer to the data buffer, only use this immediately after
+		// (i.e. before calling tick again) tick returns TICK_NEW_MSG
+		uint8_t *getData();
 	protected:
 	private:
 
@@ -78,10 +90,6 @@ class EndDevice : public Radio {
 		// The xbee instance to communicate with the radio
 		XBee xbee;
 
-		// Callbacks
-		void (*msg_callback)(char *);
-		void (*status_callback)(uint8_t);
-
 		// True if we should request a message update
 		bool updateFlag;
 
@@ -89,31 +97,33 @@ class EndDevice : public Radio {
 		bool wakeupFlag;
 
 		// Internal timer/Timeout handling
+		bool hasTimedOut();
+		void disableTimeout();
+		void setTimeout(unsigned long msecs);
+
 		bool timeOutFlag;
 		unsigned long timeOut;
-		bool hasTimedOut();
-		void setTimeout(unsigned long msecs);
-		void disableTimeout();
+
 		// Number of times the curreent operation has timed out
 		uint8_t timesTimeout;
 
 		// State handling
 		EndDeviceState State;
-		void init();
-		void start();
-		void formingNetwork();
-		void joiningSend();
-		void joiningStatus();
-		void joiningWait();
-		void joiningWaitResponse();
-		void idle();
-		void error();
-		void requestSend();
-		void requestWait();
-		void requestStatus();
-		void sleepTell();
-		void sleepWait();
-		void sleeping();
+		uint8_t init();
+		uint8_t start();
+		uint8_t formingNetwork();
+		uint8_t joiningSend();
+		uint8_t joiningStatus();
+		uint8_t joiningWait();
+		uint8_t joiningWaitResponse();
+		uint8_t idle();
+		uint8_t error();
+		uint8_t requestSend();
+		uint8_t requestWait();
+		uint8_t requestStatus();
+		uint8_t sleepTell();
+		uint8_t sleepWait();
+		uint8_t sleeping();
 };
 
 #endif

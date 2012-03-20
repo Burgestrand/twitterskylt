@@ -1,5 +1,8 @@
 #include "EndDevice.h"
 
+// Working on:
+// Callbacks -> return from tick
+
 // TODO: joinNetwork
 // TODO: tick reading packets and states possibly not consuming them
 // TODO: More robust long message handling?
@@ -19,16 +22,6 @@ EndDevice::EndDevice() : xbee(){
 	pinMode(SLEEP_STATUS_PIN, INPUT);
 	pinMode(SLEEP_RQ_PIN, OUTPUT);
 	digitalWrite(SLEEP_RQ_PIN, LOW);
-}
-
-// Set new message callback
-void EndDevice::setMsg(void (*msgcb)(char *)) {
-	msg_callback = msgcb;
-}
-
-// Set the status change callback
-void EndDevice::setStatus(void (*statuscb)(uint8_t)) {
-	status_callback = statuscb;
 }
 
 // TODO implement
@@ -55,6 +48,13 @@ void EndDevice::begin(long baud) {
 // Tell the radio to wake up
 void EndDevice::wakeup() {
 	wakeupFlag = true;
+}
+
+// Access the twitter message buffer. Only call this after
+// tick has returned TICK_NEW_MSG and tick has not been called again
+// after that!
+uint8_t *EndDevice::getData() {
+	return data;
 }
 
 // Private --------------------------------------------------------------------
@@ -88,68 +88,57 @@ void EndDevice::disableTimeout() {
 }
 
 // Internal state handling ----------------------------------------------------
-void EndDevice::tick() {
+uint8_t EndDevice::tick() {
 	xbee.readPacket();
 	switch(State) {
+		// XXX INIT: Temporary
 		case EndDeviceInit:
 			delay(1000);
 			init();
 			State = EndDeviceFormingNetwork;
-			break;
+			return TICK_OK;
 		case EndDeviceStart:
-			start();
-			break;
+			return start();
 		case EndDeviceFormingNetwork:
-			formingNetwork();
-			break;
+			return formingNetwork();
 		case EndDeviceJoiningSend:
-			joiningSend();
-			break;
+			return joiningSend();
 		case EndDeviceJoiningWait:
-			joiningWait();
-			break;
+			return joiningWait();
 		case EndDeviceJoiningWaitResponse:
-			joiningWaitResponse();
-			break;
+			return joiningWaitResponse();
 		case EndDeviceIdle:
-			idle();
-			break;
+			return idle();
 		case EndDeviceSleepTell:
-			sleepTell();
-			break;
+			return sleepTell();
 		case EndDeviceSleepWait:
-			sleepWait();
-			break;
+			return sleepWait();
 		case EndDeviceSleeping:
-			sleeping();
-			break;
+			return sleeping();
 		case EndDeviceError:
-			error();
-			break;
+			return error();
 		case EndDeviceRequestSend:
-			requestSend();
-			break;
+			return requestSend();
 		case EndDeviceRequestStatus:
-			requestStatus();
-			break;
+			return requestStatus();
 		case EndDeviceRequestWait:
-			requestWait();
-			break;
+			return requestWait();
 		default:
 			{ DEBUG_MSG("Bad state!"); }
-			break;
+			return TICK_UNKNOWN_ERROR;
 	}
 }
 
-// XXX: Temporary state thing, resets the xbee
-void EndDevice::init() {
+// XXX INIT: Temporary state thing, resets the xbee
+uint8_t EndDevice::init() {
 	uint8_t cmd[] = {'N', 'R'};
 	AtCommandRequest atcr(cmd);
 	xbee.send(atcr);
 }
 
 // Initial state, waits for the "Hardware reset" modem status message
-void EndDevice::start() {
+// TODO INIT: Remove pretty much, just wait for modem status associated with timeout
+uint8_t EndDevice::start() {
 	DEBUG_MSG("[START]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
@@ -165,11 +154,13 @@ void EndDevice::start() {
 			// TODO: Other message type
 		}
 	}
+	return TICK_OK;
 }
 
-// Waits for the "Associated" modem status message 
 // TODO: What should be done if this does not arrive?
-void EndDevice::formingNetwork() {
+// TODO INIT: Remove pretty much, just wait for modem status associated with timeout
+// Waits for the "Associated" modem status message 
+uint8_t EndDevice::formingNetwork() {
 	DEBUG_MSG("[FORMING NETWORK]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
@@ -184,59 +175,74 @@ void EndDevice::formingNetwork() {
 			// TODO: Annan meddelande-typ
 		}
 	}
+	return TICK_OK;
 }
 
-void EndDevice::joiningSend() {
+// TODO: Move this into the previous state, when the previous state has been implemented
+// Send the join message to the coordinator to make it aware of us
+// and verify that the coordinator is really a TWITTERSKYLT BASE STATION (tm).
+uint8_t EndDevice::joiningSend() {
 	DEBUG_MSG("[JOINING SEND]");
 	XBeeAddress64 addr64(0x0, 0x0);
 	uint8_t payload[] = {'J'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
 	xbee.send(zbtxr);
 	State = EndDeviceJoiningWait;
+	return TICK_OK;
 }
 
-void EndDevice::joiningWait() {
+// Wait for the delivery status of the join message.
+uint8_t EndDevice::joiningWait() {
 	DEBUG_MSG("[JOINING WAIT]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			ZBTxStatusResponse zbtxsr;
 			xbee.getResponse().getZBTxStatusResponse(zbtxsr);
 			if (zbtxsr.isSuccess()) {
-				// Status message of join message received 
+				// Join message was delivered
 				setTimeout(5000);
 				State = EndDeviceJoiningWaitResponse;
 			} else {
 				// TODO Message not received
+				return TICK_JOIN_NOT_DELIVERED;
 			}
 		} else {
 			// TODO: Message of other type
 		}
 	}
+	return TICK_OK;
 }
 
-void EndDevice::joiningWaitResponse() {
+// Wait for the response to the join message
+uint8_t EndDevice::joiningWaitResponse() {
 	DEBUG_MSG("[JOINING WAIT RESPONSE]");
 	if (hasTimedOut()) {
+		// Timed out waiting for a response to the join message
 		disableTimeout();
 		State = EndDeviceError;
+		return TICK_JOIN_TIMEOUT;
 	} else if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-			// Got response
 			ZBRxResponse zbrr;
 			xbee.getResponse().getZBRxResponse(zbrr);
 			if (zbrr.getDataLength() == 1 && zbrr.getData()[0] == 'K') {
+				// Got a correct response
 				disableTimeout();
 				State = EndDeviceIdle;
+				return TICK_JOIN_OK;
 			} else {
-				// TODO: Got wrong response
+				// TODO: Got wrong response, ignore it?
+				return TICK_JOIN_BAD_MSG; // XXX: Not sure if this check/return value is needed really
 			}
 		} else {
 			// TODO: Other type of message
 		}
 	}
+	return TICK_OK;
 }
 
-void EndDevice::idle() {
+// Radio is idle, either start checking for a new message or put the radio to sleep.
+uint8_t EndDevice::idle() {
 	DEBUG_MSG("[IDLE]");
 	if (updateFlag) {
 		updateFlag = false;
@@ -244,112 +250,113 @@ void EndDevice::idle() {
 	} else {
 		State = EndDeviceSleepTell;
 	}
+	return TICK_OK;
 }
 
-void EndDevice::sleepTell() {
+// Tell the radio to go to sleep with the SLEEP_RQ pin.
+uint8_t EndDevice::sleepTell() {
 	DEBUG_MSG("[SLEEP TELL]");
 	digitalWrite(SLEEP_RQ_PIN, HIGH);
 	State = EndDeviceSleepWait;
 	wakeupFlag = false;
+	return TICK_OK;
 }
 
-void EndDevice::sleepWait() {
+// Consume packets the radio emits until it falls asleep.
+uint8_t EndDevice::sleepWait() {
 	DEBUG_MSG("[SLEEP WAIT]");
 	if (xbee.getResponse().isAvailable()) { // Consume waiting messages
 		// TODO: Check message for bad things
 	} else if (!digitalRead(SLEEP_STATUS_PIN)) { // Radio is sleeping
 		State = EndDeviceSleeping;
-		status_callback(STATUS_SLEEPING);
+		return TICK_SLEEPING;
 	}
+	return TICK_OK;
 }
 
-void EndDevice::sleeping() {
+// Radio is sleeping, do nothing or wake it up if necessary.
+uint8_t EndDevice::sleeping() {
 	DEBUG_MSG("[SLEEPING]");
 	if (wakeupFlag) {
 		digitalWrite(SLEEP_RQ_PIN, LOW);
 		State = EndDeviceIdle;
 	}
+	return TICK_SLEEPING;
 }
 
-void EndDevice::error() {
+// Error state.
+uint8_t EndDevice::error() {
 	DEBUG_MSG("[ERROR]");
-	status_callback(STATUS_ERROR);
+	return TICK_UNKNOWN_ERROR; // TODO How should this be handled?
 }
 
-void EndDevice::requestSend() {
-	// Send message requesting data
+// Send a request for new messages to the base station
+uint8_t EndDevice::requestSend() {
 	DEBUG_MSG("[REQUEST SEND]");
 	XBeeAddress64 addr64(0x0, 0x0);
 	uint8_t payload[] = {'R'};
 	ZBTxRequest zbtxr(addr64, payload, 1);
 	xbee.send(zbtxr);
 	State = EndDeviceRequestStatus;
+	return TICK_OK;
 }
 
-void EndDevice::requestStatus() {
-	// Wait for status for request packet
+// Wait for the delivery status of the update request.
+uint8_t EndDevice::requestStatus() {
 	DEBUG_MSG("[REQUEST STATUS]");
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			ZBTxStatusResponse zbtxsr;
 			xbee.getResponse().getZBTxStatusResponse(zbtxsr);
 			if (zbtxsr.isSuccess()) {
-				// Status message of request message received 
+				// The request was delivered
 				setTimeout(5000);
 				State = EndDeviceRequestWait;
 			} else {
-				// TODO Request Message not received
+				// The request was not delivered
+				return TICK_UPDATE_NO_DELIVERY;
 			}
 		} else {
 			// TODO: Message of other type
 		}
 	}
+	return TICK_OK;
 }
 
-void EndDevice::requestWait() {
-	// Wait for response with data from coordinator
+// Recieve data from the base station.
+uint8_t EndDevice::requestWait() {
 	DEBUG_MSG("[REQUEST WAIT]");
 	if (hasTimedOut()) {
+		// Timed out waiting for more data
 		disableTimeout();
 
-		// Discard old data
+		// Discard the partially received data
 		dataEnd = data;
 
+		// Retry the update 4 times.
 		timesTimeout++;
 		if (timesTimeout > 3) {
 			State = EndDeviceError;
+			return TICK_UPDATE_TIMEOUT;
 		} else {
 			State = EndDeviceRequestSend;
 		}
 	} else if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+			// Has a data packet
 			disableTimeout();
-			// Got response
 			ZBRxResponse zbrr;
 			xbee.getResponse().getZBRxResponse(zbrr);
 
-			// TODO: Reformat debug code
-			char lenn[10];
-			//DEBUG_MSG((char *) zbrr.getData());
-			itoa(zbrr.getDataLength(), lenn, 10);
-			
-			/*
-			for (int i=0; i < zbrr.getDataLength(); i++) {
-				len[0] = zbrr.getData(i);
-				DEBUG_MSG(len);
-			}
-			*/
+			// Copy the data into the buffer
+			memcpy(dataEnd, zbrr.getData(), zbrr.getDataLength());
+			dataEnd += zbrr.getDataLength();
 
-			uint8_t *packetData = zbrr.getData();
-			uint8_t len = zbrr.getDataLength();
-
-			memcpy(dataEnd, packetData, len);
-			dataEnd += len;
-			if (packetData[len-1] == 0) {
+			// Test if this was the final data packet for this message
+			if (zbrr.getData()[zbrr.getDataLength()-1] == 0) {
 				State = EndDeviceIdle;
-				msg_callback((char *)data);
-				itoa(dataEnd - data, lenn, 10);
 				dataEnd = data;
+				return TICK_NEW_MSG;
 			} else {
 				setTimeout(5000);
 			}
@@ -357,4 +364,5 @@ void EndDevice::requestWait() {
 			// TODO: Other type of message
 		}
 	}
+	return TICK_OK;
 }
