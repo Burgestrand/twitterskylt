@@ -9,7 +9,6 @@
 #include "Arduino.h"
 #include "util.h"
 
-
 /*
 int DhcpClass::beginWithDHCP(uint8_t *mac, unsigned long timeout)
 {
@@ -125,13 +124,13 @@ int DhcpClass::requestLease() {
 
     if (_dhcpUdpSocket.begin(DHCP_CLIENT_PORT) == 0)
     {
-      // Couldn't get a socket
-      return 0;
+      // couldn't get a socket
+      return 1; // ++
     }
     
     presend_DHCP();
     
-    int result = 0;
+    int result = 1; // ++
     uint8_t messageType = 0;
     uint8_t prevState;
     
@@ -180,7 +179,7 @@ int DhcpClass::requestLease() {
             {
                 _dhcp_state = STATE_DHCP_LEASED;
 		_timeOfLease = millis();
-                result = 1;
+                result = 0; // ++
             }
             else if(messageType == DHCP_NAK)
                 _dhcp_state = STATE_DHCP_START;
@@ -192,8 +191,11 @@ int DhcpClass::requestLease() {
 	    // om den har vart i rerequest så skall den inte börja om i start igen!
             _dhcp_state = prevState;
         }
-        	
-        if(result != 1 && ((millis() - startTime) > _timeout))
+        Serial.println("Debug");
+	Serial.println(millis()-startTime);
+	Serial.println(_timeout);
+	Serial.println(result);
+        if(result != 0 && ((millis() - startTime) > _timeout)) // ++
             break;
     }
     
@@ -205,8 +207,8 @@ int DhcpClass::requestLease() {
 }
 
 /*
-  returns 0 if it couldn't renew
-  returns 1 if it could renew
+  returns 1 if it couldn't renew
+  returns 0 if it could renew
   return 2 if it didn't have to renew
   
 */

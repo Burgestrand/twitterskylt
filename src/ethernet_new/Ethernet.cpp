@@ -11,7 +11,7 @@ uint16_t EthernetClass::_server_port[MAX_SOCK_NUM] = {
 
 int EthernetClass::begin(uint8_t *mac_address)
 {
-
+gg
   // Initialise the basic info
   W5100.init();
   W5100.setMACAddress(mac_address);
