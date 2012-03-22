@@ -2,7 +2,7 @@
 #include <string.h>
 
 extern "C" {
-	#include "yajl_parser.h"
+	#include "Yajl/yajl_parser.h"
 }
 
 namespace Parsing
