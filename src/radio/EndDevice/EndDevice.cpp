@@ -183,6 +183,7 @@ uint8_t EndDevice::formingNetwork() {
 	DEBUG_MSG("[FORMING NETWORK]");
 	if (hasTimedOut()) {
 		DEBUG_MSG("TIMEOUT");
+		State = EndDeviceError;
 		return TICK_ASSOC_FAIL;
 		// TODO: Check association status and return appropriate error message.
 	}
