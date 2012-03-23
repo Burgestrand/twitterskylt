@@ -80,7 +80,6 @@ class EndDevice : public Radio {
 		uint8_t *getData();
 	protected:
 	private:
-
 		// Storage area for messages
 		uint8_t data[216];
 

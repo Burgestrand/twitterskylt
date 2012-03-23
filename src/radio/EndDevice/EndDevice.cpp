@@ -1,10 +1,12 @@
 #include "EndDevice.h"
 
 // Working on:
-// Callbacks -> return from tick
+// joinNetwork:
+//   Startup: wait TIMEOUT for associated
+//   Join:    issue NR AT-command, wait TIMEOUT for associated
+//            go immediately to join state, ignoring everything else?
 
-// TODO: joinNetwork
-// TODO: tick reading packets and states possibly not consuming them
+// TODO: tick reading packets and states possibly not consuming them <- merge/semi-merge states kinda!
 // TODO: More robust long message handling?
 // TODO: Handle errors better
 
