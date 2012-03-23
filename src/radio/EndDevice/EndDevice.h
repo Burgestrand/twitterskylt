@@ -38,8 +38,7 @@ extern "C" { void DEBUG_MSG_FUN(char *); }
 #endif
 
 // The states the internal state machine can be in
-enum EndDeviceState { EndDeviceInit
-                    , EndDeviceStart
+enum EndDeviceState { EndDeviceStart
                     , EndDeviceFormingNetwork
                     , EndDeviceJoiningSend
                     , EndDeviceJoiningWait
@@ -52,6 +51,8 @@ enum EndDeviceState { EndDeviceInit
                     , EndDeviceSleepTell
                     , EndDeviceSleepWait
                     , EndDeviceSleeping
+                    , EndDeviceResetStart
+                    , EndDeviceResetWait
                     };
 
 class EndDevice : public Radio {
@@ -95,6 +96,9 @@ class EndDevice : public Radio {
 		// True if the radio should wake up
 		bool wakeupFlag;
 
+		// True if the radio should reset after waking up
+		bool resetFlag;
+
 		// Internal timer/Timeout handling
 		bool hasTimedOut();
 		void disableTimeout();
@@ -123,6 +127,8 @@ class EndDevice : public Radio {
 		uint8_t sleepTell();
 		uint8_t sleepWait();
 		uint8_t sleeping();
+		uint8_t resetStart();
+		uint8_t resetWait();
 };
 
 #endif

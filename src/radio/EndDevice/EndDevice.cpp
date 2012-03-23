@@ -1,11 +1,6 @@
 #include "EndDevice.h"
 
 // Working on:
-// joinNetwork:
-//   Startup: wait TIMEOUT for associated
-//   Join:    issue NR AT-command, wait TIMEOUT for associated
-//            go immediately to join state, ignoring everything else?
-
 // TODO: tick reading packets and states possibly not consuming them <- merge/semi-merge states kinda!
 // TODO: More robust long message handling?
 // TODO: Handle errors better
@@ -17,7 +12,8 @@ EndDevice::EndDevice() : xbee(){
 	updateFlag = false;
 	timesTimeout = 0;
 	wakeupFlag = false;
-	State = EndDeviceInit;
+	resetFlag = false;
+	State = EndDeviceStart;
 	data[0] = 0;
 	dataEnd = data;
 
@@ -26,8 +22,20 @@ EndDevice::EndDevice() : xbee(){
 	digitalWrite(SLEEP_RQ_PIN, LOW);
 }
 
-// TODO implement
+// Try to join a network, leaves any current network, aborts any current operation, wakes the radio
+// if it is asleep.
+// Note that a network join is attempted automatically at startup, so this function doesn't
+// need to (shouldn't, even) be called when starting the arduino.
 void EndDevice::joinNetwork() {
+	// If State == EndDeviceSleepTell the radio hasn't been told to sleep yet so no special
+	// precautions necessary there
+	if (State == EndDeviceSleepWait || State == EndDeviceSleeping) {
+		resetFlag = true;
+	} else {
+		// resetStart() will handle all cleanup when switching to the restart state
+		// so it is not necessary here.
+		State = EndDeviceResetStart;
+	}
 }
 
 // Request a update of the message
@@ -41,6 +49,7 @@ void EndDevice::getNewestMessage() {
 	*/
 	// Is this better?
 	updateFlag = true;
+	// TODO: Perhaps check so we are not currently updating only
 }
 
 void EndDevice::begin(long baud) {
@@ -93,12 +102,6 @@ void EndDevice::disableTimeout() {
 uint8_t EndDevice::tick() {
 	xbee.readPacket();
 	switch(State) {
-		// XXX INIT: Temporary
-		case EndDeviceInit:
-			delay(1000);
-			init();
-			State = EndDeviceFormingNetwork;
-			return TICK_OK;
 		case EndDeviceStart:
 			return start();
 		case EndDeviceFormingNetwork:
@@ -125,50 +128,70 @@ uint8_t EndDevice::tick() {
 			return requestStatus();
 		case EndDeviceRequestWait:
 			return requestWait();
+		case EndDeviceResetStart:
+			return resetStart();
+		case EndDeviceResetWait:
+			return resetWait();
 		default:
 			{ DEBUG_MSG("Bad state!"); }
 			return TICK_UNKNOWN_ERROR;
 	}
 }
 
-// XXX INIT: Temporary state thing, resets the xbee
-uint8_t EndDevice::init() {
+// Send the reset command to the radio, ignoring any ongoing activities
+uint8_t EndDevice::resetStart() {
+	DEBUG_MSG("[RESET START]");
+
+	// Reset everything
+	resetFlag = false;
+	disableTimeout();
+	dataEnd = data;
+
+	// Issue reset command
 	uint8_t cmd[] = {'N', 'R'};
 	AtCommandRequest atcr(cmd);
 	xbee.send(atcr);
+
+	State = EndDeviceResetWait;
+	return TICK_OK;
 }
 
-// Initial state, waits for the "Hardware reset" modem status message
-// TODO INIT: Remove pretty much, just wait for modem status associated with timeout
-uint8_t EndDevice::start() {
-	DEBUG_MSG("[START]");
-	if (xbee.getResponse().isAvailable()) {
-		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
-			// Has modem message
-			ModemStatusResponse msr;
-			xbee.getResponse().getModemStatusResponse(msr);
-			if (msr.getStatus() == HARDWARE_RESET) {
-				State = EndDeviceFormingNetwork;
-			} else {
-				// TODO: Other modem status, should not happen?
-			}
-		} else {
-			// TODO: Other message type
+// Wait for the response to the reset command, ignore everything else
+uint8_t EndDevice::resetWait() {
+	DEBUG_MSG("[RESET WAIT]");
+	if (  xbee.getResponse().isAvailable()
+	   && xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE ) {
+		AtCommandResponse atcr;
+		xbee.getResponse().getAtCommandResponse(atcr);
+		if (atcr.getCommand()[0] == 'N' && atcr.getCommand()[1] == 'R') {
+			State = EndDeviceStart;
 		}
 	}
 	return TICK_OK;
 }
 
-// TODO: What should be done if this does not arrive?
-// TODO INIT: Remove pretty much, just wait for modem status associated with timeout
+// Set timeout for associaton to complete
+uint8_t EndDevice::start() {
+	DEBUG_MSG("[START]");
+	setTimeout(10000);
+	State = EndDeviceFormingNetwork;
+	return TICK_OK;
+}
+
 // Waits for the "Associated" modem status message 
 uint8_t EndDevice::formingNetwork() {
 	DEBUG_MSG("[FORMING NETWORK]");
+	if (hasTimedOut()) {
+		DEBUG_MSG("TIMEOUT");
+		return TICK_ASSOC_FAIL;
+		// TODO: Check association status and return appropriate error message.
+	}
 	if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			ModemStatusResponse msr;
 			xbee.getResponse().getModemStatusResponse(msr);
 			if (msr.getStatus() == ASSOCIATED) {
+				disableTimeout();
 				State = EndDeviceJoiningSend;
 			} else {
 				// TODO: Not associated meddelande
@@ -279,12 +302,21 @@ uint8_t EndDevice::sleepWait() {
 // Radio is sleeping, do nothing or wake it up if necessary.
 uint8_t EndDevice::sleeping() {
 	DEBUG_MSG("[SLEEPING]");
-	if (wakeupFlag) {
+	if (!(resetFlag || wakeupFlag)) {
+		return TICK_SLEEPING;
+	} else {
 		digitalWrite(SLEEP_RQ_PIN, LOW);
+	}
+
+	if (resetFlag) {
+		State = EndDeviceResetStart;
+	} else if (wakeupFlag) {
 		State = EndDeviceIdle;
 	}
-	return TICK_SLEEPING;
+	return TICK_OK;
 }
+
+// TODO: Any extra checks when waking the radio up to wait until radio is actually awake?
 
 // Error state.
 uint8_t EndDevice::error() {
