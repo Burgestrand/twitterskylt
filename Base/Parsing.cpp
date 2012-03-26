@@ -1,9 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-
-extern "C" {
-	#include "Yajl/yajl_parser.h"
-}
+#include "Parsing.h"
 
 namespace Parsing
 {

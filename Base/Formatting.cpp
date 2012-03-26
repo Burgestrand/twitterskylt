@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "Time/Time.h"
+#include "Formatting.h"
 
 namespace Formatting
 {
@@ -27,7 +24,7 @@ namespace Formatting
 		return result;
 	}
 
-	struct justify_state
+	static struct justify_state
 	{
 		char *cursor; // Our position in the justified string.
 		uint8_t line_index; // The line that we are currently working on.
