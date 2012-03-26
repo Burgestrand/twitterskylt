@@ -3,20 +3,22 @@
 namespace Parsing
 {
 	#define MAX_FOUND_COUNT 2
-	static bool text_found = false;
-	static bool date_found = false;
-	static int found_count = 0;
-	
-	// These store the result of the parse but should really be passed as pointers in the context argument if possible.
-	static char *text; 
-	static char *twitter_date; 
+	struct MessageState {
+		char **text;
+		bool text_found;
+		char **date;
+		bool date_found;
+		int found_count;
+	};
 
 	static int message_key_event(void *context, const unsigned char *key, size_t key_length)
 	{
+		MessageState *state = (MessageState *) context;
+		
 		if (!strncmp("text", (const char *) key, key_length)) {
-			text_found = true;
+			state->text_found = true;
 		} else if (!strncmp("created_at", (const char *) key, key_length)) {
-			date_found = true;
+			state->date_found = true;
 		}
 		
 		return 1;
@@ -24,21 +26,23 @@ namespace Parsing
 
 	static int message_string_event(void *context, const unsigned char *str, size_t str_length)
 	{
-		if (text_found) {
-			text = (char*) malloc(str_length + 1);
-			memcpy(text, str, str_length);
-			text[str_length] = '\0';
-			text_found = false;
-			++found_count;
-		} else if (date_found) {
-			twitter_date = (char*) malloc(str_length + 1);
-			memcpy(twitter_date, str, str_length);
-			twitter_date[str_length] = '\0';
-			date_found = false;
-			++found_count;
+		MessageState *state = (MessageState *) context;
+		
+		if (state->text_found) {
+			*(state->text) = (char*) malloc(str_length + 1);
+			memcpy(*(state->text), str, str_length);
+			(*(state->text))[str_length] = '\0';
+			state->text_found = false;
+			state->found_count += 1;
+		} else if (state->date_found) {
+			*(state->date) = (char*) malloc(str_length + 1);
+			memcpy(*(state->date), str, str_length);
+			(*(state->date))[str_length] = '\0';
+			state->date_found = false;
+			state->found_count += 1;
 		}
 		
-		return found_count != MAX_FOUND_COUNT;
+		return state->found_count != MAX_FOUND_COUNT;
 	}
 
 	static yajl_callbacks message_callbacks =
@@ -56,32 +60,31 @@ namespace Parsing
 		NULL
 	};
 
-	bool parse_message(char *json, char **result_text, char **result_twitter_date)
+	bool parse_message(char *json, char **result_text, char **result_date)
 	{
-		yajl_handle handle = yajl_alloc(&message_callbacks, NULL, NULL);
+		MessageState state = {};
+		state.text = result_text;
+		state.date = result_date;
+		
+		yajl_handle handle = yajl_alloc(&message_callbacks, NULL, &state);
 		yajl_status status = yajl_parse(handle, (const unsigned char *) json, strlen(json));
 		
-		if (status == yajl_status_ok)
-		{
-			*result_text = text;
-			*result_twitter_date = twitter_date;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return status == yajl_status_ok;
 	}
 	
-	static bool offset_found = false;
-	static int offset;
+	struct UserState {
+		bool offset_found;
+		int *offset;
+	}
 
 	static int user_integer_event(void *context, long long number)
 	{
-		if (offset_found)
+		UserState *state = (UserState *) context;
+		
+		if (state->offset_found)
 		{
-			offset = (int) number;
-			offset_found = false;
+			*(state->offset) = (int) number;
+			state->offset_found = false;
 			return 0;
 		}
 		else
@@ -92,8 +95,10 @@ namespace Parsing
 
 	static int user_key_event(void *context, const unsigned char *key, size_t key_length)
 	{
+		UserState *state = (UserState *) context;
+		
 		if (!strncmp("utc_offset", (const char *) key, key_length)) {
-			offset_found = true;
+			state->offset_found = true;
 		}
 		
 		return 1;
@@ -116,17 +121,13 @@ namespace Parsing
 	
 	bool parse_user(char *json, int *result_offset)
 	{
-		yajl_handle handle = yajl_alloc(&user_callbacks, NULL, NULL);
+		UserState state = {};
+		state.offset_found = false;
+		state.offset = result_offset;
+		
+		yajl_handle handle = yajl_alloc(&user_callbacks, NULL, &state);
 		yajl_status status = yajl_parse(handle, (const unsigned char *) json, strlen(json));
 		
-		if (status == yajl_status_ok)
-		{
-			*result_offset = offset;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return status == yajl_status_ok;
 	}
 }
