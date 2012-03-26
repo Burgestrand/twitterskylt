@@ -1,54 +1,50 @@
 #include "Sleep.h"
 
-Sleep::Sleep() {
+/* Module for handling sleeping.
+ * Call sleep_begin() in setup.
+ * Call sleep() to sleep 8 seconds in low power mode (note that other timers are stopped in this mode).
+ * N.B.: A watchdog interrupt handler MUST be defined, however it may be empty.
+ * Example:
+ *   #include <avr/interrupt.h>
+ *   EMPTY_INTERRUPT(WDT_vect);
+ */
 
-}
-
-void Sleep::begin(uint8_t sleepSeconds) {
-	// Store how many 8 second intervals we should sleep
-	this->sleepSeconds = sleepSeconds;
+// Configure the sleep mode and watchdog timer
+void sleep_begin() {
 	// Set sleep mode to Power Save
 	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
-	// Clear delay counter
-	timerSeconds = 0;
-	// Disable global interrupts
+	// Disable global interrupts to make sure the following code is not interrupted
 	noInterrupts();
-	
-	// Initialize watchdog
-	// Reset watch dog reset flag
-	MCUSR &= ~(1<<WDRF);
-	// Configure watchdog to be configurable
-	WDTCSR |= (1<<WDCE) | (1<<WDE);
-	// Set prescaler
-	WDTCSR = (1<<WDCE) | (1<<WDP0) | (1<<WDP3);
 
-	// Enable all interrupts
+	// Configure watchdog.
+	// See atmel document on the watchdog timer and device datasheet for more info.
+	MCUSR  &= ~(1<<WDRF); // Reset watch dog reset flag.
+	WDTCSR  =  (1<<WDCE) | (1<<WDE); // Configure watchdog to be configurable.
+	WDTCSR  =  (1<<WDCE) | (1<<WDP0) | (1<<WDP3); // Set prescaler to 8 seconds.
+
+	// Enable all interrupts.
 	interrupts();
 }
 
-// Act on interrupt from Watchdog
-bool Sleep::shouldWakeUp() {
-	timerSeconds++;
-	if (timerSeconds == sleepSeconds) {
-		timerSeconds = 0;
-		return true;
-	}
-	return false;
-}
-
-// Go to power save mode
-void Sleep::sleep() {
+// Go to power save mode for at most ~8 seconds. Remember that other interrupts
+// may wake the device prematurely.
+void sleep() {
 	noInterrupts();
-	// Enable watchdog interrupts
+
+	// Reset the timer.
+	wdt_reset();
+	// Enable watchdog interrupts.
 	WDTCSR |= (1<<WDIE);
+
 	interrupts();
 
-	sleep_enable();
+	// Go to sleep.
 	sleep_mode();
-	sleep_disable();
 
 	noInterrupts();
-	// Disable watchdog interrupts
+
+	// Disable watchdog interrupts.
 	WDTCSR &= ~(1<<WDIE);
+
 	interrupts();
 }
