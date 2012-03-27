@@ -125,12 +125,12 @@ int DhcpClass::requestLease() {
     if (_dhcpUdpSocket.begin(DHCP_CLIENT_PORT) == 0)
     {
       // couldn't get a socket
-      return 1; // ++
+      return 1;
     }
     
     presend_DHCP();
     
-    int result = 1; // ++
+    int result = 1;
     uint8_t messageType = 0;
     uint8_t prevState;
     
@@ -195,7 +195,7 @@ int DhcpClass::requestLease() {
 	Serial.println(millis()-startTime);
 	Serial.println(_timeout);
 	Serial.println(result);
-        if(result != 0 && ((millis() - startTime) > _timeout)) // ++
+        if(result != 0 && ((millis() - startTime) > _timeout)) 
             break;
     }
     
@@ -207,8 +207,8 @@ int DhcpClass::requestLease() {
 }
 
 /*
-  returns 1 if it couldn't renew
   returns 0 if it could renew
+  returns 1 if it couldn't renew
   return 2 if it didn't have to renew
   
 */
@@ -219,13 +219,13 @@ int DhcpClass::renew() {
 
   if (_timeOfLease > time) {
     // millis overflow
-    // request new
+    // request new, because we don't know what's left of lease
     if (_renewCount == 0)
       return doT1();
     else if (_renewCount == 1)
-      return doT2();
+      return doT2(); 
     else
-      return doLeaseOut(); // T2 har passerat, ny lease!      
+      return doLeaseOut(); // T2 has passed, new lease!      
   }
   else if ((time - _timeOfLease)/1000 > _dhcpLeaseTime)
     return doLeaseOut();
