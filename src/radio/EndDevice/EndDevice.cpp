@@ -372,6 +372,7 @@ uint8_t EndDevice::requestWait() {
 		timesTimeout++;
 		if (timesTimeout > 3) {
 			State = EndDeviceError;
+			timesTimeout = 0;
 			return TICK_UPDATE_TIMEOUT;
 		} else {
 			State = EndDeviceRequestSend;
