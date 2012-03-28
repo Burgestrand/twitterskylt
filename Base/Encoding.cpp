@@ -32,7 +32,7 @@ namespace Formatting
 		0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, // 0xF0
 	};
 
-	static int valid_utf8(unsigned char byte)
+	static boolean valid_utf8(unsigned char byte)
 	{
 		if (byte == 0xC0 || byte == 0xC1)
 		{
@@ -48,7 +48,7 @@ namespace Formatting
 		}
 	}
 
-	static int is_ascii(unsigned char byte)
+	static boolean is_ascii(unsigned char byte)
 	{
 		return (byte & 0x80) == 0;
 	}
@@ -65,7 +65,7 @@ namespace Formatting
 	char *utf8_strip(const char *dirty)
 	{
 		// optimistic result: we end up with the same string
-		int length = strlen(dirty), ci = 0, di = 0;
+		uint8_t length = strlen(dirty), ci = 0, di = 0;
 		unsigned char bytes	= 0;
 		unsigned char current = 0x00, next = 0x00;
 		char *cleaned = (char *) calloc(length + 1, sizeof(char));

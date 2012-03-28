@@ -16,7 +16,7 @@ namespace Formatting
 		return clone;
 	}
 	
-	static int matches(char byte, char *tokens)
+	static boolean matches(char byte, char *tokens)
 	{
 		char *token = NULL;
 
@@ -31,7 +31,7 @@ namespace Formatting
 		return false;
 	}
 
-	char **strsplit(const char *_string, int *num_words)
+	char **strsplit(const char *_string, uint8_t *num_words)
 	{
 		char **words = NULL;
 		char *string = strclone(_string);
@@ -45,8 +45,8 @@ namespace Formatting
 
 		/* first, we count number of words */
 		*num_words = 0;
-		int on_word	= false;
-		int on_whitespace = false;
+		boolean on_word	= false;
+		boolean on_whitespace = false;
 
 		for (cursor = string; *cursor != '\0'; ++cursor)
 		{
@@ -66,7 +66,7 @@ namespace Formatting
 		/* allocate space for all words */
 		words	= calloc(*num_words, sizeof(char *));
 		cursor = strtok(string, tokens);
-		int i	= 0;
+		uint8_t i	= 0;
 
 		while (cursor != NULL)
 		{

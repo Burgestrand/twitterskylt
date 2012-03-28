@@ -3,5 +3,5 @@
 
 namespace Formatting
 {
-	char **strsplit(const char *_string, int *num_words);
+	char **strsplit(const char *_string, uint8_t *num_words);
 }
