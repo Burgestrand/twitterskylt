@@ -79,7 +79,7 @@ class Coordinator : public Radio {
 		uint8_t currentPacket;
 		bool sending;
 		bool timeOutFlag;
-		long timeOut;
+		unsigned long timeOut;
 		bool assoc;
 
 		// Initialization
