@@ -5,13 +5,6 @@ Coordinator::Coordinator() {
 	// FSM not started
 	state = CoordinatorNoStart;
 	destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
-
-	// Initialize callback function pointers to default error handling
-	callbackPt = NULL; 
-
-	uint8_t initLength = 1;
-	uint8_t initStr[] = {'I','N','I','T'};
-
 	this->assoc = false;
 	this->sending = false;
 	this->currentPacket = 0;
@@ -27,11 +20,11 @@ bool Coordinator::getAssoc() {
 
 String Coordinator::getStateName(uint8_t stateNum) {
 	String retStr = "Not a state!";
-	String stateStr[] = {"NoStart", "Start", "Init", "Network Formation Send",
-	"Network Formation Receive", "Permit Joining Send", "Permit Joining Receive",
-	"Await Join", "Join Response", "Join Response Delivery Report", "Idle",
-	"Send Data", "Send Data Delivery Report", "Modem Status Action", "Error"};
-	if(stateNum >= 0 && stateNum <= 14) {
+	String stateStr[] = {"NoStart", "Start", "Init", "NWF Tx",
+	"NWF Rx", "PJ Tx", "PJ Rx",
+	"Await Join", "Join Resp.", "JR Deliv.", "Idle",
+	"Send Data", "Send Deliv.", "Modem", "Error", "Timeout"};
+	if(stateNum >= 0 && stateNum <= 15) {
 		retStr = stateStr[stateNum];
 	}
 	return retStr;
@@ -54,7 +47,7 @@ void Coordinator::pairUp() {
 }
 
 void Coordinator::setData(uint8_t *data, uint8_t size) {
-	const int maxPacketSize = 10;
+	const int maxPacketSize = 72;
 	uint8_t fP = size/maxPacketSize;	// Number of full-length packets
 	uint8_t rP = size%maxPacketSize;	// Size of remainder packet
 	uint8_t tP = (rP>0 ? fP+1 : fP);	// Total number of packets
@@ -75,15 +68,27 @@ void Coordinator::setData(uint8_t *data, uint8_t size) {
 		bufferPackets[fP].data[rP] = '\0';
 		bufferPackets[fP].length = rP+1;
 	} 
+
+			SoftwareSerial nss = SoftwareSerial(30, 32);
+			nss.begin(9600);
+			nss.print(tP);
+			nss.print(" Packets: [");
+
+			for(int i=0; i<tP; i++) {
+				nss.print(bufferPackets[i].length);
+				if(bufferPackets[i].length == 72)
+				nss.print(", ");
+			}
+
+			nss.println("]");
 }
 
-void Coordinator::setErrorCallback(void (*callbackPt)(void)) {
-	this->callbackPt = callbackPt;
-}
-
-void Coordinator::init() {
+uint8_t Coordinator::init() {
 	this->timeOutFlag = false;
 	this->timeOut = 0;
+	this->assoc = false;
+	state = CoordinatorNetworkFormationSend;
+	return TICK_OK;
 }
 
 void Coordinator::startTimeOut(uint16_t timeoutTime) {
@@ -96,17 +101,18 @@ void Coordinator::checkTimeOut() {
 	// Did we go over the time limit?
 	if(millis() >= timeOut) {
 		timeOutFlag = false;
-		state = CoordinatorError;
+		state = CoordinatorTimeOut;
 	}
 }
 
-void Coordinator::sendAtCommand(uint8_t *cmd, CoordinatorState nextState) {
+uint8_t Coordinator::sendAtCommand(uint8_t *cmd, CoordinatorState nextState) {
 	sendATCommand(cmd);
 	startTimeOut();
 	state = nextState;
+	return TICK_OK;
 }
 
-void Coordinator::awaitAtResponse(CoordinatorState nextState) {
+uint8_t Coordinator::awaitAtResponse(CoordinatorState nextState) {
 	// Timeout before any response was received - go to error state
 	checkTimeOut();
 
@@ -119,34 +125,48 @@ void Coordinator::awaitAtResponse(CoordinatorState nextState) {
 			state = nextState;
 		}
 		else {
-			// Command failed - go to error state
+			// Command failed
 			state = CoordinatorError;
+			return TICK_AT_CMD_ERROR;
 		}
-	}	
+	}
+	return TICK_OK;
 }
 
-void Coordinator::awaitJoin() {
+uint8_t Coordinator::awaitJoin() {
 	// No join requests within timeout time - go to error state
 	checkTimeOut();
 	if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-		// Got a response from Local XBee
+		// Got a response from Remote XBee
 		timeOutFlag = false;
 		xbee.getResponse().getZBRxResponse(zbRx);
 		if(zbRx.getDataLength() == 1 && zbRx.getData()[0] == 'J') {
-			// End device identified, give response
+			// End device identified, store remote address and give response
+			destAddr64 = zbRx.getRemoteAddress64();
+
+			SoftwareSerial nss = SoftwareSerial(30, 32);
+			nss.begin(9600);
+			nss.print("Saving remote address: [");
+			nss.print(destAddr64.getMsb());
+			nss.print("-");
+			nss.print(destAddr64.getLsb());
+			nss.println("]");
 			state = CoordinatorJoinResponse;
 		}
 	}
+	return TICK_OK;
 }
 
-void Coordinator::joinResponse() {
+uint8_t Coordinator::joinResponse() {
 	uint8_t msg[] = {'K'};
 	send(msg, sizeof(msg));
 	startTimeOut();
 	state = CoordinatorJoinResponseDelivery;
+	this->assoc = true;
+	return TICK_OK;
 }
 
-void Coordinator::dataDeliveryStatus() {
+uint8_t Coordinator::dataDeliveryStatus() {
 	checkTimeOut();
 	// ZigBee Tx Response ('Delivery Report')
 	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {	
@@ -155,23 +175,24 @@ void Coordinator::dataDeliveryStatus() {
 		// Get the delivery status (fifth byte of packet)
 		if(txStatus.isSuccess()) {
 			// Delivery Successful!
-			SoftwareSerial nss = SoftwareSerial(9, 10);
-			nss.begin(9600);
-			nss.println("Delivery successful!");
+			if(state == CoordinatorJoinResponseDelivery) {
+				state = CoordinatorIdle;
+			}
 			// Go back to (potentially) send next packet
-			state = CoordinatorSendData;
+			else {
+				state = CoordinatorSendData;
+			}
 		} 
 		else {
-			SoftwareSerial nss = SoftwareSerial(9, 10);
-			nss.begin(9600);
-			nss.println("Remote XBee did not receive packet - Failed delivery!");
 			// The remote XBee did not receive our packet
  			state = CoordinatorError;
+ 			return TICK_SEND_NO_DELIVERY;
  		}
 	}
+	return TICK_OK;
 }
 
-void Coordinator::idle() {
+uint8_t Coordinator::idle() {
 	// Idle state. Coordinator is listening for all possible types of incoming packages
 	if(xbee.getResponse().isAvailable()) {
 		// Got a package! Wonder what type it is...?
@@ -187,27 +208,28 @@ void Coordinator::idle() {
 		else if(xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 			// Modem Status Response ('Notification from local XBee')
 			state = CoordinatorModemStatusAction;
-		
 		}
 		else if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE ||
 				xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			// ZigBee Tx Response ('Delivery Report')
 			// Or AT Command Response
-			// Something is wrong... should never get this type of package here!
-			state = CoordinatorError;
+			// Something is wrong... should never get this type of packet here!
+			return TICK_UNEXPECTED_PACKET;
 		}
 		else {
 			// Unexpected Response type!
-			state = CoordinatorError;
+			return TICK_UNKNOWN_ERROR;
 		}
 	}
 	else if (xbee.getResponse().isError()) {
 		// Got an error!
 		state = CoordinatorError;
+		return TICK_UNKNOWN_ERROR;
 	}
+	return TICK_OK;
 }
 
-void Coordinator::sendData() {
+uint8_t Coordinator::sendData() {
 	// Send data stored in private data field over XBee link
 	// Data may be sent as multiple packets
 
@@ -219,7 +241,7 @@ void Coordinator::sendData() {
 		currentPacket = 0;
 	}
 
-	if(dataPackets[currentPacket].length > 0) {
+	if(dataPackets[currentPacket].length > 0 && currentPacket <= 3) {
 		// Send next packet
 		sending = true;
 		sendPacket(dataPackets[currentPacket]);
@@ -230,16 +252,18 @@ void Coordinator::sendData() {
 		sending = false;
 		state = CoordinatorIdle;
 	}
+	return TICK_OK;
 }
 
-void Coordinator::sendPacket(packet dataPacket) {
+uint8_t Coordinator::sendPacket(packet dataPacket) {
 	// Send a single packet over the XBee Link
 	send(dataPacket.data, dataPacket.length);
 	startTimeOut();
 	state = CoordinatorSendDataDelivery;
+	return TICK_OK;
 }
 
-void Coordinator::modemStatusAction() {
+uint8_t Coordinator::modemStatusAction() {
 	// Got a Modem Status Response, let's find out what type
 	xbee.getResponse().getModemStatusResponse(msr);
 
@@ -251,6 +275,7 @@ void Coordinator::modemStatusAction() {
 		// Modem disassociated (left network)
 		// Something is wrong,  give error and wait for network reset
 		state = CoordinatorError;
+		return TICK_MODEM_ERROR;
 	} 
 	else if (msr.getStatus() == COORDINATOR_STARTED) {
 		// Coordinator has setup network
@@ -263,10 +288,22 @@ void Coordinator::modemStatusAction() {
 	else {
 		// Something else (certainly not something we were expecting!)
 		state = CoordinatorError;
+		return TICK_UNEXPECTED_MODEM_RESPONSE;
 	}	
+	return TICK_OK;
 }
 
-void Coordinator::tick() {
+uint8_t Coordinator::error() {
+	this->assoc = false;
+	return TICK_ERROR;
+}
+
+uint8_t Coordinator::timeout() {
+	this->assoc = false;
+	return TICK_TIMEOUT;
+}
+
+uint8_t Coordinator::tick() {
 	// Attempt to read new incoming packages (without timeout or block!)
 	xbee.readPacket();
 
@@ -276,55 +313,58 @@ void Coordinator::tick() {
 	switch(state) {
 		case CoordinatorNoStart:
 			state = CoordinatorNoStart;
+			return TICK_OK;
 			break;
 		case CoordinatorStart:
 			// Move along, nothing to see here...
 			state = CoordinatorInit;
+			return TICK_OK;
 			break;
 		case CoordinatorInit:
-			init();
-			state = CoordinatorNetworkFormationSend;
+			return init();
 			break;
 		case CoordinatorNetworkFormationSend:
-			sendAtCommand(NwCmd, CoordinatorNetworkFormationReceive);
+			return sendAtCommand(NwCmd, CoordinatorNetworkFormationReceive);
 			break;
 		case CoordinatorNetworkFormationReceive:
-			awaitAtResponse(CoordinatorPermitJoiningSend);
+			return awaitAtResponse(CoordinatorPermitJoiningSend);
 			break;
 		case CoordinatorPermitJoiningSend:
-			sendAtCommand(JoinCmd, CoordinatorPermitJoiningReceive);
+			return sendAtCommand(JoinCmd, CoordinatorPermitJoiningReceive);
 			break;
 		case CoordinatorPermitJoiningReceive:
-			awaitAtResponse(CoordinatorAwaitJoin);
 			startTimeOut(65000);
+			return awaitAtResponse(CoordinatorAwaitJoin);
 			break;
 		case CoordinatorAwaitJoin:
-			awaitJoin();
+			return awaitJoin();
 			break;
 		case CoordinatorJoinResponse:
-			assoc = true;
-			joinResponse();
+			return joinResponse();
 			break;
 		case CoordinatorJoinResponseDelivery:
-			dataDeliveryStatus();
+			return dataDeliveryStatus();
 			break;
 		case CoordinatorIdle:
-			idle();
+			return idle();
 			break;
 		case CoordinatorSendData:
-			sendData();
+			return sendData();
 			break;
 		case CoordinatorSendDataDelivery:
-			dataDeliveryStatus();
+			return dataDeliveryStatus();
 			break;
 		case CoordinatorModemStatusAction:
-			modemStatusAction();
+			return modemStatusAction();
 			break;
 		case CoordinatorError:
-			assoc = false;
-			callbackPt();
+			return error();
+			break;
+		case CoordinatorTimeOut:
+			return timeout();
 			break;
 		default:
+			return TICK_UNKNOWN_ERROR;
 			// Stay in current state (should never be here, really)
 			break;
 	}
