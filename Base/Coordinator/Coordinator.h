@@ -11,6 +11,18 @@
 // The maximum number of bytes that fit in a single XBee packet
 #define MAX_PACKET_SIZE 72;
 
+// Tick return values
+#define TICK_OK 0
+#define TICK_ERROR 1
+#define TICK_AT_CMD_ERROR 2
+#define TICK_TIMEOUT 3
+#define TICK_SEND_NO_DELIVERY 4
+#define TICK_UNEXPECTED_PACKET 5
+#define TICK_MODEM_ERROR 6
+#define TICK_UNEXPECTED_MODEM_RESPONSE 7
+#define TICK_NETWORK_FORMATION_ERROR 8
+#define TICK_UNKNOWN_ERROR 9
+
 #include "../Radio/Radio.h"	
 
 typedef struct struct_packet packet; 
@@ -37,7 +49,8 @@ enum CoordinatorState {
 		CoordinatorSendData, 
 		CoordinatorSendDataDelivery, 
 		CoordinatorModemStatusAction, 
-		CoordinatorError
+		CoordinatorError,
+		CoordinatorTimeOut
 	};
 
 // ZigBee Network Coordinator
@@ -51,10 +64,8 @@ class Coordinator : public Radio {
 		void pairUp();
 		/* Set data to be sent to end device upon request */
 		void setData(uint8_t *data, uint8_t dataSize);
-		/* Set callback function for when an error is encountered */
-		void setErrorCallback(void (*callbackPt)(void));
 		/* Step State Machine */
-		void tick();
+		uint8_t tick();
 
 		// Debug functions
 		uint8_t getState();
@@ -69,34 +80,36 @@ class Coordinator : public Radio {
 		bool sending;
 		bool timeOutFlag;
 		long timeOut;
-		void (*callbackPt)(void);
-			
 		bool assoc;
 
 		// Initialization
-		void init(); 
+		uint8_t init(); 
 		// Start timeout timer
-		void startTimeOut(uint16_t timeoutTime = TIMEOUT_TIME); 
+		void startTimeOut(uint16_t timeoutTime = 2000); 
 		// Check timer to see if we've timed out
 		void checkTimeOut();
 		// Send AT command cmd, then move on to nextState
-		void sendAtCommand(uint8_t *cmd, CoordinatorState nextState);
+		uint8_t sendAtCommand(uint8_t *cmd, CoordinatorState nextState);
 		// Await response from a sent AT command, then move to nextState
-		void awaitAtResponse(CoordinatorState nextState) ;
+		uint8_t awaitAtResponse(CoordinatorState nextState) ;
 		// Wait for an end device to join network
-		void awaitJoin(); 
+		uint8_t awaitJoin(); 
 		// Send confirmation to end device attempting to join
-		void joinResponse();
+		uint8_t joinResponse();
 		// Receive package delivery report
-		void dataDeliveryStatus();
+		uint8_t dataDeliveryStatus();
 		// Idle, listen for incoming packages
-		void idle();
+		uint8_t idle();
 		// Send data to end device
-		void sendData();
+		uint8_t sendData();
 		// Send single packet
-		void sendPacket(packet dataPacket);
+		uint8_t sendPacket(packet dataPacket);
 		// Act on modem status response from local XBee
-		void modemStatusAction();
+		uint8_t modemStatusAction();
+		// General error
+		uint8_t error();
+		// Timeout error
+		uint8_t timeout();
 };
 
 #endif

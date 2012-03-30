@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Time/Time.h"
+#include "Constants.h"
 
 namespace Formatting
 {
