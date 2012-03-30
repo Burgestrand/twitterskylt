@@ -2,7 +2,7 @@ namespace HTTP
 {
 	static done = false;
 	
-	void tick()
+	uint8_t tick()
 	{
 		if (!done)
 		{
@@ -13,5 +13,7 @@ namespace HTTP
 			Radio.setData(message, strlen(message));
 			done = true;
 		}
+		
+		return 0;
 	}
 }
