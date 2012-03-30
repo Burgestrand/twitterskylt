@@ -3,7 +3,6 @@
 
 /* Module for the end device of the radio link.
  * Usage example:
- *   #include <Radio.h>
  *   #include <EndDevice.h>
  *   EndDevice ed(sleep_rq_pin, sleep_status_pin);
  *  in setup:
