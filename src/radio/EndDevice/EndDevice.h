@@ -1,6 +1,19 @@
 #ifndef EndDevice_h
 #define EndDevice_h
 
+/* Module for the end device of the radio link.
+ * Usage example:
+ *   #include <Radio.h>
+ *   #include <EndDevice.h>
+ *   EndDevice ed;
+ *  in setup:
+ *   ed.begin(serial, sleep_rq_pin, sleep_status_pin)
+ *   (in loop:)
+ *   switch (ed.tick()) {
+ *     case TICK...
+ *   }
+ */
+
 #include "../Radio/Radio.h"
 
 // Status codes
@@ -8,8 +21,8 @@
 #define STATUS_SLEEPING 2
 
 // Sleep related pins
-#define SLEEP_RQ_PIN 10
-#define SLEEP_STATUS_PIN 11
+#define SLEEP_RQ_PIN 12
+#define SLEEP_STATUS_PIN 13
 
 // Tick return values
 #define TICK_OK 0
@@ -25,6 +38,7 @@
 #define TICK_NEW_MSG 6
 #define TICK_UNKNOWN_ERROR 7
 #define TICK_SLEEPING 10
+#define TICK_NETWORK_ERROR 11
 
 // If DEBUG_MSG_FUN is set then DEBUG_MSG will call it with its argument
 // DEBUG_MSG_FUN should be a function returning void, taking a char pointer
@@ -48,7 +62,6 @@ enum EndDeviceState { EndDeviceStart
                     , EndDeviceRequestSend
                     , EndDeviceRequestStatus
                     , EndDeviceRequestWait
-                    , EndDeviceSleepTell
                     , EndDeviceSleepWait
                     , EndDeviceSleeping
                     , EndDeviceResetStart
@@ -124,7 +137,6 @@ class EndDevice : public Radio {
 		uint8_t requestSend();
 		uint8_t requestWait();
 		uint8_t requestStatus();
-		uint8_t sleepTell();
 		uint8_t sleepWait();
 		uint8_t sleeping();
 		uint8_t resetStart();

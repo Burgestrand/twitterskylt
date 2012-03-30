@@ -27,8 +27,6 @@ EndDevice::EndDevice() : xbee(){
 // Note that a network join is attempted automatically at startup, so this function doesn't
 // need to (shouldn't, even) be called when starting the arduino.
 void EndDevice::joinNetwork() {
-	// If State == EndDeviceSleepTell the radio hasn't been told to sleep yet so no special
-	// precautions necessary there
 	if (State == EndDeviceSleepWait || State == EndDeviceSleeping) {
 		resetFlag = true;
 	} else {
@@ -48,6 +46,7 @@ void EndDevice::getNewestMessage() {
 	}
 	*/
 	// Is this better?
+	wakeup();
 	updateFlag = true;
 	// TODO: Perhaps check so we are not currently updating only
 }
@@ -114,8 +113,6 @@ uint8_t EndDevice::tick() {
 			return joiningWaitResponse();
 		case EndDeviceIdle:
 			return idle();
-		case EndDeviceSleepTell:
-			return sleepTell();
 		case EndDeviceSleepWait:
 			return sleepWait();
 		case EndDeviceSleeping:
@@ -274,17 +271,11 @@ uint8_t EndDevice::idle() {
 		updateFlag = false;
 		State = EndDeviceRequestSend;
 	} else {
-		State = EndDeviceSleepTell;
+		DEBUG_MSG("Going to sleep");
+		digitalWrite(SLEEP_RQ_PIN, HIGH);
+		State = EndDeviceSleepWait;
+		wakeupFlag = false;
 	}
-	return TICK_OK;
-}
-
-// Tell the radio to go to sleep with the SLEEP_RQ pin.
-uint8_t EndDevice::sleepTell() {
-	DEBUG_MSG("[SLEEP TELL]");
-	digitalWrite(SLEEP_RQ_PIN, HIGH);
-	State = EndDeviceSleepWait;
-	wakeupFlag = false;
 	return TICK_OK;
 }
 
@@ -379,6 +370,7 @@ uint8_t EndDevice::requestWait() {
 		}
 	} else if (xbee.getResponse().isAvailable()) {
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+			DEBUG_MSG("  GOT PACKET");
 			// Has a data packet
 			disableTimeout();
 			ZBRxResponse zbrr;
@@ -390,6 +382,7 @@ uint8_t EndDevice::requestWait() {
 
 			// Test if this was the final data packet for this message
 			if (zbrr.getData()[zbrr.getDataLength()-1] == 0) {
+				DEBUG_MSG("  GOT MSG");
 				State = EndDeviceIdle;
 				dataEnd = data;
 				return TICK_NEW_MSG;
