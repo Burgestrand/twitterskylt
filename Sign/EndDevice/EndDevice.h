@@ -13,6 +13,8 @@
  *   }
  */
 
+#include <Arduino.h>
+
 // Tick return values
 #define TICK_OK 0
 #define TICK_ASSOC_FAIL 1
