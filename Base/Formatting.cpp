@@ -1,7 +1,4 @@
-#include "Encoding.h"
-#include "Normalization.h"
-#include "Justification.h"
-#include "Metadata.h"
+#include "Formatting.h"
 
 namespace Formatting
 {
