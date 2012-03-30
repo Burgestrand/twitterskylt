@@ -4,5 +4,5 @@
 
 namespace HTTP
 {
-	uint8_t tick(Coordinator coordinator);
+	uint8_t tick(Coordinator * coordinator);
 }
