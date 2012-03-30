@@ -9,98 +9,6 @@
 #include "Arduino.h"
 #include "util.h"
 
-/*
-int DhcpClass::beginWithDHCP(uint8_t *mac, unsigned long timeout)
-{
-    uint8_t dhcp_state = STATE_DHCP_START;
-    uint8_t messageType = 0;
-  
-    // zero out _dhcpMacAddr, _dhcpSubnetMask, _dhcpGatewayIp, _dhcpLocalIp, _dhcpDhcpServerIp, _dhcpDnsServerIp
-    memset(_dhcpMacAddr, 0, 26); 
-
-    memcpy((void*)_dhcpMacAddr, (void*)mac, 6);
-  
-    // Pick an initial transaction ID
-    _dhcpTransactionId = random(1UL, 2000UL);
-    _dhcpInitialTransactionId = _dhcpTransactionId;
-   
-    if (_dhcpUdpSocket.begin(DHCP_CLIENT_PORT) == 0)
-    {
-      // Couldn't get a socket
-      return 0;
-    }
-    
-    presend_DHCP();
-    
-    int result = 0;
-    
-    unsigned long startTime = millis();
-    unsigned long responseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-    unsigned long random1;
-    
-    while(dhcp_state != STATE_DHCP_LEASED)
-    {
-      Serial.begin(9600);
-      random1 = (unsigned long)random(0,3)*1000;
-      //Serial.println(random1);
-        if(dhcp_state == STATE_DHCP_START)
-        {
-            _dhcpTransactionId++;
-            
-            send_DHCP_MESSAGE(DHCP_DISCOVER, ((millis() - startTime) / 1000));
-            dhcp_state = STATE_DHCP_DISCOVER;
-        }
-        else if(dhcp_state == STATE_DHCP_DISCOVER)
-        {
-            uint32_t respId;
-            messageType = parseDHCPResponse(responseTimeout+random1-1000, respId);
-            if(messageType == DHCP_OFFER)
-            {
-                // We'll use the transaction ID that the offer came with,
-                // rather than the one we were up to
-                _dhcpTransactionId = respId;
-                send_DHCP_MESSAGE(DHCP_REQUEST, ((millis() - startTime) / 1000));
-                dhcp_state = STATE_DHCP_REQUEST;
-            }
-        }
-        else if(dhcp_state == STATE_DHCP_REQUEST)
-        {
-            uint32_t respId;
-            messageType = parseDHCPResponse(responseTimeout+random1-1000, respId);
-            if(messageType == DHCP_ACK)
-            {
-                dhcp_state = STATE_DHCP_LEASED;
-                result = 1;
-            }
-            else if(messageType == DHCP_NAK)
-                dhcp_state = STATE_DHCP_START;
-        }
-
-        if(messageType == 255)
-        {
-            messageType = 0;
-            dhcp_state = STATE_DHCP_START;
-
-        }
-        
-	//Serial.print("millis-ST ");
-	//Serial.println(millis()-startTime);
-	Serial.println(result);
-        if(result != 1 && ((millis() - startTime) > timeout)) {
-          //Serial.println("timeout");  
-	  break;
-	}
-
-    }
-    
-    // We're done with the socket now
-    _dhcpUdpSocket.stop();
-    _dhcpTransactionId++;
-    
-    return result;
-}
-*/
-
 int DhcpClass::beginWithDHCP(uint8_t *mac, unsigned long timeout, unsigned long responseTimeout)
 {
     _dhcp_state = STATE_DHCP_START;
@@ -135,9 +43,13 @@ int DhcpClass::requestLease() {
     uint8_t prevState;
     
     unsigned long startTime = millis();
+    unsigned long randomDiff;
+    unsigned long responseTimeout = _responseTimeout;
 
     while(_dhcp_state != STATE_DHCP_LEASED)
     {
+      
+      randomDiff = (unsigned long)random(0,3)*1000;
         if(_dhcp_state == STATE_DHCP_START)
         {
             _dhcpTransactionId++;
@@ -149,7 +61,7 @@ int DhcpClass::requestLease() {
         else if(_dhcp_state == STATE_DHCP_DISCOVER)
         {
             uint32_t respId;
-            messageType = parseDHCPResponse(_responseTimeout, respId);
+            messageType = parseDHCPResponse(responseTimeout+randomDiff-1000, respId);
             if(messageType == DHCP_OFFER)
             {
                 // We'll use the transaction ID that the offer came with,
@@ -174,7 +86,7 @@ int DhcpClass::requestLease() {
         else if(_dhcp_state == STATE_DHCP_REQUEST)
         {
             uint32_t respId;
-            messageType = parseDHCPResponse(_responseTimeout, respId);
+            messageType = parseDHCPResponse(responseTimeout+randomDiff-1000, respId);
             if(messageType == DHCP_ACK)
             {
                 _dhcp_state = STATE_DHCP_LEASED;
@@ -190,11 +102,9 @@ int DhcpClass::requestLease() {
             messageType = 0;
 	    // om den har vart i rerequest så skall den inte börja om i start igen!
             _dhcp_state = prevState;
+	    responseTimeout *= 2;
         }
-        Serial.println("Debug");
-	Serial.println(millis()-startTime);
-	Serial.println(_timeout);
-	Serial.println(result);
+
         if(result != 0 && ((millis() - startTime) > _timeout)) 
             break;
     }
