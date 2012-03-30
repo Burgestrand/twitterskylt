@@ -2,5 +2,5 @@
 
 namespace HTTP
 {
-	void tick();
+	uint8_t tick();
 }
