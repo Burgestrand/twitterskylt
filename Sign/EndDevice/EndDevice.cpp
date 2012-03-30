@@ -7,7 +7,7 @@
 
 
 // Public ---------------------------------------------------------------------
-EndDevice::EndDevice() : xbee(){
+EndDevice::EndDevice(uint8_t sleep_rq_pin, uint8_t sleep_status_pin,) : xbee(){
 	timeOutFlag = false;
 	updateFlag = false;
 	timesTimeout = 0;
@@ -17,9 +17,12 @@ EndDevice::EndDevice() : xbee(){
 	data[0] = 0;
 	dataEnd = data;
 
-	pinMode(SLEEP_STATUS_PIN, INPUT);
-	pinMode(SLEEP_RQ_PIN, OUTPUT);
-	digitalWrite(SLEEP_RQ_PIN, LOW);
+	this->sleep_rq_pin = sleep_rq_pin;
+	this->sleep_status_pin = sleep_status_pin;
+
+	pinMode(sleep_status_pin, INPUT);
+	pinMode(sleep_rq_pin, OUTPUT);
+	digitalWrite(sleep_rq_pin, LOW);
 }
 
 // Try to join a network, leaves any current network, aborts any current operation, wakes the radio
@@ -272,7 +275,7 @@ uint8_t EndDevice::idle() {
 		State = EndDeviceRequestSend;
 	} else {
 		DEBUG_MSG("Going to sleep");
-		digitalWrite(SLEEP_RQ_PIN, HIGH);
+		digitalWrite(sleep_rq_pin, HIGH);
 		State = EndDeviceSleepWait;
 		wakeupFlag = false;
 	}
@@ -284,7 +287,7 @@ uint8_t EndDevice::sleepWait() {
 	DEBUG_MSG("[SLEEP WAIT]");
 	if (xbee.getResponse().isAvailable()) { // Consume waiting messages
 		// TODO: Check message for bad things
-	} else if (!digitalRead(SLEEP_STATUS_PIN)) { // Radio is sleeping
+	} else if (!digitalRead(sleep_status_pin)) { // Radio is sleeping
 		State = EndDeviceSleeping;
 		return TICK_SLEEPING;
 	}
@@ -297,7 +300,7 @@ uint8_t EndDevice::sleeping() {
 	if (!(resetFlag || wakeupFlag)) {
 		return TICK_SLEEPING;
 	} else {
-		digitalWrite(SLEEP_RQ_PIN, LOW);
+		digitalWrite(sleep_rq_pin, LOW);
 	}
 
 	if (resetFlag) {

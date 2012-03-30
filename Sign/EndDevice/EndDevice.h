@@ -5,22 +5,14 @@
  * Usage example:
  *   #include <Radio.h>
  *   #include <EndDevice.h>
- *   EndDevice ed;
+ *   EndDevice ed(sleep_rq_pin, sleep_status_pin);
  *  in setup:
- *   ed.begin(serial, sleep_rq_pin, sleep_status_pin)
- *   (in loop:)
+ *   ed.begin(serial);
+ *  in loop:
  *   switch (ed.tick()) {
- *     case TICK...
+ *     case TICK_...
  *   }
  */
-
-// Status codes
-#define STATUS_ERROR 1
-#define STATUS_SLEEPING 2
-
-// Sleep related pins
-#define SLEEP_RQ_PIN 12
-#define SLEEP_STATUS_PIN 13
 
 // Tick return values
 #define TICK_OK 0
@@ -69,7 +61,7 @@ enum EndDeviceState { EndDeviceStart
 class EndDevice : public Radio {
 	public:
 		// Default constructor, does nothing special
-		EndDevice();
+		EndDevice(uint8_t sleep_rq_pin, uint8_t sleep_status_pin);
 
 		// Start communicating with the xbee
 		void begin(long baud);
@@ -92,6 +84,10 @@ class EndDevice : public Radio {
 		uint8_t *getData();
 	protected:
 	private:
+		// Pins for sleep request/status
+		uint8_t sleep_rq_pin;
+		uint8_t sleep_status_pin;
+
 		// Storage area for messages
 		uint8_t data[216];
 
