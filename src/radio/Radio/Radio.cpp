@@ -16,8 +16,8 @@ void Radio::begin(HardwareSerial &serialPort) {
 
 void Radio::send(uint8_t *payload, uint8_t payloadLength) {
 	xbee.reset();
-	XBeeAddress64 destAddr64_n = XBeeAddress64(0x00000000, 0x0000FFFF);
-	zbTx = ZBTxRequest(destAddr64_n, payload, payloadLength);
+	//XBeeAddress64 destAddr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
+	zbTx = ZBTxRequest(destAddr64, payload, payloadLength);
 	xbee.send(zbTx);
 }
 
