@@ -14,8 +14,6 @@
  *   }
  */
 
-#include "../Radio/Radio.h"
-
 // Status codes
 #define STATUS_ERROR 1
 #define STATUS_SLEEPING 2
