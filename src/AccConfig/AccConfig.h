@@ -4,12 +4,13 @@ class AccConfig {
   
  private:
  
-  char sd[160];
+  char * query;
+  char * buf;
 
  public:
   
-  AccConfig(char * configFile);
+  int begin(char * configFile);
   char * getUsername();
-  char ** getHashtags();
+  char * getQuery();
 };
 
