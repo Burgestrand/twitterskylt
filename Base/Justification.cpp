@@ -2,10 +2,6 @@
 
 namespace Formatting
 {
-	#define LINE_COUNT 4
-	#define LINE_LENGTH 40
-	#define MAX_MESSAGE_LENGTH (LINE_COUNT * LINE_LENGTH + LINE_COUNT - 1) // No newline after the last line.
-
 	// The minimum room needed to display a list of words starting at the beginning of a line
 	// and taking into account room gained by placing a word exactly at the end of a line.
 	static uint8_t room_needed(char *words[], uint8_t word_count)
