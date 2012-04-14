@@ -7,16 +7,19 @@ namespace Formatting
 
 	char *convert_date(char *twitter_date, int utc_offset)
 	{
-		// Twitter date format: Sat Jan 12 23:34:45 +0000 2012
-		//                      012345678901234567890123456789
-		//                      0         1         2
+		// Twitter date format: Sat, 12 Jan 2012 23:34:45 +0000
+		//                      0123456789012345678901234567890
+		//                      0         1         2         3
+		
+		// Format in other parts of API: Sat Jan 12 23:34:45 +0000 2012
+		// Apparently not in search API, however.
 		
 		// Extract year.
-		unsigned int year = strtol(twitter_date + 26, NULL, 10);
+		unsigned int year = strtol(twitter_date + 12, NULL, 10);
 
 		// Extract abbreviated name of month.
 		char *month_name = (char *) calloc(3 + 1, sizeof(char));
-		memcpy(month_name, twitter_date + 4, 3 * sizeof(char));
+		memcpy(month_name, twitter_date + 8, 3 * sizeof(char));
 		
 		// Calculate month's number.
 		uint8_t month = 0;
@@ -30,9 +33,9 @@ namespace Formatting
 		TimeElements utc_date;
 		utc_date.Year = year - 1970; // Offset from 1970 as required by TimeElements.
 		utc_date.Month = month;
-		utc_date.Day = strtol(twitter_date + 8, NULL, 10); // Extract day.
-		utc_date.Hour = strtol(twitter_date + 11, NULL, 10); // Extract hour.
-		utc_date.Minute = strtol(twitter_date + 14, NULL, 10); // Extract minute.
+		utc_date.Day = strtol(twitter_date + 5, NULL, 10); // Extract day.
+		utc_date.Hour = strtol(twitter_date + 17, NULL, 10); // Extract hour.
+		utc_date.Minute = strtol(twitter_date + 20, NULL, 10); // Extract minute.
 		utc_date.Second = 0;
 
 		// Convert to timestamp and apply UTC offset.
