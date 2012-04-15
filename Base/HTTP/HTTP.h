@@ -5,6 +5,7 @@
 #include <cstring>
 #include <stdarg.h>
 #include "Ethernet.h"
+#include "http-parser/http_parser.h"
 
 // Callback used to report back response body
 typedef void(*http_callback_t)(char *body, unsigned long length);
@@ -23,8 +24,10 @@ class HTTP
     HTTP(const uint8_t ip[4], size_t buffer_size, http_callback_t);
     ~HTTP();
     uint8_t get(IPAddress host, const char *path, int argc, ...);
-    const uint8_t * tick(uint32_t *length);
+    const char *tick(uint32_t *length);
     http_state_t state();
+    const char *body();
+    void body(const char *data, size_t length);
 
   private:
     EthernetClient  *_client;
@@ -32,6 +35,9 @@ class HTTP
     http_state_t    _state;
     uint8_t         *_buffer;
     size_t          _buffer_size;
+    char            *_body;
+
+    http_parser     *_parser;
 
     uint32_t        _read();
     char            *_build_query(int argc, ...);
