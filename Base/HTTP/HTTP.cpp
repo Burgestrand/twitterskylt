@@ -167,7 +167,7 @@ void HTTP::body(const char *data, size_t length)
 
   if (data and length > 0)
   {
-    this->_body = ALLOC_N(char, length);
+    this->_body = ALLOC_STR(length);
     MEMCPY_N(this->_body, data, char, length);
   }
 }
