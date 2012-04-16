@@ -14,6 +14,7 @@
  */
 
 #include <Arduino.h>
+#include <XBee.h>
 
 // Tick return values
 #define TICK_OK 0
@@ -59,9 +60,11 @@ enum EndDeviceState { EndDeviceStart
                     , EndDeviceResetWait
                     };
 
-class EndDevice : public Radio {
+/*class EndDevice : public Radio { // Radio no longer a super class, no overlap with it. */
+class EndDevice {
 	public:
-		// Default constructor, does nothing special
+		// Sleep rq pin and sleep status pin should be connected to respective pins
+		// on the XBee.
 		EndDevice(uint8_t sleep_rq_pin, uint8_t sleep_status_pin);
 
 		// Start communicating with the xbee

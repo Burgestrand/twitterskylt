@@ -44,7 +44,7 @@
 Display disp(DISP_RS, DISP_EN, DISP_DATA, DISP_DATA+1, DISP_DATA+2, DISP_DATA+3);
 
 // The radio
-EndDevice radio;
+EndDevice radio(SLEEP_RQ_PIN, SLEEP_STATUS_PIN);
 
 // The serial connection used for debug output
 SoftwareSerial ss(SERIAL_RX, SERIAL_TX);
@@ -208,13 +208,3 @@ void loop () {
 // Watchdog is only for waking the microcontroller, so the body is empty.
 EMPTY_INTERRUPT(WDT_vect)
 
-
-void setup(void)
-{
-
-}
-
-void loop(void)
-{
-
-}

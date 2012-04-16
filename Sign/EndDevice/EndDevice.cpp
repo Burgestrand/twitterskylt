@@ -7,7 +7,7 @@
 
 
 // Public ---------------------------------------------------------------------
-EndDevice::EndDevice(uint8_t sleep_rq_pin, uint8_t sleep_status_pin,) : xbee(){
+EndDevice::EndDevice(uint8_t sleep_rq_pin, uint8_t sleep_status_pin) : xbee(){
 	timeOutFlag = false;
 	updateFlag = false;
 	timesTimeout = 0;
@@ -386,6 +386,7 @@ uint8_t EndDevice::requestWait() {
 			// Test if this was the final data packet for this message
 			if (zbrr.getData()[zbrr.getDataLength()-1] == 0) {
 				DEBUG_MSG("  GOT MSG");
+				DEBUG_MSG((char *) data);
 				State = EndDeviceIdle;
 				dataEnd = data;
 				return TICK_NEW_MSG;
