@@ -32,4 +32,7 @@ void xfree(void *);
 /* copies a string, returns a new pointer */
 char * strclone(const char *);
 
+/* uri-encodes a string, don’t forget to free() the return value! */
+char * url_encode(const char *);
+
 #endif
