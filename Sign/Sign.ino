@@ -106,14 +106,7 @@ void loop () {
     disp.write("Trying to join\nnetwork\004");
     radio.joinNetwork();
   }
-  // Update button
-  if (updatePressed) {
-    updatePressed = false;
-    debug("UPDATEBTN NOTICED");
-    disp.write("Updating...\004");
-    radio.getNewestMessage();
-  }
-  
+
   // Necessary for the radio library to work
   switch (radio.tick()) {
     case TICK_ASSOC_FAIL:
@@ -146,15 +139,18 @@ void loop () {
       digitalWrite(LED_1, LOW);
       {
         uint8_t sleepRounds = 3;
-        while (sleepRounds-- && !joinPressed) {
+        // Sleep until we've sleept long enough or a button has been pressed.
+        while (sleepRounds-- && !joinPressed && !updatePressed) {
           sleep();
         }
       }
+      // If the join button was pressed we shouldn't update the message.
       if (!joinPressed) {
         digitalWrite(LED_1, HIGH);
         radio.wakeup();
         radio.getNewestMessage();
       }
+      updatePressed = false;
       break;
     case TICK_UNKNOWN_ERROR:
     case TICK_JOIN_BAD_MSG:
