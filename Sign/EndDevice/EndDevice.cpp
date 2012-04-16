@@ -343,6 +343,7 @@ uint8_t EndDevice::requestStatus() {
 				State = EndDeviceRequestWait;
 			} else {
 				// The request was not delivered
+				State = EndDeviceError; // TODO? Retries?
 				return TICK_UPDATE_NO_DELIVERY;
 			}
 		} else {
