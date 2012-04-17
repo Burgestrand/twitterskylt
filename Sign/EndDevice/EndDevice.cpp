@@ -39,19 +39,10 @@ void EndDevice::joinNetwork() {
 	}
 }
 
-// Request a update of the message
-// A call to the new message callback will be done when new data has
-// been received
+// Request an update of the message
 void EndDevice::getNewestMessage() {
-	// XXX: This seems wrong?
-	/*if (State == EndDeviceIdle) {
-		updateFlag = true;
-	}
-	*/
-	// Is this better?
 	wakeup();
 	updateFlag = true;
-	// TODO: Perhaps check so we are not currently updating only
 }
 
 void EndDevice::begin(long baud) {
@@ -173,6 +164,8 @@ uint8_t EndDevice::resetWait() {
 // Set timeout for associaton to complete
 uint8_t EndDevice::start() {
 	DEBUG_MSG("[START]");
+	updateFlag = false; // Make sure this flag is reset as it may stay active if radio is reset while the flag is active
+	disableTimeout(); // Make sure the timer is not active afte a reset
 	setTimeout(10000);
 	State = EndDeviceFormingNetwork;
 	return TICK_OK;
