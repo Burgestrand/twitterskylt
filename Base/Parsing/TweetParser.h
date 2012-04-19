@@ -30,6 +30,6 @@ class TweetParser {
 			uint8_t foundCount;
 		};
 		State state;
-}
+};
 
 #endif
