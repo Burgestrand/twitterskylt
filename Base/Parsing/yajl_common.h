@@ -17,6 +17,8 @@
 #ifndef __YAJL_COMMON_H__
 #define __YAJL_COMMON_H__
 
+#include "Constants.h"
+
 #include <stddef.h>
 
 #ifdef __cplusplus
