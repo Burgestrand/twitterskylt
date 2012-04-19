@@ -2,7 +2,7 @@
 #define TweetParser_h
 
 extern "C" {
-	#include "Yajl/yajl_parser.h"
+	#include "yajl_parser.h"
 }
 
 class TweetParser {
