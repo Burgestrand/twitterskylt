@@ -5,8 +5,10 @@
 #include <string.h> /* for size_t */
 
 /* Macros */
+#ifndef true
 #define true 1
 #define false 0
+#endif
 
 #define ALLOC(type) ALLOC_N(type, 1)
 #define ALLOC_N(type, n) ((type*) xmalloc(sizeof(type) * (n)))

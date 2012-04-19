@@ -1,10 +1,15 @@
 #ifndef _HTTP_H_
 #define _HTTP_H_
 
-#include <stdint.h>
+#ifndef ARDUINO
 #include <cstring>
+#endif
+
+#include <EthernetClient.h>
+#include <IPAddress.h>
+
+#include <stdint.h>
 #include <stdarg.h>
-#include "Ethernet.h"
 #include "http-parser/http_parser.h"
 
 // Different kinds of states the HTTP client might be in
