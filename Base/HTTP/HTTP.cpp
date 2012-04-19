@@ -29,10 +29,9 @@ http_parser_settings g_parser_settings =
   /* on_message_complete = */ NULL,
 };
 
-HTTP::HTTP(const uint8_t ip[4], size_t buffer_size, http_callback_t callback)
+HTTP::HTTP(const uint8_t ip[4], size_t buffer_size)
 {
   this->_client   = new EthernetClient();
-  this->_callback = callback;
   this->_state    = HTTP_IDLE;
   this->_body     = NULL;
 
