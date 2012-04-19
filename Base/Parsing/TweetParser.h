@@ -7,7 +7,7 @@ extern "C" {
 
 class TweetParser {
 	public:
-		TweetParser(char *buffer, char **text, int textLength, char **date, int dateLength);
+		TweetParser(char *buffer, char *text, int textLength, char *date, int dateLength);
 		bool parse(int bufferSize);
 	private:
 		// Buffer to read JSON from.
@@ -20,9 +20,9 @@ class TweetParser {
 		#define MAX_FOUND_COUNT 2
 		struct State {
 			// The variables that result values should be written into.
-			char **text;
+			char *text;
 			char textLength;
-			char **date;
+			char *date;
 			int dateLength;
 			// Progress state.
 			bool textFound;

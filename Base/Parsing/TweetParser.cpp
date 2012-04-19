@@ -22,17 +22,17 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	if (state->textFound) {
 		size_t length = (strLength > state->textLength) ? state->textLength : strLength;
 		
-		*(state->text) = (char*) malloc(length + 1);
-		memcpy(*(state->text), str, length);
-		(*(state->text))[length] = '\0';
+		state->text = (char*) malloc(length + 1);
+		memcpy(state->text, str, length);
+		(state->text)[length] = '\0';
 		state->textFound = false;
 		state->foundCount += 1;
 	} else if (state->dateFound) {
 		size_t length = (strLength > state->dateLength) ? state->dateLength : strLength;
 		
-		*(state->date) = (char*) malloc(length + 1);
-		memcpy(*(state->date), str, length);
-		(*(state->date))[length] = '\0';
+		state->date = (char*) malloc(length + 1);
+		memcpy(state->date, str, length);
+		(state->date)[length] = '\0';
 		state->dateFound = false;
 		state->foundCount += 1;
 	}
@@ -40,7 +40,7 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	return state->foundCount != MAX_FOUND_COUNT;
 }
 
-TweetParser::TweetParser(char *buffer, char **text, int text_length, char **date, int date_length)
+TweetParser::TweetParser(char *buffer, char *text, int text_length, char *date, int date_length)
 {
 	this->buffer = buffer;
 	
