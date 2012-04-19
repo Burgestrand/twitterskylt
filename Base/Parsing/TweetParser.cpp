@@ -2,7 +2,7 @@
 
 static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 {
-	State *state = (State *) context;
+	TweetParser::State *state = (TweetParser::State *) context;
 	
 	if (!strncmp("text", (const char *) key, keyLength)) {
 		state->textFound = true;
@@ -15,7 +15,7 @@ static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 
 static int stringEvent(void *context, const unsigned char *str, size_t strLength)
 {
-	State *state = (State *) context;
+	TweetParser::State *state = (TweetParser::State *) context;
 	
 	// Maybe these pointers can be returned directly instead of copying.
 	// Note that they add null byte after the string.
