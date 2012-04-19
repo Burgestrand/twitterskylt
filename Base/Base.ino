@@ -1,8 +1,11 @@
 #include <Radio.h>
 #include <Coordinator.h>
-#include <Ethernet.h>
-#include <HTTP.h>
 #include "Arduino.h"
+
+#include <EthernetClient.h>
+#include <IPAddress.h>
+
+#include <HTTP.h>
 #include <SoftwareSerial.h>
 #include <XBee.h>
 #include <Formatting.h>
@@ -43,6 +46,7 @@ for(int i=72; i<120; i++) sendData[i] = '2';
 
 void loop(void)
 {
+  HTTP http();
     //Ethernet.renew();
   delay(10);
   uint8_t st = coordinator.tick();
@@ -55,7 +59,6 @@ void loop(void)
   else {
      digitalWrite(errorPin, LOW); 
   }
-   HTTP::tick(&coordinator);
 }
 
 void assocLed(uint8_t state) {
