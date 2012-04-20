@@ -32,7 +32,7 @@ void setup(void)
 	pinMode(errorPin, OUTPUT);
 	pinMode(assocPin, OUTPUT);
 	coordinator.begin(Serial1);
-
+/*
 	int configStatus = config.begin("KONF1.TXT");
 	if (configStatus > 0) {
 		showError();
@@ -45,15 +45,33 @@ void setup(void)
 		showError();
 		abort();
 	}
-	
+	*/
 	attachInterrupt(0, pairUp, FALLING);
 	hideError();
 	hideAssoc();	  
 	blinkTimer = 0;
 	
-	Serial.println("Message:");
-	char *message = Formatting::format("charlie sheen roxx 0123456789abc", "Tue, 17 Apr 2012 09:24:36 +0000", 0);
-	Serial.println(message);
+	//{"text":"hej du", "created_at":"datum"}
+	char * buffer = (char *) calloc(1, sizeof(char));
+	 char *text = (char *) calloc(161, sizeof(char));
+	 char *date = (char *) calloc(41, sizeof(char));
+	 TweetParser parser(buffer, text, 161, date, 41);
+	 bool done = false;
+	char c = 0;
+	 while (c != '$') {
+	  while (Serial.available()) {
+		c = (char) Serial.read();
+		//Serial.print("char: ");
+		//Serial.println(c);
+		if (c != '$') {
+		 	*buffer = c;
+		}
+		parser.parse(1);
+	  }
+	 }
+	char * result = Formatting::format(text, date, 0);
+	Serial.println("formatted tweet:");
+	Serial.println(result);
 }
 
 void loop(void)
