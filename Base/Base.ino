@@ -50,34 +50,14 @@ void setup(void)
 	hideError();
 	hideAssoc();	  
 	blinkTimer = 0;
-	
-	//{"text":"hej du", "created_at":"datum"}
-	char * buffer = (char *) calloc(1, sizeof(char));
-	 char *text = (char *) calloc(161, sizeof(char));
-	 char *date = (char *) calloc(41, sizeof(char));
-	 TweetParser parser(buffer, text, 161, date, 41);
-	 bool done = false;
-	char c = 0;
-	 while (c != '$') {
-	  while (Serial.available()) {
-		c = (char) Serial.read();
-		//Serial.print("char: ");
-		//Serial.println(c);
-		if (c != '$') {
-		 	*buffer = c;
-		}
-		parser.parse(1);
-	  }
-	 }
-	char * result = Formatting::format(text, date, 0);
-	Serial.println("formatted tweet:");
-	Serial.println(result);
 }
 
 void loop(void)
 {
-	ethernetTick();
-	radioTick();
+	//ethernetTick();
+	//radioTick();
+	Serial.println("loop");
+	tweetTick();
 }
 
 void ethernetTick()
@@ -95,6 +75,47 @@ void radioTick()
 	}
 	else {
 		hideError(); 
+	}
+}
+
+	char *tweets[] {
+ 		"{\"text\":\"charlie sheen roxx\", \"created_at\":\"Tue, 17 Apr 2012 09:24:36 +0000\"}",
+ 		"{\"text\":\"charlie sheen suxx\", \"created_at\":\"Fri, 18 Apr 2012 09:24:36 +0000\"}",
+ 		"{\"text\":\"hej du\", \"created_at\":\"Tue, 19 Apr 2012 09:24:36 +0000\"}"
+	};
+	int tweetCount = 0;
+	int lastRequest = 0;
+
+void tweetTick()
+{
+	#define SIZE 10
+	#define UPDATE_INTERVAL 10000
+	char *buffer = (char *) calloc(SIZE, sizeof(char));
+	char *text = (char *) calloc(161, sizeof(char));
+	char *date = (char *) calloc(41, sizeof(char));
+	
+	TweetParser parser = TweetParser(buffer, text, 161, date, 40);	
+	
+	if (tweetCount < 3 && millis() - lastRequest > UPDATE_INTERVAL) {
+		Serial.println("begin tweet");
+ 		char *p = tweets[tweetCount];
+		int i = 0;
+	 	while(i < strlen(tweets[tweetCount])) {
+			int len = strlen(p);
+			if (len > SIZE) {
+				len = SIZE;
+		  	}
+  			memcpy(buffer, p, len);
+  			parser.parse(len);
+			i += len;
+			p += len;
+ 		}
+ 		++tweetCount;
+ 		lastRequest = millis();
+		
+		char * result = Formatting::format(text, date, 0);
+		Serial.println("formatted tweet:");
+		Serial.println(result);
 	}
 }
 
