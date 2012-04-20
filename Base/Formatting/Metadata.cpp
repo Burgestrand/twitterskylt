@@ -1,5 +1,4 @@
 #include "Metadata.h"
-#include "Arduino.h"
 
 namespace Formatting
 {
