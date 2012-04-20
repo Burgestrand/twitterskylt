@@ -13,7 +13,6 @@ namespace Formatting
 	- justification (distribute words over lines on display)
 	- metadata (add date to end of string)
 	
-	Requires placeholder string " 0123456789abc" at end of message, in order to insert date properly.
 	*/
 	char *format(char *message, char *twitter_date, int utc_offset);
 }

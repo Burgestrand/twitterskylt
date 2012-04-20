@@ -50,6 +50,10 @@ void setup(void)
 	hideError();
 	hideAssoc();	  
 	blinkTimer = 0;
+	
+	Serial.println("Message:");
+	char *message = Formatting::format("charlie sheen roxx 0123456789abc", "Tue, 17 Apr 2012 09:24:36 +0000", 0);
+	Serial.println(message);
 }
 
 void loop(void)

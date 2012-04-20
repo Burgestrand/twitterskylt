@@ -6,6 +6,7 @@
 
 namespace Formatting
 {
+	char *add_date_placeholder(char *message);
 	char *convert_date(char *twitter_date, int utc_offset);
 	char *add_date(char *message, char *date);
 }

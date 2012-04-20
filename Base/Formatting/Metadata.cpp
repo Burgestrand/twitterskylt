@@ -2,6 +2,17 @@
 
 namespace Formatting
 {
+	char *add_date_placeholder(char *message)
+	{
+		char *placeholder = " 0123456789abc";
+		uint8_t length_after = strlen(message) + strlen(placeholder) + 1;
+		realloc(message, length_after);
+		strcat(message, placeholder);
+		free(placeholder);
+		
+		return message;
+	}
+	
 	#define DATE_FORMAT "- %u/%u %02u:%02u"
 	static const char *month_names[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
