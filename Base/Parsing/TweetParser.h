@@ -2,6 +2,8 @@
 #define TweetParser_h
 
 #include <inttypes.h>
+#include <string.h>
+#include <stdlib.h>
 
 extern "C" {
 	#include "yajl_parser.h"
@@ -26,7 +28,6 @@ class TweetParser {
 	private:
 		// Buffer to read JSON from.
 		char *buffer;
-		int bufferSize;
 		// Yajl.
 		yajl_callbacks callbacks;
 		yajl_handle handle;

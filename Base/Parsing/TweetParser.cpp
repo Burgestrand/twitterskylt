@@ -1,4 +1,5 @@
 #include "TweetParser.h"
+#include <SPI.h>
 
 static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 {
@@ -15,6 +16,10 @@ static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 
 static int stringEvent(void *context, const unsigned char *str, size_t strLength)
 {
+	char *copy = (char *) calloc(strLength + 1, sizeof(char));
+	memcpy(copy, str, strLength);
+	Serial.println("found string:");
+	Serial.println(copy);
 	TweetParser::State *state = (TweetParser::State *) context;
 	
 	// Maybe these pointers can be returned directly instead of copying.
@@ -22,7 +27,6 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	if (state->textFound) {
 		size_t length = (strLength > state->textLength) ? state->textLength : strLength;
 		
-		state->text = (char*) malloc(length + 1);
 		memcpy(state->text, str, length);
 		(state->text)[length] = '\0';
 		state->textFound = false;
@@ -30,7 +34,6 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	} else if (state->dateFound) {
 		size_t length = (strLength > state->dateLength) ? state->dateLength : strLength;
 		
-		state->date = (char*) malloc(length + 1);
 		memcpy(state->date, str, length);
 		(state->date)[length] = '\0';
 		state->dateFound = false;
@@ -40,38 +43,36 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	return state->foundCount != MAX_FOUND_COUNT;
 }
 
-TweetParser::TweetParser(char *buffer, char *text, int text_length, char *date, int date_length)
+TweetParser::TweetParser(char *buffer, char *text, int textLength, char *date, int dateLength)
 {
 	this->buffer = buffer;
 	
-	this->state->text = text;
-	this->state->text_length = text_length;
-	this->state->date = date;
-	this->state->date_length = date_length;
-	this->state->textFound = false;
-	this->state->dateFound = false;
-	this->state->foundCount = 0;
+	this->state.text = text;
+	this->state.textLength = textLength;
+	this->state.date = date;
+	this->state.dateLength = dateLength;
+	this->state.textFound = false;
+	this->state.dateFound = false;
+	this->state.foundCount = 0;
 	
-	callbacks =
-	{
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		stringEvent,
-		NULL,
-		keyEvent,
-		NULL,
-		NULL,
-		NULL
-	};
-	handle = yajl_alloc(&callbacks, NULL, &this->state);
+	this->callbacks.yajl_null = NULL;
+	this->callbacks.yajl_boolean = NULL;
+	this->callbacks.yajl_integer = NULL;
+	this->callbacks.yajl_double = NULL;
+	this->callbacks.yajl_number = NULL;
+	this->callbacks.yajl_string = stringEvent;
+	this->callbacks.yajl_start_map = NULL;
+	this->callbacks.yajl_map_key = keyEvent;
+	this->callbacks.yajl_end_map = NULL;
+	this->callbacks.yajl_start_array = NULL;
+	this->callbacks.yajl_end_array = NULL;
+	
+	this->handle = yajl_alloc(&this->callbacks, NULL, &this->state);
 }
 
-TweetParser::parse(int bufferSize)
+bool TweetParser::parse(int bufferSize)
 {
-	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, this->bufferSize);
+	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
 	
 	return status == yajl_status_ok;
 }

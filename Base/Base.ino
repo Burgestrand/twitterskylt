@@ -5,7 +5,7 @@
 #include <EthernetClient.h>
 #include <IPAddress.h>
 
-#include <HTTP.h>
+//#include <HTTP.h>
 #include <SoftwareSerial.h>
 #include <XBee.h>
 #include <Formatting.h>
@@ -43,10 +43,7 @@ for(int i=72; i<120; i++) sendData[i] = '2';
 		signalError(true);
 		abort();
 	}
-	Serial.println(config.getUsername());
-	Serial.println(config.getUsername());
-	Serial.println(config.getQuery());
-	Serial.println(config.getQuery());
+	
 	byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
 	int ethernetStatus = Ethernet.begin(mac);
 	if (ethernetStatus > 0) {
@@ -64,6 +61,8 @@ for(int i=72; i<120; i++) sendData[i] = '2';
 	  blinkTimer = 0;
 	//coordinator.setData(sendData, sizeof(sendData));
 }
+
+bool loop_done = false;
 
 void loop(void)
 {
@@ -83,31 +82,39 @@ void loop(void)
 	signalError(false);
      //digitalWrite(errorPin, LOW); 
   }
+  
+  if (!loop_done) {
 
+	Serial.println("Parse start");
 	boolean parse_complete = false;
 
-	char json[] = {"{\"query\": \"from%3Aajstream+%23egypt\","
-					"\"results\": [{\"created_at\": \"Mon, 05 Mar 2012 01:00:16 +0000\","
-									"\"metadata\": {\"result_type\": \"recent\"},"
-									"\"text\": \"Protests at the German University of #Cairo #GUC #Egypt - http://t.co/PeZryCQR\"}],"
-					"\"results_per_page\": 1}"};
+	const char *json[] = {"{\"query\": \"from%3Aajstream+%23eg",
+					"ypt\",\"results\": [{\"created_at\": \"Mon, 05 Mar 2012",
+					" 01:00:16 +0000\",\"metadata\": {\"result_type\": \"rece",
+					"nt\"},\"text\": \"Protests at the German University o",
+					"f #Cairo #GUC #Egypt - http://t.co/PeZryCQR\"}],\"results_per_page\": 1}"};
 
-	char * shared_buffer = (char *) malloc(256 * sizeof(char));
-	char * text = (char *) malloc(160 * sizeof(char));
-	char * date = (char *) malloc(32 * sizeof(char));
+	char * shared_buffer = (char *) calloc(256, sizeof(char));
+	char * text = (char *) calloc(160 + 1, sizeof(char));
+	char * date = (char *) calloc(32 + 1, sizeof(char));
 	TweetParser parser(shared_buffer, text, 160, date, 32);
-	int json_start = 0;
-	while (!parse_complete) {
-		put_in_buf(json_start, 30, json, shared_buffer);
-		parse_complete = parser.parse(256); 
+	
+	int i = 0;
+	while (i < 5) {
+		memcpy(shared_buffer, json[i], strlen(json[i]));
+		parse_complete = parser.parse(strlen(json[i]));
+		++i;
 	}
 
-}
+	Serial.println("Text:");
+	Serial.println(text);
 
-void put_in_buf(int begin, int length, char from[], char * to) {
-	for (int i = begin; i < length; i++)
-		to[i] = from[i];
-} 
+	Serial.println("Date:");
+	Serial.println(date);
+	
+	loop_done = true;
+	}
+}
 
 void assocLed(uint8_t state) {
   if(state == 7) {
