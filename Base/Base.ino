@@ -6,6 +6,8 @@
 #include <IPAddress.h>
 
 //#include <HTTP.h>
+#include <Radio.h>
+#include <Utilities.h>
 #include <SoftwareSerial.h>
 #include <XBee.h>
 #include <Formatting.h>
@@ -14,7 +16,6 @@
 #include <Ethernet.h>
 #include <AccConfig.h>
 #include <SD.h>
-#include <Common.h>
 #include <TweetParser.h>
 
 Coordinator coordinator;
@@ -78,45 +79,25 @@ void radioTick()
 	}
 }
 
-	char *tweets[] {
- 		"{\"text\":\"charlie sheen roxx\", \"created_at\":\"Tue, 17 Apr 2012 09:24:36 +0000\"}",
- 		"{\"text\":\"charlie sheen suxx\", \"created_at\":\"Fri, 18 Apr 2012 09:24:36 +0000\"}",
- 		"{\"text\":\"hej du\", \"created_at\":\"Tue, 19 Apr 2012 09:24:36 +0000\"}"
-	};
-	int tweetCount = 0;
-	int lastRequest = 0;
+//TweetParser parser = NULL;
+int lastRequest = 0;
 
 void tweetTick()
 {
-	#define SIZE 10
+  /*
 	#define UPDATE_INTERVAL 10000
 	char *buffer = (char *) calloc(SIZE, sizeof(char));
 	char *text = (char *) calloc(161, sizeof(char));
 	char *date = (char *) calloc(41, sizeof(char));
-	
-	TweetParser parser = TweetParser(buffer, text, 161, date, 40);	
-	
-	if (tweetCount < 3 && millis() - lastRequest > UPDATE_INTERVAL) {
-		Serial.println("begin tweet");
- 		char *p = tweets[tweetCount];
-		int i = 0;
-	 	while(i < strlen(tweets[tweetCount])) {
-			int len = strlen(p);
-			if (len > SIZE) {
-				len = SIZE;
-		  	}
-  			memcpy(buffer, p, len);
-  			parser.parse(len);
-			i += len;
-			p += len;
- 		}
- 		++tweetCount;
- 		lastRequest = millis();
-		
-		char * result = Formatting::format(text, date, 0);
-		Serial.println("formatted tweet:");
-		Serial.println(result);
-	}
+
+	TweetParser parser = TweetParser(buffer, text, 161, date, 40);
+
+  lastRequest = millis();
+
+  char * result = Formatting::format(text, date, 0);
+  Serial.println("formatted tweet:");
+  Serial.println(result);
+  */
 }
 
 void assocLed(uint8_t state) {

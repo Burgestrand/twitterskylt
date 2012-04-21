@@ -29,9 +29,9 @@ xfree(void *ptr)
 }
 
 void *
-xmalloc(size_t size)
+xcalloc(size_t count, size_t size)
 {
-  void *ptr = malloc(size);
+  void *ptr = calloc(count, size);
 
   if (ptr == NULL)
   {
@@ -39,7 +39,6 @@ xmalloc(size_t size)
     abort();
   }
 
-  memset(ptr, 0, size);
   return ptr;
 }
 
