@@ -3,27 +3,27 @@
 
 #ifndef ARDUINO
 #include <cstring>
-#endif
-
+#else
 #include <EthernetClient.h>
 #include <IPAddress.h>
+#endif
 
 #include <stdint.h>
 #include <stdarg.h>
-#include "http-parser/http_parser.h"
 
 // Different kinds of states the HTTP client might be in
 enum http_state_t
 {
   HTTP_IDLE,
   HTTP_RECEIVING,
+  HTTP_READING_BODY,
   HTTP_ERROR,
 };
 
 class HTTP
 {
   public:
-    HTTP(const uint8_t ip[4], size_t buffer_size);
+    HTTP(size_t buffer_size);
     ~HTTP();
     uint8_t get(IPAddress host, const char *path, int argc, ...);
     const char *tick(uint32_t *length);
@@ -37,8 +37,7 @@ class HTTP
     uint8_t         *_buffer;
     size_t          _buffer_size;
     char            *_body;
-
-    http_parser     *_parser;
+    const char      *_body_cursor;
 
     uint32_t        _read();
     char            *_build_query(int argc, ...);
