@@ -10,6 +10,7 @@ read CUSTOM_TWITTER_QUERY
 if [[ $CUSTOM_TWITTER_QUERY != "" ]]
 	then TWITTER_QUERY="$TWITTER_QUERY AND ($CUSTOM_TWITTER_QUERY)"
 fi
+TWITTER_QUERY="$TWITTER_QUERY +exclude:retweets"
 
 echo "Your settings have been saved. To change your settings, run this script again."
 
