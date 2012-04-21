@@ -1,3 +1,8 @@
+#ifndef _FORMATTING_H_
+#define _FORMATTING_H_
+
+#include <inttypes.h>
+#include <Utilities.h>
 #include "Encoding.h"
 #include "Normalization.h"
 #include "Justification.h"
@@ -16,3 +21,5 @@ namespace Formatting
 	*/
 	char *format(char *message, char *twitter_date, int utc_offset);
 }
+
+#endif

@@ -1,4 +1,5 @@
 #include "Normalization.h"
+#include "Utilities.h"
 
 namespace Formatting
 {
@@ -11,12 +12,12 @@ namespace Formatting
 			return NULL;
 		}
 
-		clone = (char *) calloc(strlen(string) + 1, sizeof(char));
+		clone = ALLOC_STR(strlen(string));
 		strcpy(clone, string);
 		return clone;
 	}
 	
-	static boolean matches(char byte, char *tokens)
+	static bool matches(char byte, char *tokens)
 	{
 		char *token = NULL;
 
@@ -45,8 +46,8 @@ namespace Formatting
 
 		/* first, we count number of words */
 		*num_words = 0;
-		boolean on_word	= false;
-		boolean on_whitespace = false;
+		bool on_word	= false;
+		bool on_whitespace = false;
 
 		for (cursor = string; *cursor != '\0'; ++cursor)
 		{
@@ -64,7 +65,7 @@ namespace Formatting
 		}
 
 		/* allocate space for all words */
-		words	= (char **) calloc(*num_words, sizeof(char *));
+		words	= ALLOC_N(char *, *num_words);
 		cursor = strtok(string, tokens);
 		uint8_t i	= 0;
 
@@ -75,7 +76,7 @@ namespace Formatting
 		}
 
 		/* free resources */
-		free(string);
+		xfree(string);
 
 		return words;
 	}

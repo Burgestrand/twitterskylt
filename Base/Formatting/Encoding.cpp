@@ -32,7 +32,7 @@ namespace Formatting
 		0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, // 0xF0
 	};
 
-	static boolean valid_utf8(unsigned char byte)
+	static bool valid_utf8(unsigned char byte)
 	{
 		if (byte == 0xC0 || byte == 0xC1)
 		{
@@ -48,7 +48,7 @@ namespace Formatting
 		}
 	}
 
-	static boolean is_ascii(unsigned char byte)
+	static bool is_ascii(unsigned char byte)
 	{
 		return (byte & 0x80) == 0;
 	}
@@ -68,7 +68,7 @@ namespace Formatting
 		uint8_t length = strlen(dirty), ci = 0, di = 0;
 		unsigned char bytes	= 0;
 		unsigned char current = 0x00, next = 0x00;
-		char *cleaned = (char *) calloc(length + 1, sizeof(char));
+		char *cleaned = ALLOC_STR(length);
 
 		// iterate character by character and replace it
 		for (di = 0, ci = 0; di < length; di++)
