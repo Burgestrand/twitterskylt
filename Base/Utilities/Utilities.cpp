@@ -29,9 +29,9 @@ xfree(void *ptr)
 }
 
 void *
-xmalloc(size_t size)
+xcalloc(size_t count, size_t size)
 {
-  void *ptr = malloc(size);
+  void *ptr = calloc(count, size);
 
   if (ptr == NULL)
   {
@@ -39,8 +39,32 @@ xmalloc(size_t size)
     abort();
   }
 
-  memset(ptr, 0, size);
   return ptr;
+}
+
+int
+find(const char *haystack, size_t length, const char *needle, const char **cursor)
+{
+  for (int i = 0; i < length; ++i)
+  {
+    if (**cursor == haystack[i])
+    {
+      ++(*cursor);
+      if (**cursor == '\0')
+        return i;
+    }
+    else if (*cursor != needle)
+    {
+      *cursor = needle;
+      i -= 1;
+    }
+    else
+    {
+       // do nothing, or risk endless loop!
+    }
+  }
+
+  return -1;
 }
 
 /*

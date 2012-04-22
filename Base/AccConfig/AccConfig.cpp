@@ -121,12 +121,7 @@ int AccConfig::begin(char * configFile) {
   *pek = '\0';
 
   int diff = (pek - buf) + 1; // have to include all numbers
-  Serial.println("file: ");
-  Serial.println(file_size);
-  Serial.println("diff: ");
-  Serial.println(diff);
   if (file_size != diff) {
-    Serial.println("realloc");
     char * new_ptr = (char *) realloc(buf, diff);
     if (new_ptr != NULL)
       buf = new_ptr;

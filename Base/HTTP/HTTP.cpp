@@ -1,35 +1,12 @@
 #include "HTTP.h"
-#include "../Common/Utilities.h"
+#include <Utilities.h>
 #include <stdio.h>
 
-int on_body(http_parser *parser, const char *data, size_t length)
-{
-  ((HTTP *)parser->data)->body(data, length);
-  return 0;
-}
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 
-int on_headers_complete(http_parser *parser)
-{
-  if (parser->status_code == 200)
-  {
-    return 0;
-  }
+const char *body_divider = "\r\n\r\n";
 
-  return -1;
-}
-
-http_parser_settings g_parser_settings =
-{
-  /* on_message_begin =    */ NULL,
-  /* on_url =              */ NULL,
-  /* on_header_field =     */ NULL,
-  /* on_header_value =     */ NULL,
-  /* on_headers_complete = */ on_headers_complete,
-  /* on_body =             */ on_body,
-  /* on_message_complete = */ NULL,
-};
-
-HTTP::HTTP(const uint8_t ip[4], size_t buffer_size)
+HTTP::HTTP(size_t buffer_size)
 {
   this->_client   = new EthernetClient();
   this->_state    = HTTP_IDLE;
@@ -37,10 +14,6 @@ HTTP::HTTP(const uint8_t ip[4], size_t buffer_size)
 
   this->_buffer   = ALLOC_N(uint8_t, buffer_size);
   this->_buffer_size = buffer_size;
-
-  this->_parser   = ALLOC(http_parser);
-  http_parser_init(this->_parser, HTTP_RESPONSE);
-  this->_parser->data = this;
 }
 
 HTTP::~HTTP()
@@ -84,9 +57,10 @@ uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   // Issue the request
   this->_client->println(http_query);
   this->_client->println("HOST: api.twitter.com"); // TODO: generalize
-  this->_client->println();
+  this->_client->println(); // close stream
 
   // State change!
+  this->_body_cursor = body_divider;
   this->_state = HTTP_RECEIVING;
 
   return 0;
@@ -138,17 +112,36 @@ char *_build_query(int argc, char **raw_query_params)
 uint32_t HTTP::_read()
 {
   #define ensure(expr) do { if ( ! (expr)) { return received; } } while(0)
-  int received = 0;
+  uint32_t received  = 0;
+  uint32_t available = 0;
+  this->body(NULL, -1); // clear previous body
 
-  ensure(this->_client->available());
-  received = this->_client->read(this->_buffer, this->_buffer_size);
+  available = this->_client->available();
+  ensure(available);
+  received = this->_client->read(this->_buffer, MIN(available, this->_buffer_size));
   ensure(received > 0);
 
-  int parsed = http_parser_execute(this->_parser, &g_parser_settings, (const char *) this->_buffer, received);
-  if (parsed != received) // error
+  uint8_t found_at = -1;
+
+  switch (this->_state)
   {
-    this->body(NULL, -1);
-    return -1;
+    case HTTP_RECEIVING:
+      found_at = find((const char *) this->_buffer, received, body_divider, &this->_body_cursor);
+
+      if (found_at != -1)
+      {
+        this->_state = HTTP_READING_BODY;
+        this->body((const char *) this->_buffer + found_at, received - found_at);
+      }
+      break;
+
+    case HTTP_READING_BODY:
+      this->body((const char *) this->_buffer, received);
+      break;
+
+    default:
+      // do nothing
+      break;
   }
 
   return strlen(this->body());
