@@ -18,8 +18,8 @@
 #define DISP_DATA 4
 
 // Software serial pins for debugging
-#define SERIAL_RX 9
-#define SERIAL_TX 8
+#define SERIAL_RX 7
+#define SERIAL_TX 6
 
 // Leds
 // The red led
@@ -34,8 +34,8 @@
 #define BUTTON_2 3
 
 // XBee sleep request/status
-#define SLEEP_RQ_PIN 12
-#define SLEEP_STATUS_PIN 13
+#define SLEEP_RQ_PIN 4
+#define SLEEP_STATUS_PIN 5
 
 // Global variables
 // The display
