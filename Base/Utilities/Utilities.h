@@ -37,4 +37,7 @@ char * strclone(const char *);
 /* uri-encodes a string, don’t forget to free() the return value! */
 char * url_encode(const char *);
 
+/* finds a string (with no repeating characters) in another string */
+int find(const char *, size_t, const char *, const char **);
+
 #endif

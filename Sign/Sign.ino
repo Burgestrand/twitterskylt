@@ -2,8 +2,9 @@
 #include <avr/interrupt.h>
 #include <XBee.h>
 #include <SoftwareSerial.h>
-#include <LiquidCrystal.h>
 #include <EndDevice.h>
+#include <SPI.h>
+#include <avr/pgmspace.h>
 #include <Display.h>
 #include <Sleep.h>
 
@@ -13,13 +14,13 @@
 
 // Pins
 // Display related
-#define DISP_RS 10
-#define DISP_EN 11
-#define DISP_DATA 4
+#define DISPLAY_SELECT_PIN 10
+#define DISPLAY_BUSY_PIN 8
+#define DISPLAY_RESET_PIN 9
 
 // Software serial pins for debugging
-#define SERIAL_RX 9
-#define SERIAL_TX 8
+#define SERIAL_RX 7
+#define SERIAL_TX 6
 
 // Leds
 // The red led
@@ -34,12 +35,12 @@
 #define BUTTON_2 3
 
 // XBee sleep request/status
-#define SLEEP_RQ_PIN 12
-#define SLEEP_STATUS_PIN 13
+#define SLEEP_RQ_PIN 4
+#define SLEEP_STATUS_PIN 5
 
 // Global variables
 // The display
-Display disp(DISP_RS, DISP_EN, DISP_DATA, DISP_DATA+1, DISP_DATA+2, DISP_DATA+3);
+Display disp(DISPLAY_SELECT_PIN, DISPLAY_BUSY_PIN, DISPLAY_RESET_PIN);
 
 // The radio
 EndDevice radio(SLEEP_RQ_PIN, SLEEP_STATUS_PIN);
@@ -78,7 +79,7 @@ void setup () {
   digitalWrite(LED_1, HIGH);
   
   // Initialize the display
-  disp.begin(16, 2);  
+  disp.begin();  
   
   // Initialize debug serial port
   ss.begin(9600);
@@ -94,7 +95,7 @@ void setup () {
   attachInterrupt(1, updateButtonPressed, RISING);
 
   // Show that we're done initializing
-  disp.write("Initialized\004");
+  disp.write("Initialized");
 }
 
 void loop () {
@@ -103,7 +104,7 @@ void loop () {
   if (joinPressed) {
     joinPressed = false;
     debug("JOINBTN NOTICED");
-    disp.write("Trying to join\nnetwork\004");
+    disp.write("Trying to join\nnetwork");
     radio.joinNetwork();
   }
 
@@ -111,27 +112,26 @@ void loop () {
   switch (radio.tick()) {
     case TICK_ASSOC_FAIL:
       // Association failed (note: not pairing)
-      disp.write("Assoc fail\004");
+      disp.write("Assoc fail");
       break;
     case TICK_JOIN_NOT_DELIVERED:
       // Could not deliver join message
-      disp.write("Join:\n No delivery\004");
+      disp.write("Join:\n No delivery");
       break;
     case TICK_JOIN_TIMEOUT:
-      disp.write("Join:\n Timeout\004");
+      disp.write("Join:\n Timeout");
       break;
     case TICK_JOIN_OK:
-      disp.write("Joined!\004");
+      disp.write("Joined!");
       break;
     case TICK_UPDATE_NO_DELIVERY:
-      disp.write("Update:\n No delivery\004");
+      disp.write("Update:\n No delivery");
       break;
     case TICK_UPDATE_TIMEOUT:
-      disp.write("Update:\n Timeout\004");
+      disp.write("Update:\n Timeout");
       break;
     case TICK_NEW_MSG:
       disp.write((char *) radio.getData());
-      disp.write('\004');
       debug("GOT NEW MSG");
       break;
     case TICK_SLEEPING:

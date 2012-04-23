@@ -5,7 +5,7 @@
 #include <EthernetClient.h>
 #include <IPAddress.h>
 
-//#include <HTTP.h>
+#include <HTTP.h>
 #include <Radio.h>
 #include <Utilities.h>
 #include <SoftwareSerial.h>
@@ -80,10 +80,27 @@ void radioTick()
 }
 
 //TweetParser parser = NULL;
-int lastRequest = 0;
+HTTP *httpClient = NULL;
+unsigned long nextRequest = 0;
+unsigned long updateInterval = 60 * 1000; // 1 minute interval
+
+#define HTTP_BUFFER_SIZE 1024
 
 void tweetTick()
 {
+  if (millis() >= nextRequest)
+  {
+    // calculate next time to do the request
+    nextRequest += updateInterval;
+    // httpClient.~HTTP();
+    httpClient = new HTTP(HTTP_BUFFER_SIZE);
+    // new request
+  }
+  else
+  {
+
+  }
+
   /*
 	#define UPDATE_INTERVAL 10000
 	char *buffer = (char *) calloc(SIZE, sizeof(char));

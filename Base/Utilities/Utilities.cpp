@@ -42,6 +42,31 @@ xcalloc(size_t count, size_t size)
   return ptr;
 }
 
+int
+find(const char *haystack, size_t length, const char *needle, const char **cursor)
+{
+  for (int i = 0; i < length; ++i)
+  {
+    if (**cursor == haystack[i])
+    {
+      ++(*cursor);
+      if (**cursor == '\0')
+        return i;
+    }
+    else if (*cursor != needle)
+    {
+      *cursor = needle;
+      i -= 1;
+    }
+    else
+    {
+       // do nothing, or risk endless loop!
+    }
+  }
+
+  return -1;
+}
+
 /*
  * Tagen från https://github.com/Burgestrand/libmockspotify/blob/65dc038574a0ef1d82abe75abd28269fb05a0c66/src/urlcode.c
  * */
