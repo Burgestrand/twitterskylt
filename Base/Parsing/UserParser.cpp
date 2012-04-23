@@ -54,5 +54,5 @@ bool TweetParser::parse(int bufferSize)
 {
 	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
 	
-	return status == yajl_status_ok;
+	return status == yajl_status_client_canceled;
 }
