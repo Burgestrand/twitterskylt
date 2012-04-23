@@ -51,6 +51,18 @@ void setup(void)
 	hideError();
 	hideAssoc();	  
 	blinkTimer = 0;
+	
+	setupTimezone();
+}
+
+void setupTimezone()
+{
+	/*
+	URL: "api.twitter.com/1/users/show.json"
+	Param 1: "screen_name"
+	Value 1: config.getUsername()
+	Eventuellt returnera statuskod om det misslyckas och då antingen visa fel och avsluta eller välja default.
+	*/
 }
 
 void loop(void)
