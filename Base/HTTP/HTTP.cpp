@@ -66,7 +66,7 @@ uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   return 0;
 }
 
-char *_build_query(int argc, char **raw_query_params)
+char *HTTP::_build_query(int argc, char **raw_query_params)
 {
   // URLEncode all parameters and values
   int i = 0;

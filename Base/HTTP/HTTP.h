@@ -39,8 +39,9 @@ class HTTP
     char            *_body;
     const char      *_body_cursor;
 
+	char			*b();
     uint32_t        _read();
-    char            *_build_query(int argc, ...);
+    char            *_build_query(int argc, char **raw_query_params);
 };
 
 #endif
