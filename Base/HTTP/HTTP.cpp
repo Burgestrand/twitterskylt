@@ -24,14 +24,14 @@ HTTP::~HTTP()
 
 uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
 {
-  if ( ! (argc % 2)) // We must have an even number of arguments
+  if (argc % 2) // We must have an even number of arguments
   {
-    return -1;
+    return 1;
   }
 
   if ( ! _client->connect(host, 80))
   {
-    return -2;
+    return 2;
   }
 
   // Extract the query parameters
@@ -50,13 +50,13 @@ uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   xfree(query_params);
 
   // Build the GET request
-  uint32_t query_length = strlen("GET ") + strlen(path) + 1 /* ? */ + strlen(query_string) + strlen(" HTTP/1.1");
+  uint32_t query_length = strlen("GET ") + strlen(path) + 1 /* ? */ + strlen(query_string) + strlen(" HTTP/1.1") + 1 /* for null */;
   char *http_query = ALLOC_STR(query_length);
   snprintf(http_query, query_length, "GET %s?%s HTTP/1.1", path, query_string);
 
   // Issue the request
   this->_client->println(http_query);
-  this->_client->println("HOST: api.twitter.com"); // TODO: generalize
+  this->_client->println("HOST: search.twitter.com"); // TODO: generalize
   this->_client->println(); // close stream
 
   // State change!
@@ -121,7 +121,7 @@ uint32_t HTTP::_read()
   received = this->_client->read(this->_buffer, MIN(available, this->_buffer_size));
   ensure(received > 0);
 
-  uint8_t found_at = -1;
+  int found_at = -1;
 
   switch (this->_state)
   {
@@ -184,7 +184,6 @@ const char *HTTP::tick(uint32_t *length)
       return this->body();
       break;
   }
-
   *length = -1;
   return NULL;
 }
