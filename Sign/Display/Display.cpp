@@ -61,17 +61,17 @@ void Display::write(char *msg) {
 				bool two_chars = false;
 
 				// Buffer the first character.
-				buf[0] = font_data(*line_chr - 1, row, 0);
-				buf[1] = font_data(*line_chr - 1, row, 1);
+				buf[0] = font_data(*line_chr, row, 0);
+				buf[1] = font_data(*line_chr, row, 1);
 
 				// Buffer the second character if there is one.
 				line_chr++;
 				if (*line_chr != 0 && *line_chr != '\n') {
 					two_chars = true;
 
-					buf[1] |= font_data(*line_chr - 1, row, 0) >> 4;
-					buf[2]  = font_data(*line_chr - 1, row, 0) << 4;
-					buf[2] |= font_data(*line_chr - 1, row, 1) >> 4;
+					buf[1] |= font_data(*line_chr, row, 0) >> 4;
+					buf[2]  = font_data(*line_chr, row, 0) << 4;
+					buf[2] |= font_data(*line_chr, row, 1) >> 4;
 
 					line_chr++;
 				}
