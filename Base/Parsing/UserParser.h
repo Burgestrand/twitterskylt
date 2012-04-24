@@ -11,14 +11,14 @@ extern "C" {
 
 class UserParser {
 	public:
-		TweetParser(char *buffer, char *utcOffset, int utcOffsetLength);
+		UserParser(char *buffer, int *utcOffset, int utcOffsetLength);
 		bool parse(int bufferSize);
 
 		struct State {
 			int *utcOffset;
 			int utcOffsetLength;
 			bool utcOffsetFound;
-		}
+		};
 	private:
 		// Buffer to read JSON from.
 		char *buffer;
