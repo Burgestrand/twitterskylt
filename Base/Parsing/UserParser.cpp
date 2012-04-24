@@ -1,4 +1,4 @@
-#include "TweetParser.h"
+#include "UserParser.h"
 
 static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 {
@@ -27,7 +27,7 @@ static int integerEvent(void *context, long long number)
 	}
 }
 
-TweetParser::TweetParser(char *buffer, char *utcOffset, int utcOffsetLength)
+UserParser::UserParser(char *buffer, int *utcOffset, int utcOffsetLength)
 {
 	this->buffer = buffer;
 	
@@ -50,7 +50,7 @@ TweetParser::TweetParser(char *buffer, char *utcOffset, int utcOffsetLength)
 	this->handle = yajl_alloc(&this->callbacks, NULL, &this->state);
 }
 
-bool TweetParser::parse(int bufferSize)
+bool UserParser::parse(int bufferSize)
 {
 	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
 	
