@@ -126,8 +126,8 @@ void Display::black() {
 }
 
 void Display::write_start(uint8_t line, uint8_t row) {
-	start_cmd(CMD_WRITE);
-	uint16_t adr = BYTES_PER_ROW*(row + line*(ROWS_PER_LINE+1)); // +1 for line spacing
+	start_cmd(CMD_WRITE);            // v avoid top frame         v line spacing
+	uint16_t adr = BYTES_PER_ROW*(row + 1 + line*(ROWS_PER_LINE + 1));
 	send((uint8_t) (adr >> 8));
 	send((uint8_t) adr);
 }
