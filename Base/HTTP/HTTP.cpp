@@ -178,7 +178,8 @@ const char *HTTP::tick(uint32_t *length)
       *length = 0;
       return NULL;
       break;
-
+	
+	case HTTP_READING_BODY: // I think this is ok
     case HTTP_RECEIVING:
       *length = this->_read();
       return this->body();
