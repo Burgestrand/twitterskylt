@@ -82,31 +82,32 @@ static char to_hex(char code)
 char *url_encode(const char *str)
 {
   char current;
-  const char *position = NULL;
+  const char *cursor = NULL;
 
   // if all bytes need encoding, the string will grow with a maximum of three
   // times its own size
-  char *result = ALLOC_N(char, strlen(str) * 3 + 1);
+  char *result = ALLOC_STR(strlen(str) * 3);
+  char *result_cursor = result;
 
-  for (position = str; current = *position; position++) // let’s hope all our urlencoded strings ends with \0
+  for (cursor = str; current = *cursor; cursor++) // let’s hope all our urlencoded strings ends with \0
   {
     if (isalnum(current) || current == '-' || current == '_' || current == '.' || current == '~')
     {
-      *result++ = current;
+      *result_cursor++ = current;
     }
     else if (current == ' ')
     {
-      *result++ = '+';
+      *result_cursor++ = '+';
     }
     else
     {
-      *result++ = '%';
-      *result++ = to_hex(current >> 4);
-      *result++ = to_hex(current & 0x0F);
+      *result_cursor++ = '%';
+      *result_cursor++ = to_hex(current >> 4);
+      *result_cursor++ = to_hex(current & 0x0F);
     }
   }
 
-  *result = '\0';
+  *result_cursor = '\0';
 
   return result;
 }
