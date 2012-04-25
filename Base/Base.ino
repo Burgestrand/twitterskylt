@@ -16,7 +16,6 @@
 #include <Ethernet.h>
 #include <AccConfig.h>
 #include <SD.h>
-#include <TweetParser.h>
 
 Coordinator coordinator;
 
@@ -33,24 +32,70 @@ void setup(void)
 	pinMode(errorPin, OUTPUT);
 	pinMode(assocPin, OUTPUT);
 	coordinator.begin(Serial1);
-/*
+
 	int configStatus = config.begin("KONF1.TXT");
 	if (configStatus > 0) {
 		showError();
 		abort();
 	}
-	
+
 	byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
 	int ethernetStatus = Ethernet.begin(mac);
 	if (ethernetStatus > 0) {
 		showError();
 		abort();
 	}
-	*/
+
 	attachInterrupt(0, pairUp, FALLING);
 	hideError();
-	hideAssoc();	  
+	hideAssoc();
 	blinkTimer = 0;
+
+	setupTimezone();
+}
+
+void setupTimezone()
+{
+  size_t buffer_size = 1024;
+  HTTP *client = new HTTP(buffer_size);
+
+  Serial.println("Get: ");
+  int get = client->get(IPAddress(199, 59, 150, 9), "/1/users/show.json", 2, "screen_name", "Burgestrand");
+
+  if (get == 0)
+  {
+    Serial.println("Get success!");
+    Serial.println();
+    Serial.println();
+
+    const char *read_data = NULL;
+    int32_t read_length = 0;
+
+    while (true)
+    {
+      read_data = client->tick(&read_length);
+
+      Serial.print("tick: ");
+      Serial.println(read_length, DEC);
+      Serial.println(read_data);
+      Serial.println();
+
+      delay(1000);
+    }
+  }
+  else
+  {
+    Serial.println("Get error");
+    Serial.println(get);
+    Serial.println();
+  }
+
+	/*
+	URL: "api.twitter.com/1/users/show.json"
+	Param 1: "screen_name"
+	Value 1: config.getUsername()
+	Eventuellt returnera statuskod om det misslyckas och då antingen visa fel och avsluta eller välja default.
+	*/
 }
 
 void loop(void)
@@ -58,7 +103,8 @@ void loop(void)
 	//ethernetTick();
 	//radioTick();
 	Serial.println("loop");
-	tweetTick();
+  delay(5000);
+	//tweetTick();
 }
 
 void ethernetTick()

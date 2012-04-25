@@ -1,5 +1,4 @@
 #include "TweetParser.h"
-#include <SPI.h>
 
 static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 {
@@ -18,8 +17,6 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 {
 	char *copy = (char *) calloc(strLength + 1, sizeof(char));
 	memcpy(copy, str, strLength);
-	Serial.println("found string:");
-	Serial.println(copy);
 	TweetParser::State *state = (TweetParser::State *) context;
 	
 	// Maybe these pointers can be returned directly instead of copying.
@@ -74,5 +71,5 @@ bool TweetParser::parse(int bufferSize)
 {
 	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
 	
-	return status == yajl_status_ok;
+	return status == yajl_status_client_canceled;
 }

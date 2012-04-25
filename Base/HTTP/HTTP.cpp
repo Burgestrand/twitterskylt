@@ -22,9 +22,9 @@ HTTP::~HTTP()
   xfree(this->_buffer);
 }
 
-uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
+int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
 {
-  if ( ! (argc % 2)) // We must have an even number of arguments
+  if (argc % 2) // We must have an even number of arguments
   {
     return -1;
   }
@@ -50,13 +50,18 @@ uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   xfree(query_params);
 
   // Build the GET request
-  uint32_t query_length = strlen("GET ") + strlen(path) + 1 /* ? */ + strlen(query_string) + strlen(" HTTP/1.1");
+  uint32_t query_length = strlen("GET ") + strlen(path) + 1 /* ? */ + strlen(query_string) + strlen(" HTTP/1.1") + 1 /* for null */;
   char *http_query = ALLOC_STR(query_length);
   snprintf(http_query, query_length, "GET %s?%s HTTP/1.1", path, query_string);
 
   // Issue the request
+  Serial.println("HTTP::get http_query: ");
+  Serial.println(http_query);
+  Serial.println();
+
   this->_client->println(http_query);
   this->_client->println("HOST: api.twitter.com"); // TODO: generalize
+  this->_client->println("Accept: application/json");
   this->_client->println(); // close stream
 
   // State change!
@@ -66,7 +71,7 @@ uint8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   return 0;
 }
 
-char *_build_query(int argc, char **raw_query_params)
+char *HTTP::_build_query(int argc, char **raw_query_params)
 {
   // URLEncode all parameters and values
   int i = 0;
@@ -117,32 +122,57 @@ uint32_t HTTP::_read()
   this->body(NULL, -1); // clear previous body
 
   available = this->_client->available();
+  Serial.print("AVAILABLE: ");
+  Serial.println(available, DEC);
+  Serial.println();
   ensure(available);
-  received = this->_client->read(this->_buffer, MIN(available, this->_buffer_size));
+
+  uint32_t will_read = MIN(available, this->_buffer_size);
+  Serial.print("WILL READ: ");
+  Serial.println(will_read, DEC);
+  Serial.println();
+
+  received = this->_client->read(this->_buffer, will_read);
+
+  Serial.print("RECEIVED: ");
+  Serial.println(received, DEC);
+
+  char *read_data = ALLOC_STR(received);
+  MEMCPY_N(read_data, (const char *) this->_buffer, char, received);
+  read_data[received] = '\0';
+  Serial.println(read_data);
+  xfree(read_data);
+
   ensure(received > 0);
 
-  uint8_t found_at = -1;
+  int found_at = -1;
 
   switch (this->_state)
   {
     case HTTP_RECEIVING:
+      Serial.println("WAITING FOR BODY");
       found_at = find((const char *) this->_buffer, received, body_divider, &this->_body_cursor);
 
       if (found_at != -1)
       {
+        Serial.println("FOUND BODY");
         this->_state = HTTP_READING_BODY;
         this->body((const char *) this->_buffer + found_at, received - found_at);
       }
       break;
 
     case HTTP_READING_BODY:
+      Serial.println("READING BODY");
       this->body((const char *) this->_buffer, received);
+      Serial.println("DONE READING");
       break;
 
     default:
       // do nothing
       break;
   }
+
+  Serial.println("HTTP::_read DONE");
 
   return strlen(this->body());
 }
@@ -169,20 +199,44 @@ http_state_t HTTP::state()
   return _state;
 }
 
-const char *HTTP::tick(uint32_t *length)
+const char *HTTP::tick(int32_t *length)
 {
   switch (this->state())
   {
+    case HTTP_DONE:
+      Serial.println("HTTP_DONE");
+      *length = 0;
+      return NULL;
+      break;
+
     case HTTP_IDLE:
+      Serial.println("HTTP_IDLE");
+      *length = 0;
+      return NULL;
+      break;
+
     case HTTP_ERROR:
+      Serial.println("HTTP_ERROR");
       *length = 0;
       return NULL;
       break;
 
     case HTTP_RECEIVING:
+      Serial.println("HTTP_RECEIVING");
+      *length = this->_read();
+      if (*length > 0)
+        return this->body();
+      break;
+
+    case HTTP_READING_BODY: // I think this is ok
+      Serial.println("HTTP_READING_BODY");
       *length = this->_read();
       return this->body();
       break;
+
+    default:
+      Serial.println("HTTP_STATE UNDEFINED");
+      Serial.println(this->state(), DEC);
   }
 
   *length = -1;

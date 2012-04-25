@@ -18,6 +18,7 @@ enum http_state_t
   HTTP_RECEIVING,
   HTTP_READING_BODY,
   HTTP_ERROR,
+  HTTP_DONE,
 };
 
 class HTTP
@@ -25,8 +26,8 @@ class HTTP
   public:
     HTTP(size_t buffer_size);
     ~HTTP();
-    uint8_t get(IPAddress host, const char *path, int argc, ...);
-    const char *tick(uint32_t *length);
+    int8_t get(IPAddress host, const char *path, int argc, ...);
+    const char *tick(int32_t *length);
     http_state_t state();
     const char *body();
     void body(const char *data, size_t length);
@@ -40,7 +41,7 @@ class HTTP
     const char      *_body_cursor;
 
     uint32_t        _read();
-    char            *_build_query(int argc, ...);
+    char            *_build_query(int argc, char **raw_query_params);
 };
 
 #endif
