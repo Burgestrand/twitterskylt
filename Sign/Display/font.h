@@ -5,7 +5,7 @@
 
 #include <avr/pgmspace.h>
 
-#ifndef Display_font_h
-#define Display_font_h
+#ifndef Display_fontwide_h
+#define Display_fontwide_h
 extern const uint8_t PROGMEM font[];
 #endif
