@@ -5,7 +5,7 @@
 #include <SPI.h>
 #include <avr/pgmspace.h>
 //#include <Arduino.h>
-#include <font.h>
+#include <fontwide.h>
 
 class Display {
 	public:
