@@ -1,4 +1,5 @@
 #include "TweetParser.h"
+#include "Arduino.h"
 
 static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 {
@@ -15,10 +16,10 @@ static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 
 static int stringEvent(void *context, const unsigned char *str, size_t strLength)
 {
-	char *copy = (char *) calloc(strLength + 1, sizeof(char));
-	memcpy(copy, str, strLength);
+	//char *copy = (char *) calloc(strLength + 1, sizeof(char));
+	//memcpy(copy, str, strLength);
 	TweetParser::State *state = (TweetParser::State *) context;
-	
+
 	// Maybe these pointers can be returned directly instead of copying.
 	// Note that they add null byte after the string.
 	if (state->textFound) {
@@ -36,13 +37,12 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 		state->dateFound = false;
 		state->foundCount += 1;
 	}
-	
 	return state->foundCount != MAX_FOUND_COUNT;
 }
 
-TweetParser::TweetParser(char *buffer, char *text, int textLength, char *date, int dateLength)
+TweetParser::TweetParser(char *text, int textLength, char *date, int dateLength)
 {
-	this->buffer = buffer;
+	//this->buffer = buffer;
 	
 	this->state.text = text;
 	this->state.textLength = textLength;
@@ -67,9 +67,13 @@ TweetParser::TweetParser(char *buffer, char *text, int textLength, char *date, i
 	this->handle = yajl_alloc(&this->callbacks, NULL, &this->state);
 }
 
-bool TweetParser::parse(int bufferSize)
+bool TweetParser::parse(const char * buffer, int bufferSize)
 {
-	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
+	yajl_status status = yajl_parse(this->handle, (const unsigned char *) buffer, bufferSize);
 	
 	return status == yajl_status_client_canceled;
+}
+
+void TweetParser::del() {
+	yajl_free(handle);
 }

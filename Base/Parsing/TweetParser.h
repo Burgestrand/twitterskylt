@@ -11,8 +11,9 @@ extern "C" {
 
 class TweetParser {
 	public:
-		TweetParser(char *buffer, char *text, int textLength, char *date, int dateLength);
-		bool parse(int bufferSize);
+		TweetParser(/*const char *buffer, */char *text, int textLength, char *date, int dateLength);
+		bool parse(const char * buffer, int bufferSize);
+		void del();
 
 		struct State {
 			// The variables that result values should be written into.
@@ -27,7 +28,7 @@ class TweetParser {
 		};
 	private:
 		// Buffer to read JSON from.
-		char *buffer;
+		const char *buffer;
 		// Yajl.
 		yajl_callbacks callbacks;
 		yajl_handle handle;
