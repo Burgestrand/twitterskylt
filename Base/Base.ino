@@ -17,7 +17,6 @@
 #include <AccConfig.h>
 #include <SD.h>
 #include <TweetParser.h>
-#include <MemoryFree.h>
 
 Coordinator coordinator;
 
@@ -65,7 +64,7 @@ void setup(void)
 void setupTimezone()
 {
   size_t buffer_size = 1024;
-  HTTP *client = new HTTP(buffer_size);
+  HTTP *client = new HTTP("api.twitter.com", buffer_size);
 
   Serial.println("Get: ");
   int get = client->get(IPAddress(199, 59, 150, 9), "/1/users/show.json", 2, "screen_name", "door_sign");
@@ -97,6 +96,8 @@ void setupTimezone()
     Serial.println(get);
     Serial.println();
   }
+
+  client->destroy();
 
 	/*
 	URL: "api.twitter.com/1/users/show.json"
@@ -151,8 +152,7 @@ void tweetTick()
 	Serial.println("lets get");
     // calculate next time to do the request
     nextRequest += updateInterval;
-    // httpClient.~HTTP();
-    httpClient = new HTTP(HTTP_BUFFER_SIZE);
+    httpClient = new HTTP("search.twitter.com", HTTP_BUFFER_SIZE);
     // new request
 	int8_t ret = httpClient->get(IPAddress(199,59,148,201), "/search.json", 6, "q", "from:door_sign", "result_type", "recent", "rpp", "1");
 	int32_t length = 0;
@@ -164,7 +164,7 @@ void tweetTick()
 			finished = parser.parse(buffer, length);
 		}
 	}
-	httpClient->rem();
+	httpClient->destroy();
 	parser.del();
 	char * result = Formatting::format(text,date,3600);
 	coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));

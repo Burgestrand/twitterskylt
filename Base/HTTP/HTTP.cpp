@@ -6,17 +6,18 @@
 
 const char *body_divider = "\r\n\r\n";
 
-HTTP::HTTP(size_t buffer_size)
+HTTP::HTTP(const char *http_host, size_t buffer_size)
 {
   this->_client   = new EthernetClient();
   this->_state    = HTTP_IDLE;
   this->_body     = NULL;
+  this->_http_host = http_host;
 
   this->_buffer   = ALLOC_N(uint8_t, buffer_size);
   this->_buffer_size = buffer_size;
 }
 
-HTTP::~HTTP()
+void HTTP::destroy()
 {
   delete this->_client;
   xfree(this->_buffer);
@@ -49,6 +50,10 @@ int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   char *query_string = this->_build_query(argc, query_params);
   xfree(query_params);
 
+  // Build the HTTP host header
+  char *host_header = ALLOC_STR(strlen("HOST: ") + strlen(this->_http_host));
+  sprintf(host_header, "HOST: %s", this->_http_host);
+
   // Build the GET request
   uint32_t query_length = strlen("GET ") + strlen(path) + 1 /* ? */ + strlen(query_string) + strlen(" HTTP/1.1") + 1 /* for null */;
   char *http_query = ALLOC_STR(query_length);
@@ -60,13 +65,17 @@ int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   Serial.println();
 
   this->_client->println(http_query);
-  this->_client->println("HOST: api.twitter.com"); // TODO: generalize
+  this->_client->println(host_header);
   this->_client->println("Accept: application/json");
+  this->_client->println("Connection: close");
   this->_client->println(); // close stream
 
   // State change!
   this->_body_cursor = body_divider;
   this->_state = HTTP_RECEIVING;
+
+  // Cleanup
+  xfree(host_header);
 
   return 0;
 }

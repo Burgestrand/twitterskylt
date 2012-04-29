@@ -24,8 +24,8 @@ enum http_state_t
 class HTTP
 {
   public:
-    HTTP(size_t buffer_size);
-    ~HTTP();
+    HTTP(const char *http_host, size_t buffer_size);
+    void destroy();
     int8_t get(IPAddress host, const char *path, int argc, ...);
     const char *tick(int32_t *length);
     http_state_t state();
@@ -39,6 +39,7 @@ class HTTP
     size_t          _buffer_size;
     char            *_body;
     const char      *_body_cursor;
+    const char      *_http_host;
 
     uint32_t        _read();
     char            *_build_query(int argc, char **raw_query_params);
