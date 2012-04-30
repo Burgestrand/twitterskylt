@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define YAJL_BUF_INIT_SIZE 2048
+#define YAJL_BUF_INIT_SIZE 200
 
 struct yajl_buf_t {
     size_t len;
