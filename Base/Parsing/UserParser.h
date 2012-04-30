@@ -11,8 +11,8 @@ extern "C" {
 
 class UserParser {
 	public:
-		UserParser(char *buffer, int *utcOffset, int utcOffsetLength);
-		bool parse(int bufferSize);
+		UserParser(int *utcOffset, int utcOffsetLength);
+		bool parse(const char *buffer, int bufferSize);
 
 		struct State {
 			int *utcOffset;
@@ -20,8 +20,6 @@ class UserParser {
 			bool utcOffsetFound;
 		};
 	private:
-		// Buffer to read JSON from.
-		char *buffer;
 		// Yajl.
 		yajl_callbacks callbacks;
 		yajl_handle handle;

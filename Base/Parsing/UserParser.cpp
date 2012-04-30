@@ -27,10 +27,8 @@ static int integerEvent(void *context, long long number)
 	}
 }
 
-UserParser::UserParser(char *buffer, int *utcOffset, int utcOffsetLength)
+UserParser::UserParser(int *utcOffset, int utcOffsetLength)
 {
-	this->buffer = buffer;
-	
 	this->state.utcOffset = utcOffset;
 	this->state.utcOffsetLength = utcOffsetLength;
 	this->state.utcOffsetFound = false;
@@ -50,9 +48,9 @@ UserParser::UserParser(char *buffer, int *utcOffset, int utcOffsetLength)
 	this->handle = yajl_alloc(&this->callbacks, NULL, &this->state);
 }
 
-bool UserParser::parse(int bufferSize)
+bool UserParser::parse(const char *buffer, int bufferSize)
 {
-	yajl_status status = yajl_parse(this->handle, (const unsigned char *) this->buffer, bufferSize);
+	yajl_status status = yajl_parse(this->handle, (const unsigned char *) buffer, bufferSize);
 	
 	return status == yajl_status_client_canceled;
 }
