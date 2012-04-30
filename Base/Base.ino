@@ -17,6 +17,7 @@
 #include <AccConfig.h>
 #include <SD.h>
 #include <TweetParser.h>
+#include <UserParser.h>
 
 Coordinator coordinator;
 
@@ -24,6 +25,7 @@ const int errorPin = 22;
 const int assocPin = 24;
 unsigned long int blinkTimer = 0;
 unsigned long int tempTimer = 0;
+int timezone;
 boolean assocPinStatus = false;
 AccConfig config;
 
@@ -58,7 +60,7 @@ void setup(void)
 	hideAssoc();
 	blinkTimer = 0;
 
-	//setupTimezone();
+	setupTimezone();
 }
 
 void setupTimezone()
@@ -77,26 +79,32 @@ void setupTimezone()
 
     const char *read_data = NULL;
     int32_t read_length = 0;
-
-    while (true)
+	
+	UserParser parser = UserParser(&timezone, sizeof(int));
+	bool finished = false;
+    while (!finished)
     {
       read_data = client->tick(&read_length);
-
+	  if (read_length > 0)
+	  	finished = parser.parse(read_data, read_length);
       Serial.print("tick: ");
-      Serial.println(read_length, DEC);
-      Serial.println(read_data);
-      Serial.println();
+      //Serial.println(read_length, DEC);
+      //Serial.println(read_data);
+      //Serial.println();
 
-      delay(1000);
+      //delay(1000);
     }
+	Serial.println("timezone:");
+	Serial.println(timezone);
   }
   else
   {
     Serial.println("Get error");
     Serial.println(get);
     Serial.println();
+	//couldn't connect to twitter
+	timezone = 0;
   }
-
   client->destroy();
 
 	/*
@@ -142,8 +150,8 @@ unsigned long updateInterval = 60 * 1000; // 1 minute interval
 
 void tweetTick()
 {
-	char * text;
-	char * date;
+  char * text;
+  char * date;
   if (millis() >= nextRequest)
   {
 	text = (char *) calloc(161, sizeof(char));
@@ -160,13 +168,14 @@ void tweetTick()
 	while (!finished) {
 		const char * buffer = httpClient->tick(&length);
 		if (length > 0) {
-			fixJSON(buffer);
-			finished = parser.parse(buffer, length);
+			finished = parser.parse(buffer, strlen(buffer));
 		}
 	}
+	Serial.println(date);
+	Serial.println(text);
 	httpClient->destroy();
 	parser.del();
-	char * result = Formatting::format(text,date,3600);
+	char * result = Formatting::format(text, date, timezone);
 	coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));
 	Serial.println(result);
   }
@@ -174,17 +183,6 @@ void tweetTick()
   {
 		Serial.println("no");
   }
-}
-
-// removes \ to pass yajl
-void fixJSON(const char * str) {
-	char * ptr = (char *) str;
-	while(*ptr) {
-		if (*ptr == '\\') {
-			*ptr = '/';
-		}
-		ptr++;
-	}
 }
 
 void assocLed(uint8_t state) {
