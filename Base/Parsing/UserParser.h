@@ -11,12 +11,11 @@ extern "C" {
 
 class UserParser {
 	public:
-		UserParser(int *utcOffset, int utcOffsetLength);
+		UserParser(int *utcOffset);
 		bool parse(const char *buffer, int bufferSize);
 
 		struct State {
 			int *utcOffset;
-			int utcOffsetLength;
 			bool utcOffsetFound;
 		};
 	private:

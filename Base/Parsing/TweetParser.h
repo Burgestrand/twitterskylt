@@ -11,7 +11,7 @@ extern "C" {
 
 class TweetParser {
 	public:
-		TweetParser(/*const char *buffer, */char *text, int textLength, char *date, int dateLength);
+		TweetParser(char *text, int textLength, char *date, int dateLength);
 		bool parse(const char * buffer, int bufferSize);
 		void del();
 
@@ -27,8 +27,6 @@ class TweetParser {
 			uint8_t foundCount;
 		};
 	private:
-		// Buffer to read JSON from.
-		const char *buffer;
 		// Yajl.
 		yajl_callbacks callbacks;
 		yajl_handle handle;

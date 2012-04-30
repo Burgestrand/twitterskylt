@@ -27,10 +27,9 @@ static int integerEvent(void *context, long long number)
 	}
 }
 
-UserParser::UserParser(int *utcOffset, int utcOffsetLength)
+UserParser::UserParser(int *utcOffset)
 {
 	this->state.utcOffset = utcOffset;
-	this->state.utcOffsetLength = utcOffsetLength;
 	this->state.utcOffsetFound = false;
 	
 	this->callbacks.yajl_null = NULL;

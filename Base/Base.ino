@@ -80,7 +80,7 @@ void setupTimezone()
     const char *read_data = NULL;
     int32_t read_length = 0;
 	
-	UserParser parser = UserParser(&timezone, sizeof(int));
+	UserParser parser = UserParser(&timezone);
 	bool finished = false;
     while (!finished)
     {

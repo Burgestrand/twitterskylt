@@ -16,12 +16,9 @@ static int keyEvent(void *context, const unsigned char *key, size_t keyLength)
 
 static int stringEvent(void *context, const unsigned char *str, size_t strLength)
 {
-	//char *copy = (char *) calloc(strLength + 1, sizeof(char));
-	//memcpy(copy, str, strLength);
 	TweetParser::State *state = (TweetParser::State *) context;
 
-	// Maybe these pointers can be returned directly instead of copying.
-	// Note that they add null byte after the string.
+	// Note that a null byte is added after the string.
 	if (state->textFound) {
 		size_t length = (strLength > state->textLength) ? state->textLength : strLength;
 		
@@ -42,8 +39,6 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 
 TweetParser::TweetParser(char *text, int textLength, char *date, int dateLength)
 {
-	//this->buffer = buffer;
-	
 	this->state.text = text;
 	this->state.textLength = textLength;
 	this->state.date = date;
