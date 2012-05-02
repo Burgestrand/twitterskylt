@@ -12,6 +12,10 @@
 // Debouncing update/join buttons?
 // Radio error handling
 
+// The maximum size of a message from the base station
+// including date, nullbyte, hyphens and the twitter message.
+#define MAX_MSG_SIZE 161
+
 // Pins
 // Display related
 #define DISPLAY_SELECT_PIN 10
@@ -54,6 +58,11 @@ volatile bool joinPressed = false;
 // True if the update button has been pressed, but not yet handled
 volatile bool updatePressed = false;
 
+// Store old message to be able to notice when a message fetched from the base station is actually new.
+char message[MAX_MSG_SIZE] = {0};
+// True if a new message has been received, and should be printed.
+bool new_msg = false;
+
 // Helpers
 // Debug output callback
 void debug(char *msg) {
@@ -70,6 +79,11 @@ void joinButtonPressed(void) {
 // ISR for handling update button presses
 void updateButtonPressed(void) {
   updatePressed = true;
+}
+
+void invalidate_data(void) {
+  message[0] = 0;
+  new_msg = false;
 }
 
 // Usual arduino functions
@@ -105,6 +119,7 @@ void loop () {
     joinPressed = false;
     debug("JOINBTN NOTICED");
     disp.write("Trying to join\nnetwork");
+    invalidate_data();
     radio.joinNetwork();
   }
 
@@ -112,29 +127,46 @@ void loop () {
   switch (radio.tick()) {
     case TICK_ASSOC_FAIL:
       // Association failed (note: not pairing)
+      invalidate_data();
       disp.write("Assoc fail");
       break;
     case TICK_JOIN_NOT_DELIVERED:
       // Could not deliver join message
+      invalidate_data();
       disp.write("Join:\n No delivery");
       break;
     case TICK_JOIN_TIMEOUT:
+      invalidate_data();
       disp.write("Join:\n Timeout");
       break;
     case TICK_JOIN_OK:
+      invalidate_data();
       disp.write("Joined!");
       break;
     case TICK_UPDATE_NO_DELIVERY:
+      invalidate_data();
       disp.write("Update:\n No delivery");
       break;
     case TICK_UPDATE_TIMEOUT:
+      invalidate_data();
       disp.write("Update:\n Timeout");
       break;
     case TICK_NEW_MSG:
-      disp.write((char *) radio.getData());
+      // Update message buffer if a different message is recieved and set a flag.
+      // We can't update the display here as it will block for some non-insignificant time.
+      if (strncmp(message, radio.getData(), MAX_MSG_SIZE-1)) {
+          strncpy(message, radio.getData(), MAX_MSG_SIZE-1);
+          new_msg = true;
+      }
       debug("GOT NEW MSG");
       break;
     case TICK_SLEEPING:
+      // Send the new message to the display if there is one.
+      // The blocking write operation is safe here as the radio is sleeping.
+      if (new_msg) {
+          disp.write(message);
+          new_msg = false;
+      }
       // Radio is sleeping and we have nothing to do; lets sleep!
       digitalWrite(LED_1, LOW);
       {
@@ -153,7 +185,9 @@ void loop () {
       updatePressed = false;
       break;
     case TICK_UNKNOWN_ERROR:
+      invalidate_data();
     case TICK_JOIN_BAD_MSG:
+      invalidate_data();
     case TICK_OK:
     default:
       // Do nothing
