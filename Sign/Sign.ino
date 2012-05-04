@@ -9,13 +9,8 @@
 #include <Sleep.h>
 
 // TODO: 
+// Debouncing update/join buttons?
 // Radio error handling
-// Use leds properly
-
-// The maximum size of a message from the base station
-// including date, nullbyte, hyphens, twitter message
-// and newlines.
-#define MAX_MSG_SIZE 168
 
 // Constants related to battery level reading
 #define V_RES 0.004882814
@@ -37,16 +32,16 @@
 // Update Button
 #define UPDATE_BUTTON 3
 // Red LED
-#define ERROR_LED 6
+#define ERROR_LED A1
 // Yellow LED
-#define BATTERY_LED 5
+#define BATTERY_LED A2
 // Green LED
-#define ASSOC_LED 4
+#define ASSOC_LED A3
 
 // Analog battery reading
-#define BATT_A 0
+#define BATT_A A0
 //Voltage divider control
-#define VDIV_D 7
+#define VDIV_D 6
 
 
 // XBee sleep request/status
@@ -73,11 +68,6 @@ volatile bool updatePressed = false;
 bool lowBattery = false;
 // Analog value read from voltage divider
 float batteryLevel = 0;
-
-// Store old message to be able to notice when a message fetched from the base station is actually new.
-char message[MAX_MSG_SIZE] = {0};
-// True if a new message has been received, and should be printed.
-bool new_msg = false;
 
 // Helpers
 // Debug output callback
@@ -110,11 +100,6 @@ float getBatteryVoltage(uint8_t pin) {
   return Vbatt;
 }
 
-void invalidate_data(void) {
-  message[0] = 0;
-  new_msg = false;
-}
-
 // Usual arduino functions
 void setup () {
   pinMode(ASSOC_LED, OUTPUT);
@@ -126,6 +111,7 @@ void setup () {
 
   pinMode(VDIV_D, OUTPUT);
   digitalWrite(VDIV_D, LOW);
+  pinMode(BATT_A, INPUT);
   // Initialize the display
   disp.begin();  
   
@@ -153,7 +139,6 @@ void loop () {
     joinPressed = false;
     debug("JOINBTN NOTICED");
     disp.write("Trying to join\nnetwork");
-    invalidate_data();
     radio.joinNetwork();
   }
   
@@ -166,54 +151,35 @@ void loop () {
   switch (radio.tick()) {
     case TICK_ASSOC_FAIL:
       // Association failed (note: not pairing)
-      invalidate_data();
       disp.write("Assoc fail");
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_JOIN_NOT_DELIVERED:
       // Could not deliver join message
-      invalidate_data();
       disp.write("Join:\n No delivery");
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_JOIN_TIMEOUT:
-      invalidate_data();
       disp.write("Join:\n Timeout");
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_JOIN_OK:
-      invalidate_data();
       disp.write("Joined!");
       digitalWrite(ASSOC_LED, HIGH);
       break;
     case TICK_UPDATE_NO_DELIVERY:
-      invalidate_data();
       disp.write("Update:\n No delivery");
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_UPDATE_TIMEOUT:
-      invalidate_data();
       disp.write("Update:\n Timeout");
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_NEW_MSG:
-      // Update message buffer if a different message is recieved and set a flag.
-      // We can't update the display here as it will block for some non-insignificant time.
-      debug("GOT A MSG");
-      if (strncmp(message, (char *) radio.getData(), MAX_MSG_SIZE-1)) {
-          debug("GOT A NEW MSG");
-          strncpy(message, (char *) radio.getData(), MAX_MSG_SIZE-1);
-          new_msg = true;
-      }
+      disp.write((char *) radio.getData());
+      debug("GOT NEW MSG");
       break;
     case TICK_SLEEPING:
-      // Send the new message to the display if there is one.
-      // The blocking write operation is safe here as the radio is sleeping.
-      if (new_msg) {
-          debug("PRINTING MESSAGE");
-          disp.write(message);
-          new_msg = false;
-      }
       // Radio is sleeping and we have nothing to do; lets sleep!
       {
         uint8_t sleepRounds = 3;
@@ -230,8 +196,9 @@ void loop () {
       updatePressed = false;
       break;
     case TICK_UNKNOWN_ERROR:
+      digitalWrite(ERROR_LED, HIGH);
+      break;
     case TICK_JOIN_BAD_MSG:
-      invalidate_data();
       digitalWrite(ERROR_LED, HIGH);
       break;
     case TICK_OK:
