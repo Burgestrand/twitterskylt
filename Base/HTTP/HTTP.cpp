@@ -19,6 +19,7 @@ HTTP::HTTP(const char *http_host, size_t buffer_size)
 
 void HTTP::destroy()
 {
+  this->_client->stop();
   delete this->_client;
   xfree(this->_buffer);
 }

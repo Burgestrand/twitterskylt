@@ -1,12 +1,9 @@
 #ifndef _HTTP_H_
 #define _HTTP_H_
 
-#ifndef ARDUINO
 #include <cstring>
-#else
 #include <EthernetClient.h>
 #include <IPAddress.h>
-#endif
 
 #include <stdint.h>
 #include <stdarg.h>
