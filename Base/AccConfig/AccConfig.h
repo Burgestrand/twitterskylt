@@ -6,6 +6,7 @@ class AccConfig {
  
   char * query;
   char * buf;
+  bool isWhitespace(char chr);
 
  public:
   
