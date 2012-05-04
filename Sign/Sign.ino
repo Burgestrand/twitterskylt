@@ -69,17 +69,15 @@ volatile bool joinPressed = false;
 // True if the update button has been pressed, but not yet handled
 volatile bool updatePressed = false;
 
-<<<<<<< HEAD
 // True if the battery level is low
 bool lowBattery = false;
 // Analog value read from voltage divider
 float batteryLevel = 0;
-=======
+
 // Store old message to be able to notice when a message fetched from the base station is actually new.
 char message[MAX_MSG_SIZE] = {0};
 // True if a new message has been received, and should be printed.
 bool new_msg = false;
->>>>>>> d9c648d3d3028e756e9f15ff999996be9c8c6e4f
 
 // Helpers
 // Debug output callback
@@ -99,7 +97,6 @@ void updateButtonPressed(void) {
   updatePressed = true;
 }
 
-<<<<<<< HEAD
 float getPinVoltage(uint8_t pin) {
 	return (analogRead(pin) * V_RES);
 }
@@ -111,11 +108,11 @@ float getBatteryVoltage(uint8_t pin) {
   int batteryLevel = analogRead(0);
   float Vbatt = (2*batteryLevel*V_RES) - 0.04*(batteryLevel/Q_DROP);
   return Vbatt;
-=======
+}
+
 void invalidate_data(void) {
   message[0] = 0;
   new_msg = false;
->>>>>>> d9c648d3d3028e756e9f15ff999996be9c8c6e4f
 }
 
 // Usual arduino functions
@@ -233,17 +230,10 @@ void loop () {
       updatePressed = false;
       break;
     case TICK_UNKNOWN_ERROR:
-<<<<<<< HEAD
-      digitalWrite(ERROR_LED, HIGH);
-      break;
-    case TICK_JOIN_BAD_MSG:
-      digitalWrite(ERROR_LED, HIGH);
-      break;
-=======
-      invalidate_data();
     case TICK_JOIN_BAD_MSG:
       invalidate_data();
->>>>>>> d9c648d3d3028e756e9f15ff999996be9c8c6e4f
+      digitalWrite(ERROR_LED, HIGH);
+      break;
     case TICK_OK:
     default:
       // Do nothing
