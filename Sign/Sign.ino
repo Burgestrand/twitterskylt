@@ -13,8 +13,9 @@
 // Use leds properly
 
 // The maximum size of a message from the base station
-// including date, nullbyte, hyphens and the twitter message.
-#define MAX_MSG_SIZE 161
+// including date, nullbyte, hyphens, twitter message
+// and newlines.
+#define MAX_MSG_SIZE 168
 
 // Pins
 // Display related
@@ -154,16 +155,18 @@ void loop () {
     case TICK_NEW_MSG:
       // Update message buffer if a different message is recieved and set a flag.
       // We can't update the display here as it will block for some non-insignificant time.
-      if (strncmp(message, radio.getData(), MAX_MSG_SIZE-1)) {
-          strncpy(message, radio.getData(), MAX_MSG_SIZE-1);
+      debug("GOT A MSG");
+      if (strncmp(message, (char *) radio.getData(), MAX_MSG_SIZE-1)) {
+          debug("GOT A NEW MSG");
+          strncpy(message, (char *) radio.getData(), MAX_MSG_SIZE-1);
           new_msg = true;
       }
-      debug("GOT NEW MSG");
       break;
     case TICK_SLEEPING:
       // Send the new message to the display if there is one.
       // The blocking write operation is safe here as the radio is sleeping.
       if (new_msg) {
+          debug("PRINTING MESSAGE");
           disp.write(message);
           new_msg = false;
       }
