@@ -3,3 +3,10 @@ twitterskylt
 !twitterskylt/
 tests
 *~
+*.aux
+*.out
+*.log
+*.pdf
+*.toc
+*.png
+*.svg
