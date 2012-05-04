@@ -8,10 +8,6 @@
 #include <Display.h>
 #include <Sleep.h>
 
-// TODO: 
-// Debouncing update/join buttons?
-// Radio error handling
-
 // Constants related to battery level reading
 #define V_RES 0.004882814
 #define V_TH 0.7
@@ -24,9 +20,6 @@
 #define DISPLAY_BUSY_PIN 8
 #define DISPLAY_RESET_PIN 9
 
-// Software serial pins for debugging
-#define SERIAL_RX 7
-#define SERIAL_TX 6
 // Join Button
 #define JOIN_BUTTON 2
 // Update Button
@@ -43,10 +36,10 @@
 //Voltage divider control
 #define VDIV_D 6
 
-
 // XBee sleep request/status
 #define SLEEP_RQ_PIN 4
 #define SLEEP_STATUS_PIN 5
+#define CTS_PIN 7
 
 // Global variables
 // The display
@@ -54,9 +47,6 @@ Display disp(DISPLAY_SELECT_PIN, DISPLAY_BUSY_PIN, DISPLAY_RESET_PIN);
 
 // The radio
 EndDevice radio(SLEEP_RQ_PIN, SLEEP_STATUS_PIN);
-
-// The serial connection used for debug output
-SoftwareSerial ss(SERIAL_RX, SERIAL_TX);
 
 // True if the join button has been pressed, but not yet handled
 volatile bool joinPressed = false;
@@ -72,9 +62,9 @@ float batteryLevel = 0;
 // Helpers
 // Debug output callback
 void debug(char *msg) {
-  ss.write("DEBUG: ");
-  ss.write(msg);
-  ss.write("\n");
+  //ss.write("DEBUG: ");
+  //ss.write(msg);
+  //ss.write("\n");
 }
 
 // ISR for handling join button presses
@@ -114,10 +104,7 @@ void setup () {
   pinMode(BATT_A, INPUT);
   // Initialize the display
   disp.begin();  
-  
-  // Initialize debug serial port
-  ss.begin(9600);
-  
+   
   // Initialize the radio
   radio.begin(9600);
   
@@ -137,7 +124,6 @@ void loop () {
   // Pair button
   if (joinPressed) {
     joinPressed = false;
-    debug("JOINBTN NOTICED");
     disp.write("Trying to join\nnetwork");
     radio.joinNetwork();
   }
