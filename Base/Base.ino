@@ -121,7 +121,7 @@ void loop(void)
 	radioTick();
 	Serial.println("loop");
 	tweetTick();
-	delay(1000);
+	delay(10); // Rate limit for output
 }
 
 void ethernetTick()
