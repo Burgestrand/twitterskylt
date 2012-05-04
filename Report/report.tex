@@ -195,7 +195,7 @@ Versionshantering av projektets programkod togs upp tidigt. Hantering av kod nä
 
 Versionshantering innebär ofta en central plats att lagra sin kod. För att underlätta sammanflätningen av jobb som utförts parallelt så spårar ett versionshanteringssystem alla ändringar i koden, och kan intelligent föreslå strategier för att slå samman det arbetet som utförts. Som programmerare är det också användbart att kunna se vilka ändringar som har gjorts under tidens gång av sina medarbetare, utan att själv behöva leta upp förändringarna och jämföra den existerande koden med sin egen.
 
-Av ovan nämnda anledningar har gruppen därför valt att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (~10 år), och hör till de decentraliserade versionshanteringsystemen. Jämförs båda grupperna av versionshanteringssystem så är de centraliserade versionshanteringssystemen långsamma, tar mer utrymme, har ett sämre arbetsflöde och är mindre förlåtande misstag om systemet behöver användas på ett annat sätt än vad som annars är vanligt. Av bland annat dessa anledningar valde gruppen att använda Git.
+Av ovan nämnda anledningar har gruppen därför valt att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (ca. 10 år), och hör till de decentraliserade versionshanteringsystemen. Jämförs båda grupperna av versionshanteringssystem så är de centraliserade versionshanteringssystemen långsamma, tar mer utrymme, har ett sämre arbetsflöde och är mindre förlåtande misstag om systemet behöver användas på ett annat sätt än vad som annars är vanligt. Av bland annat dessa anledningar valde gruppen att använda Git.
 
 \subsubsection{Git och GitHub}
 Git är som tidigare nämnt ett decentraliserat versionshanteringssystem. Git används genom att först göra det arbete som är tänkt, och därefter spara dem lokalt i sitt projekts kodbas tillsammans med ett meddelande som beskriver varför ändringen gjordes och vad den gör. Efter en viss tid så ska ens egna arbete delas med sina medarbetare, och det görs genom att pusha sin kod till en plats där alla medarbetare kan nå koden. Om någon inte har hunnit pusha upp sin kod är det sedan varje individuell persons uppgift att slå ihop ändringarna och bestämma vad som ska finnas i slutresultatet.
@@ -422,6 +422,483 @@ Projektet är inbyggt i en ABS-plastlåda där hål borrats ut för kontakter, k
 
 \subsection{Display}
 
-\section{Systembeskrivning, mjukvara}
+\section{Systembeskrivning, programlogik}
+Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer.
+
+Vid uppstart av skylten går den in i en evig loop och skickar var femte minut en förfrågan till basstationen om vilket meddelande som ska visas upp. När ett svar har tagits emot visas meddelandet och dess metadata upp på displayen.
+
+Vid uppstart av basstationen läses en konfiguration in för att ställa in vilka meddelanden som ska hämtas in från Twitter och vilken tidszon som datum ska visas i. Om någon av inställningarna är ogiltiga meddelas ett fel.
+
+Efter att inställningarna har lästs in går basstationen in i en evig loop och väntar på förfrågningar om meddelanden från skylten. När en förfrågan tas emot så hämtar basstationen in det senaste meddelandet från Twitters API som går igenom användarens filter. Om ett svar tas emot formateras meddelandet och skickas till skylten för att visas upp. Om ett svar inte tas emot så görs två ytterligare försök innan ett fel meddelas.
+
+\subsection{Konfigurering av systemet}
+En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta tweets ifrån, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden. Lösningen blev en konfigurationsfil lagrat på ett SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en querysträng. Användaren kan konfigurera systemet genom att ange värdena på två olika parametrar:
+	\begin{enumerate}
+    	\item Användarnamn: Namnet på den Twitter-användare vars inställningar för tidszon ska användas för att visa tid och datum på displayen i rätt tidszon.
+    	\item Söksträng: Den söksträng som ska användas för att filtrera inläsningen av meddelanden från Twitter.
+	\end{enumerate}
+
+I söksträngen kan användaren specificera vilka tweets som skall visas på skylten med hjälp av bland annat hashtags. Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt vars innehåll består av en eller två rader text. Den första raden ska innehålla namnet på den Twitter-användare vars tidszon datum ska visas i. Om det finns en andra rad ska den innehålla den söksträng som ska användas för att filtrera meddelanden. Om det inte finns någon andra rad så kommer systemet inte att göra någon filtrering av meddelanden.
+
+\subsubsection{Inläsning}
+För att läsa från SD-kortet användes Arduinos standard bibliotek för SD-kort som i sin tur använder sdfatlib. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken (Wikipedia).
+
+I konfigurationsfilen ska varje inställning separeras med mellanslag, tab eller nyradstecken. Först kommer användarnamnet därefter querysträngen. Inställningarna kommer man åt genom att kalla på metoder som returnerar dessa. När filen har öppnats allokeras ett minnesutrymme som är lika många bytes som filen är stor. Sedan läses hela filen in i minnet med undantag av blanktecken före och efter användarnamnet. När inläsningen är klar är det känt hur många signifikanta tecken som är inlästa. Om det är färre inlästa tecken än antalet i filen så allokeras ett nytt minnesutrymme som endast har plats för adekvata tecken. Minnesutrymme som tidigare bestod av vittecken kan på så vis frigöras.
+
+\subsection{DHCP}
+För att kommunicera över internet krävs det att basstationen har en IP-adress. Tilldelningen kommer att ske med hjälp av nätverkets DHCP-server, som har en pool med lediga adresser. För att DHCP-servern inte ska få slut på adresser så är det brukligt att en lånetid sätts, det vill sig hur länge enheten kan vara säker på att ha den givna adressen. Arduinos Ethernet-bibliotek (v1.0) har inte implementerat stöd för att uppdatera lånetiden av IP-adressen, vilket kan leda till att kontakten med internet förloras.
+
+Då DHCP initeras försöker basstationen att få IP-adress av DHCP-servern genom att skicka DHCP Discover meddelanden. Om den inte får svar inom en minut så slutar den försöka. Om det däremot kommer ett erbjudande om IP-address från servern så svarar basstationen på erbjudandet och accepterar adressen. Basstationen har då IP-adressen under den period som servern har bestämt.      
+
+\subsubsection{Implementation}
+I enighet med DHCP ska förnyelseförsök av IP-adress ske vid halva lånetiden, T1, och vid sju åttondelar av lånetiden, T2, om det inte lyckades första gången. Första förfrågan sker endast till DHCP-servern som lånar ut IP-adressen till klienten, medan den andra förfrågningen går ut till alla på nätverket genom broadcast. En förfrågan ska gå till så att klienten skickar sitt meddelande med längre och längre intervall till dess att den får svar eller att 60 sekunder har passerat [dhcp1]. Får klienten svar uppdateras dess lånetid och eventuella IP-adressändringar genomförs.
+
+Hantering av lånetidsuppdatering kan implementeras med:
+
+	\begin{enumerate}
+	\item Timer som ger avbrott
+    	\item En funktion som anropas för tidavläsning
+	\end{enumerate}
+	
+Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden. I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo 232 sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i “loopen”, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut. Den slutliga lösningen blev alternativ 2, eftersom att “loop()” ska köras ofta (se avsnitt TIDIGARE) och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar som kan behövas i andra delar av programmet.
+
+Implementationen bryter mot DHCP specifikationen på några punkter:
+
+	\begin{itemize}
+	\item Om lånetiden är mindre än åtta minuter blir det problem om förnyelse misslyckas eftersom en förfrågan kan ta upp till 60 sekunder. Under den tiden kan lånetiden redan passerat och     basstationen använder IP-adressen felaktigt.
+    	\item Då millis slår över går det inte att kontrollera om lånetiden är slut. I det fallet görs ett försök att låna om IP-adressen omedelbart även om inte T1 har passerats.
+	\end{itemize}	
+	
+\subsection{HTTP}
+För att hämta information från Twitter använder sig systemet av HTTP, som är det kommunikationsprotokoll som ligger till grund för webben. HTTP används för att skicka och ta emot resurser utifrån klient/server-modellen: En klient skickar en förfrågan till en server, som skickar tillbaka ett svar. En resurs är ett abstrakt begrepp som i IETF:s specifikation definieras som något med en identitet. De resurser som systemet efterfrågar från Twitter är användaruppgifter samt meddelanden och deras metadata.
+
+HTTP är textbaserat och kommunicerar över TCP. Både klienter och servrar använder sig av valfria portnummer, men för servrar är det vanligtvis port 80.
+
+\subsubsection{Förfrågan}
+
+En HTTP-förfrågan består av fem delar:
+	
+	\begin{enumerate}
+    	\item En metod, som anger hur resursen ska behandlas.
+    	\item En URL, som anger vilken resurs som ska behandlas.
+    	\item Ett versionsnummer, som anger vilken version av HTTP som ska användas. (Systemet använder version 1.1.)
+    	\item En lista med headers, som anger diverse alternativ och metadata.
+    	\item En meddelandekropp, som anger eventuell data som ska skickas till servern.
+	\end{enumerate}
+
+HTTP har stöd för ett antal olika metoder, däribland GET, POST, PUT och DELETE. I systemet används enbart förfrågningar med GET-metoden, som begär att resursens innehåll skickas tillbaka som svar.
+	
+\subsubsection{Svar}
+	
+Ett HTTP-svar liknar en HTTP-förfrågan och består av fyra delar:
+
+	\begin{enumerate}
+    	\item Ett versionsnummer.
+    	\item En statuskod följt av en statusbeskrivning.
+    	\item En lista med headers.
+    	\item En meddelandekropp.
+    	\end{enumerate}
+
+\subsection{JSON}
+
+JSON är ett textbaserat format för överföring av data. Det är ett av två format som används i svaren på förfrågningar till Twitters API; det andra är XML. Eftersom JSON har en enklare datamodell och mindre verbos syntax är den att föredra i sammanhang där minnesutrymmet och processorkraften är begränsad. Av denna anledning tar systemet emot data från Twitters API i JSON-format.
+
+	\begin{itemize}
+	\item Nummer
+    	\item Sträng
+    	\item Booleanvärde
+    	\item Fält
+    	\item Objekt
+    	\item Null
+	\end{itemize}
+
+Av dessa datatyper är fält och objekt sammansatta: De innehåller andra värden av valfri typ. I fält är dessa värden indexerade med heltal i stigande ordning från noll. I objekt är dessa värden indexerade med strängar som är unika inom det objektet (nycklar).
+
+En JSON-fil består av antingen ett objekt eller ett fält, som i sin tur kan innehålla ytterligare värden enligt reglerna för respektive datatyp.
+
+Den förväntade statusen i svaret på en GET-förfrågan är 200 OK, som innebär att resursen har bifogats i svarets meddelandekropp som avsett.
+
+\subsubsection{Avläsning och intolkning}
+Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kilobyte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne.
+
+För att lösa detta problem används en händelsebaserade strömparser. Till skillnad från en konventionell parser lagrar en händelsebaserad strömparser inte JSON-datan i minnet. Istället signalerar parsern händelser varje gång den påträffar ett värde medan den läser av JSON-filen. Dessa händelser hanteras sedan av en uppsättning olika funktioner som anropas av parsern genom funktionspekare. Detta tillvägagångssätt innebär att minnesåtgången är minimal eftersom enbart det värde som precis har lästs av behöver sparas i minnet.
+
+Den parser som används i systemet heter Yajl. Den signalerar en händelse varje gång som den påträffar något av följande:
+
+	\begin{itemize}
+    	\item Nullvärde
+    	\item Booleanvärde
+    	\item Heltal
+    	\item Decimaltal
+    	\item Nummervärde
+    	\item Sträng
+    	\item Början på objekt
+    	\item Objektnyckel
+    	\item Slut på objekt
+    	\item Början på fält
+    	\item Slut på fält
+	\end{itemize}
+	
+Dessa motsvarar en händelse för varje datatyp med följande undantag:
+
+	\begin{itemize}
+	\item Händelsen för nummervärden anropas för både heltal och decimaltal.
+    	\item Ett värde av en komposit datatyp ger upphov till flera händelser: en för dess början, en för dess slut samt en för varje nyckel som ingår i det (om det är ett objekt). Varje värde som ingår i objektet eller fältet ger dessutom upphov till händelser som vanligt utifrån dess datatyp.
+    	\end{itemize}
+    	
+Ett av problemen med en händelsebaserad parser som Yajl är att dess sekventiella inläsning gör det svårare att deklarativt hämta in data från JSON-filen genom att exempelvis ange en sökväg. Yajl har visserligen inbyggt stöd för att hämta in data genom att ange en sökväg (“simplified tree interface”), men detta kräver att hela JSON-filen läses in i minnet på samma gång och fungerar enbart med värden inuti objekt, inte värden inuti fält. Av denna anledning behöver inhämtningen av data implementeras på imperativ väg genom de funktionspekare som anropas vid olika händelser.
+
+\subsubsection{Algoritm}
+
+Den inhämtning av data som används i vårt system är baserad på en väldigt enkel princip: En lista med objektnycklar matas in och för varje objektnyckel sparas det första värde som förknippas med den objektnyckeln, oavsett var i JSON-filen objektnyckeln befinner sig.
+
+Avläsningen av JSON-filen inleds med följande algoritm:
+
+	\begin{enumerate}
+    	\item En tabell definieras med objektnycklar och variabler, där varje objektnyckel förknippas med en variabel.
+    	\item Parsern läser av JSON-filen och signalerar en händelse så fort någon av objektnycklarna i listan påträffas.
+	\end{enumerate}
+
+Så fort en händelse signaleras utförs denna algoritm:
+	
+	\begin{enumerate}
+    	\item Nästa värde som läses in av parsern sparas i den variabel som förknippas med den nyligen inlästa objektnyckeln.
+    	\item Den nyligen inlästa objektnyckeln och variabeln som den är förknippad med tas bort från tabellen.
+	\end{enumerate}
+
+Algoritmen skulle kunna implementeras så generellt som den är beskriven ovan, men eftersom systemet hämtar in så pass få olika värden (tre stycken) är den istället implementerad genom individuell hantering av varje enskilt fall; slutresultatet är samma.
+
+Denna metod har två begränsningar:
+
+	\begin{enumerate}
+    	\item Endast ett enda värde kan läsas in för varje objektnyckel som anges, så det är omöjligt att läsa in separata värden som befinner sig i olika delar av JSON-filen men har samma objektnyckel.
+    	\item Endast det första värdet som förknippas med en angiven objektnyckel kan läsas in, så det är omöjligt att komma åt värden vars objektnycklar har förekommit tidigare i JSON-filen.
+	\end{enumerate}
+
+Dessa begränsningar är dock inga problem i systemet eftersom inga av de objektnycklar som behöver läsas in förekommer mer än en gång i något av de svar som tas emot från Twitters API. Eftersom Twitters API dessutom är versionsangivet bör risken vara minimal att beteendet förändras i framtiden, och om en godtycklig förändring mot förmodan sker så skulle också alla andra algoritmer för avläsning potentiellt kunna misslyckas.
+
+\subsection{Twitters API}
+Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att komma åt stora delar av Twitters innehåll.
+
+Samtliga URL:er innehåller en parameter för version och en för format. Version anger den version av Twitters API som ska användas. Format anger det filformat som svaret på klientens förfrågningar ska skickas i: XML eller JSON. I samtliga URL:er nedan är dessa parameter angivna med värdena “1” och “JSON” respektive.
+
+Systemet använder sig av Twitters API för att komma åt två olika delar av Twitters innehåll: användaruppgifter och meddelanden.
+
+Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}.
+
+Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln utc \textunderscore offset och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
+
+\subsubsection{Meddelanden}
+Det enklaste sättet att hämta en användares meddelanden från Twitters API är att skicka en förfrågan efter användarens tidslinje, som besvaras med en lista över användarens senaste meddelanden. Problemet med denna metod är att den inte tillåter någon filtrering av listan; all filtrering, exempelvis för att få fram meddelanden med vissa hashtags, måste göras av klienten. Detta kräver att klienten potentiellt behöver hämta in flera meddelanden på samma gång för att hitta det första som går igenom filtret, samt skicka ytterligare förfrågningar till Twitters API om inget av de inhämtade meddelandena gick igenom filtret. Detta kräver i sin tur komplex logik hos klienten, mer minnesutrymme och mer nätverkstrafik.
+
+En metod som förlitar sig på att Twitters servrar själva filtrerar användarens meddelanden och sedan skickar enbart det matchande är att föredra. Detta erbjuds av Twitters sök-API, som tar emot söksträngar med samma syntax som den vanliga sökningen på Twitters hemsida och svarar med de meddelanden som matchar. Söksträngen består av en lista av operatorer som tillåter omfattande filtrering av resultatet.
+
+Till skillnad från en förfrågan till en specifik användares tidslinje returnerar en förfrågan till Twitters sök-API meddelanden från samtliga Twitter-användare. Dessa behöver filtreras så att enbart meddelanden från systemets användare returneras. Denna filtrering görs med operatorn “from:username”, där username är namnet på den användare vars meddelanden ska returneras.
+
+För att hitta meddelanden som innehåller en viss hashtag skickas denna hashtag in som söksträng till Twitters sök-API.
+
+För att utelämna retweets från resultatet används operatorn “+exclude:retweets”.
+
+\subsubsection{Begränsningar}
+Twitters API och systemets användning av det lyder under följande begränsningar:
+	
+	\begin{itemize}
+    	\item Meddelanden som är äldre än en vecka kan inte hämtas in. Twitters sök-API kan bara användas för att hitta meddelanden som är “ungefär en vecka” gamla (“omkring 6-9 dagar” i en annan del av dokumentationen). Detta är inget problem så länge basstationen är aktiverad, men så fort den stängs av och sätts på igen kommer den enbart att ha tillgång till meddelanden från den senaste veckan. Om det senaste meddelandet är äldre kommer den felaktigt att rapportera till skylten att inga meddelanden finns tillgängliga. Om skylten sedan stängs av (exempelvis för att laddas) kommer den vid uppstart inte att ha tillgång till det meddelande som den visade upp före avstängning.
+    	\item Vissa meddelanden kan saknas helt i sökresultaten. Eftersom Twitters sök-API “fokuserar på relevans, inte fullständighet”. Vilka meddelanden som saknas är inte tydligt dokumenterat, och det är också ytterst svårt att testa. I värsta fall kan denna begränsning leda till utelämnade meddelanden vid godtyckliga tillfällen.
+    	\item Systemet förlitar sig på en sökoperator som inte är dokumenterad. För att utelämna retweets från API-svaren använder sig systemet av sökoperatorn “+exclude:retweets”. I samtliga tester har den fungerat som avsett men i värsta fall kan dess beteende ändras i framtiden. Om operatorn helt skulle försvinna skulle det innebära att systemet också tar emot retweets, som kan innehålla fler än 140 tecken. För att säkerställa att detta scenario aldrig leder till några problem läses endast de 140 första tecknen av samtliga meddelanden in. Detta leder till att retweets som visas på skylten kan få viss text utelämnad men aldrig krascha systemet.
+    	\item Meddelanden kan inte hämtas in i realtid. Eftersom Twitters REST-baserade API som svar på varje förfrågan enbart skickar den data som är aktuell vid samma tidpunkt måste klienten regelbundet skicka förfrågningar för att få den senaste datan. Twitter erbjuder också ett strömbaserat API som kontinuerligt skickar data i realtid, men detta kräver autentisering vilket gör klientens implementation och användargränssnitt mer komplicerat.
+    	\item Meddelanden kan hämtas in högst 150 gånger per timme. Twitters API begränsar antalet förfrågningar per IP-adress till 150 per timme. Detta innebär att systemet maximalt kan skicka förfrågningar ungefär två gånger per minut. Eftersom systemet frågar efter nya meddelanden mindre ofta än detta är denna begränsning inget problem.
+    	\end{itemize}
+    	
+\subsection{Formatering}
+Efter att ett meddelande har tagits emot från Twitters API men innan det visas upp på skylten behöver det formateras. Formateringen innefattar fyra områden:
+	\begin{enumerate}
+    	\item Omkodning: Att hantera tecken som displayen inte kan hantera genom att ersätta dem mot andra.
+    	\item Normalisering: Att radera överflödiga blanksteg i början av, i slutet av och inuti meddelandet.
+    	\item Justering: Att fördela orden i meddelandet över bildskärmens rader så att så få ord som möjligt behöver brytas upp över två rader.
+    	\item Metadata: Att lägga till metadata till meddelandet i form av ett numeriskt publiceringsdatum.
+	\end{enumerate}
+
+Resultatet av formateringen är en displaysträng som kan skickas från basstationen till skylten för att visa upp meddelandet och dess metadata.
+
+\subsubsection{Omkodning}
+De meddelanden som tas emot från Twitters API innehåller Unicode-tecken kodade i UTF-8. Eftersom displayen inte har stöd för UTF-8 behöver tecknen kodas om till den uppsättning som stöds. Displayen har stöd för ASCII-tecken samt bokstäverna Å, Ä och Ö, och är således lämplig för både engelska och svenska meddelanden.
+
+Eftersom Arduino inte har inbyggt stöd för konvertering till och från UTF-8 så omkodar basstationen meddelandena från Twitters API enligt följande regler:
+	\begin{itemize}
+    	\item Samtliga ASCII-tecken samt Å, Ä och Ö kodas om från UTF-8 till den representation som de behöver på displayen.
+    	\item Övriga tecken ersätts med tilde-tecken ($\sim$).
+    	\item Varje UTF-8-tecken som består av flera bytes ersätts med ett enda tilde-tecken, inte ett för varje byte som de upptar.
+	\end{itemize}
+
+\subsubsection{Algoritm, omkodning}
+UTF-8 är en teckenkodning som tillåter varierande antal bytes för att representera enstaka tecken. En fördel med UTF-8 gentemot många andra teckenkodningar är att UTF-8 även är ASCII-kompatibel, vilket innebär att alla tecken som är giltiga ASCII-tecken också är giltiga UTF-8-tecken. Det är dessutom något som gör algoritmen för att koda om UTF-8-meddelanden till skyltens teckenkodning markant enklare.
+
+Konverteringen består av två huvudkomponenter: gruppering av bytes till tecken, och uppslagning av tecken i en teckentabell för att representera ett tecken på skylten i passande kodning. Denna tabell tillåter uppslagning av ett godtyckligt antal tecken, och de tecken som inte har en översättning får således översättas med ett ersättningstecken.
+
+Givet en början med textmarkören i strängens början konverteras strängen till önskad teckenkodning på följande sätt.
+	
+	\begin{enumerate}
+    	\item Skapa en tom sträng med plats för lika många tecken som originalsträngen.
+    	\item Sök genom strängen byte för byte.
+    		\begin{enumerate}
+        	\item Om den byte som är under nuvarande markör är ett 7-bitars ASCII-tecken görs en uppslagning i översättningstabellen och det konverterade tecknet läggs till i resultatsträngen. Markören flyttas därefter ett steg framåt.
+        	\item Om den byte som är under nuvarande markör har sin åttonde bit satt är tecknet ett multibyte-tecken. Räkna antalet aktiva bitar bland de fyra högre bitarna av nuvarande byte, och flytta markören lika många gånger framåt i strängen. Detta är så många bytes som tecknet under markören bestod av. Uppslagning görs av denna sekvens av bytes i översättningstabellen och läggs till i resultatsträngen.
+        	\end{enumerate}
+    	\item Om hela strängen har behandlats, avsluta och returnera resultatsträngen. I annat fall återgå till punkt två.
+	\end{enumerate}
+	
+\subsubsection{Normalisering}
+För att kunna formatera meddelandet så enkelt och konsekvent som möjligt är det önskvärt att normalisera det så att det har samma struktur som alla andra meddelanden. I detta fall innebär det behandling av meddelandets blanksteg. När meddelandet ska justeras och visas upp blir logiken enklare om vi kan utgå från att varje ord skiljs åt med ett och endast ett mellanslag. På en abstrakt nivå vill vi kunna behandla varje meddelande som en lista av ord där blanktecken (whitespace) inte behöver tas i åtanke.
+
+En sådan radering av blanktecken innebär att en användare inte själv kan formatera sina meddelanden genom att infoga extra utrymme i form av blanktecken. Detta är dock konsekvent med Twitters beteende i webbläsaren, där upprepade blanktecken alltid slås samman (collapse) till ett enda blanksteg.
+
+Ett meddelande med blanktecken precis i början och i slutet av texten kan publiceras till Twitter, men det är enbart blanktecken inuti texten som returneras av Twitters API. Detta innebär att radering av såna blanktecken inte behöver ingå i algoritmen för normalisering.
+
+\subsubsection{Algoritm, normalisering}
+Utgå från att strängen består av en mängd tecken, som alla kan kategoriseras att vara whitespace (blanksteg, nyrad, tab, etc) eller en del av ett ord. För att veta vad som ska returneras gås strängen igenom två gånger: en gång för att räkna ord, och en gång för att extrahera ord.
+	\begin{enumerate}
+    	\item Sätt nuvarande status till WHITESPACE, och ordräknaren till noll.
+    	\item Traversera strängen tecken för tecken.
+    		\begin{enumerate}
+        	\item Om vår nuvarande status är WHITESPACE.
+        		\begin{enumerate}
+            		\item Om det tecken som är under markören är en whitespace, gör ingenting.
+            		\item Om det tecken som är under markören inte är en whitespace, öka ordräknaren och sätt nuvarande status till WORD.
+            		\end{enumerate}
+        	\item Om vår nuvarande status är WORD.
+        		\begin{enumerate}
+            		\item Om det tecken som är under markören är en whitespace, sätt nuvarande status till WHITESPACE.
+            		\item Om det tecken som är under markören inte är en whitespace, gör ingenting.
+            		\end{enumerate}
+            	\end{enumerate}
+    	\item Allokera utrymme för returvärdet så att det rymmer det antal strängar som ordräknaren står på. Sätt nuvarande status till WHITESPACE.
+    	\item Traversera strängen tecken för tecken.
+        Flytta markören till första whitespace.
+        Flytta markören till första icke-whitespace.
+        Skapa en ny sträng av alla tecken från markören som inte är whitespace. Lägg strängen på första lediga plats i minnet för vårt returvärde.
+	\end{enumerate}
+	
+\subsubsection{Justering}
+Systemet använder sig av två olika sätt att justera ett ord som överskrider längden på en rad:
+
+	\begin{enumerate}
+    	\item Nedflyttning: Att flytta ned hela ordet till början av nästa rad.
+    	\item Avstavning: Att infoga ett bindestreck i ordet och låta första halvan stanna på samma rad medan andra halvan flyttas ned till nästa rad.
+	\end{enumerate}
+
+Nedflyttning leder i allmänhet till bra läslighet men kräver mer utrymme än avstavning, i synnerhet när väldigt långa ord flyttas ned.
+
+Avstavning leder till ett bättre utnyttjande av displayen men är svårare att implementera, inte minst för att avstavningsregler är olika beroende på vilket språk som meddelandet är skrivet på. Olika approximationer kan göras men ett bra resultat kan endast uppnås med hjälp av bibliotek för språkbehandling. Eftersom sådana kräver betydande utrymme för diverse språkdatabaser kan de inte användas i detta sammanhang.
+
+Även utan algoritmer för korrekt avstavning kvarstår möjligheten att låta ett ord gå ut till kanten av en rad, infoga ett bindestreck och flytta ned resten av ordet till nästa rad. Systemet avstavar ord på detta sätt.
+
+Bedömningen gjordes dock att en sådan “naiv” avstavning inte är nämnvärt bättre än att låta ordet brytas upp över två rader utan något bindestreck. Den avstavning som används i systemet utelämnar bindestreck på detta sätt.
+
+\subsubsection{Algoritm, justering}
+Den algoritm som vi tog fram för justering är en relativt simpel girig algoritm: Den flyttar ned ord så långt det går och bryter ord över två rader (utan bindestreck) så fort en nedflyttning skulle orsaka platsbrist. Algoritmen tar som argument en lista med ord.
+
+För att snabbare kunna testa olika lösningar implementerades algoritmen först som en prototyp i skriptspråket JavaScript.
+	\begin{enumerate}
+    	\item För varje ord i listan:
+    		\begin{enumerate}
+        	\item Om ordet får plats på nuvarande rad
+        		\begin{enumerate}
+        		\item placera ordet på nuvarande rad.
+        		\end{enumerate}
+        	\item Annars: 
+        		\begin{enumerate}
+        		\item Beräkna det minsta utrymmet som krävs för att placera de kvarvarande orden med början på nästa rad. 
+        		\item Om utrymmet räcker till:
+        			\begin{enumerate}
+        			\item Placera ordet på nästa rad och fortsätt justeringen därifrån.
+        			\end{enumerate}
+            		\item Annars (om ordet måste brytas upp över två rader):
+            			\begin{enumerate}
+                		\item Dela upp ordet i två nya ord: det första så långt som antalet oanvända tecken kvar på raden, det andra bildat av de återstående tecknen.
+                		\item Placera det första ordet på nuvarande rad.
+                		\item Infoga det andra ordet på nuvarande plats i listan.
+                		\end{enumerate}
+                	\end{enumerate}
+    		\end{enumerate}
+    	\end{enumerate}
+
+\subsubsection{Resultat}
+Efter att vi hade färdigställt vår första algoritm så övervägde vi att ta fram en mer avancerad algoritm som testar flera olika sätt att justera texten och väljer det bästa, enligt någon definition. Den definition som vi kom fram till var att låta så få korta ord som möjligt brytas över två rader, eftersom korta ord generellt är svårare att läsa än långa ord när de bryts över två rader. Vi beslöt oss dock först för att testa vår första algoritm på faktiska meddelanden från Twitter, för att se hur den fungerar i praktiken.
+
+För att genomföra testet hämtade vi in 100 huvudsakligen svenska meddelanden från Twitters API, körde algoritmen på dem och granskade resultatet för hand. Vi kom fram till att vår första algoritm fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Vi tror att detta beror på två anledningar:
+
+	\begin{enumerate}
+    	\item Eftersom teckengränsen på ett meddelande är 140 tecken så kommer de flesta meddelanden att hamna under det. I och med att ett genomsnittligt ord på Twitter är omkring 6 tecken långt (inklusive föregående mellanslag) så räcker det med att ett eller två ord ska utelämnas av platsbrist för att ett avsevärt utrymme ska sparas in till justering.
+    	\item Eftersom vår display har plats för 160 tecken så finns det plats för 20 tecken utöver meddelandets text. 14 av dessa är reserverade åt den datumstämpel som visas efter meddelandet, men de 6 ytterligare tecknen ger extra utrymme för justering.
+    	\end{enumerate}
+
+
+Faktum är att praktiskt taget de enda ord i vårt test som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. I och med detta positiva resultat bestämde vi oss för att använda vår första algoritm i det färdiga systemet.
+
+\subsection{Metadata}
+Eftersom displayen har rum för 160 tecken finns det möjlighet att visa mer text än enbart ett meddelande, som högst är 140 tecken långt. Under projektets planeringsfas diskuterades vilken eventuell metadata som skulle visas. Främst diskuterades publiceringsdatum och användarnamn.
+
+Publiceringsdatum är önskvärt att visa på displayen eftersom det ger meddelandet ett sammanhang. Många av de meddelanden som sätts upp på dörrskyltar handlar om tillfällig frånvaro, och då är det ofta viktigt för läsarna att veta när meddelandet publicerades. Användarnamn ger också ett sammanhang, men eftersom en dörrskylt redan är fysiskt monterad på användarens kontorsdörr blir informationen vanligtvis överflödig. Vi bestämde oss således för att enbart ta med meddelandets publiceringsdatum som metadata.
+
+Datumet visas på formatet “dd/mm tt:ss”, där uttrycken syftar på följande information i meddelandets publiceringsdatum:
+
+	\begin{itemize}
+    	\item dd: Dagen på månaden, utan inledande nolla (1-31).
+    	\item mm: Månadens ordningsnummer, utan inledande nolla (1-12).
+    	\item tt: Timmen på dygnet, med inledande nolla (00-23).
+    	\item ss: Minuten på timmen, med inledande nolla (00-59).
+    	\end{itemize}
+    	
+ett mellanslag (“- dd/mm tt:ss”).
+
+En komplikation som uppstår när metadata ska infogas i displayens nedre högra hörn är att algoritmen för avstavning potentiellt kan ha förbrukat detta utrymme genom att flytta ned ord, som i följande exempel med ett 124 tecken långt meddelande.
+
+Meddelande:
+
+a bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccccccccccccccccccccc dddddddddddddddddddddddddddddddddddddddd
+
+Resultat efter justering:
+
+                                      	| Högermarginal
+a                                       |
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb|
+cccccccccccccccccccccccccccccccccccccccc| dddddddddddddddddddddddddddddddddddddddd|
+
+I exemplet har ordet “bbb...” flyttats ned istället för att avstavas eftersom detta lämnar kvar tillräckligt med utrymme för resten av meddelandet. Problemet är att utrymmet i det nedre högra hörnet nu är förbrukat, vilket gör det omöjligt att infoga ett datum. Detta går att lösa genom att justera algoritmen för justering, men detta gör den mer komplicerad och kräver att den har kunskap om hur den justerade strängen ska användas, vilket ökar antalet beroenden mellan funktioner.
+
+Istället löses detta problem genom att en 13 tecken lång platshållarsträng infogas i slutet på den lista av ord som ska justeras. Eftersom denna platshållare är lika lång som den metadata som ska infogas i meddelandet (ett datum samt det bindestreck och mellanslag som föregår det) kommer algoritmen för avstavning att garantera att det alltid finns plats över för att infoga metadatan. Infogandet av den faktiska metadatan består sedan av två steg: att ersätta platshållarsträngen med metadatan samt att infoga nyrader och blanksteg så att metadatan visas i displayens nedre högra hörn.
+
+Den platshållarsträng som används är “0123456789abc”. Vilken sträng som helst skulle kunna användas så länge den består av 13 tecken och inte innehåller några mellanslag, men den aktuella strängen har en fördel: inga tecken förekommer två gånger. Detta används när metadatan ska placeras på rätt plats i meddelandet, då platshållarsträngens början identifieras genom att söka efter den första nollan från meddelandets slut.
+
+\subsubsection{Algoritm, metadata}
+Datumet läggs till på meddelandet efter att det har justerats. Eftersom det alltid ska visas det nedre högra hörnet av displayen kräver detta viss logik för att implementera, då längden på meddelandet och antalet nyrader i det är okänt.
+	\begin{enumerate}
+    	\item Räkna antalet nyrader i strängen.
+    	\item Infoga nyrader tills det finns tre nyrader i strängen.
+    	\item Räkna antalet tecken som föregår platshållaren på den sista raden.
+    	\item Infoga blanksteg före platshållaren tills den sista raden är 40 tecken lång.	
+    	\item Ersätt platshållaren med metadatan.
+    	\end{enumerate}
+    	
+\section{Resultat}
+
+\subsection{Resultatsammanställning, mätdata och produktegenskaper}
+
+\subsubsection{Funktionalitet}
+
+\subsubsection{Energieffektivitet}
+För att mäta energieffektivteten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3.3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
+
+\begin{table}[h]
+\centering
+	\begin{tabular}{|l|r|}
+	Arduino Pro 3.3V (aktivt läge) & {$11.4 mA$}\\
+	Arduino Pro 3.3V (strömsparläge) & {$16 {\mu}A$}\\
+	Spänningsregulator (idle) & {$1 mA$}\\
+	{\it Då Arduinoplattformen är aktiv, gäller även:} & { }\\	
+	Radiotransceiver (avlyssning/mottagning) & {$51 mA$}\\
+	Radiotransceiver (sändning) & {$45 mA$}\\
+	Display (uppdatering) & {$40 mA$}\\
+	Display (aktiv) &  {$0 mA$}\\
+	Batteriavläsning (inaktiv) & {$obetydlig$}\\
+	Batteriavläsning (aktiv) & {$4 {\mu}A$}\\
+	Per aktiv LED & {$2 mA$}\\
+	Per aktiverad knapp & {$30 {\mu}A$}\\
+	\end{tabular}
+\caption{Strömförbrukning, enskilda moduler}
+\label{tab:currentdrawtable}
+\end{table}
+
+Den slutsats som direkt kan dras är att spänningsregulatorn är den största källan till energiförlust, utslaget över en längre period. Detta beror på att resistiva förluster (i form av värme) fås i regulatorn då spänningen regleras ned till $3.3V$ för systemet. Resultatet blir även att regulatorn blir varm. Lite efterforskning ger dock resultatet att den regulator som används är väl anpassad för systemet och batteriet. Det finns dyrare regulatorer som skulle kunna ge bättre energieffektivitet.
+
+Med uppdateringsintervall på $5$ minuter och uppdateringstid på $10$ sekunder för en komplett uppdatering av skylten (med display och radiokommunikation) ger detta en batteritid på strax över $690$ timmar $(\approx 29 dagar)$ pessimistiskt räknat. I denna beräkning har antagits att radion är aktiv hela tiden och maximalt antal omsändningar görs. Beräkningen tar dock inte hänsyn till förluster i ledningar, regulatorn för XBee-modulen eller temperaturförändringar. Av dessa uppskattas dock endast XBee-modulens spänningsregulator ha en mätbar inverkan, och även den bör vara mycket liten.
+
+Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(\approx 32-36 dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppmot $100$ dagar.
+
+Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare (Dimension Engineering 2012).
+
+Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, men vi ser flera effektförbrukningsspikar under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figuren visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen.
+
+\begin{figure}[H]
+\includegraphics[scale=0.70, angle=0]{effekt.png}
+\label{fig:effectgraph}
+\caption{Effektanalys för skylt}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=0.35, angle=0]{battery.png}
+\label{fig:batterygraph}
+\caption{Urladdningsförlopp för LiPo-batteri}
+\end{figure}
+
+Batteriet som valdes visade sig vara ett mycket bra val, då det ger en lång batteritid, men fortfarande är litet och smidigt nog att bygga in i produkten. Eftersom det rör sig om ett LiPo-batteri så har dock den avläsningsmetod som används i projektet visat sig vara otillräcklig. LiPo-batterier har en relativt konstant spännings-tid-kurva, undantaget relativt skarpa förändringar i början och slutet av urladdningscykeln.
+
+batteriet, vilket inte fungerar som en bra indikator för laddningsstatus, enligt grafen. En alternativ lösning för batteristatusavläsning togs fram, där systemet konstant håller reda på strömmen som dras från batteriet, och utför en integration av strömmen. Med kompletterande information om batteriets initiala laddning kan därefter kvarvarande laddning räknas ut. Vidare fås detaljerad information om hur batteriet används, som kan användas till att räkna fram en uppskattning av återstående batteritid.
+
+Denna lösning är dock inte implementerad i systemet, då det skulle innebära mycket extra beräkningskraft som går åt till att beräkna batteritid, samt en del extra hårdvara. Bland annat skulle en avläsningsbar strömprob behöva kopplas till microcontrollern, samt att externa minneskretsar skulle behöva läggas till för att spara datan relaterat till batterihanteringen. Inom projektet togs snabbt beslutet att detta skulle vara mycket onödigt, på grund av extra kostnader och platsbrist, både fysiskt i enheten och i form av I/O-pinnar på microcontrollern. Vidare skulle det bidra relativt lite till användarupplevelsen. Med nuvarande lösning ger systemet en varning om att batterinivån är låg då spänningen från batteriet börjar sjunka. Då vet samtidigt användaren om att det verkligen är dags att ladda batteriet, då batterinivåvarningen kommer relativt sent i urladdningscykeln. Användaren informeras om den låga batterinivån via en status-LED på skylten.
+
+\subsubsection{Radiolänk och nätverk}
+Radiolänken har testats i kontorsmiljö (Instutitionen för Data- och informationsteknik på Chalmers), och fungerar bra. Ihopparning av modulerna går relativt snabbt (ca 5 sekunder), och inga konflikter med närliggande nätverk märks av. Vid systemstart kan basstationen ta upp till en minut på sig att ansluta sig till nätverksuppkopplingen via DHCP, men oftast går det snabbare.
+
+Radiokommunikationen har testats även över längre avstånd inomhus, och verkar fungera bra upp till ungefär två våningar upp eller ned i ett vanligt kontorshus. Även cirka 40-50 meter i sidoled. Detta ger en radie runt basstationen som skylten kan operera inom. Operationsområdet för skylten begränsas av väggar, annan störande elektronisk utrustning och andra fysiska hinder. Sammantaget bedöms radiokommunikationen väl uppfylla de krav på räckvidd och samexistensförmåga med andra nätverk som finns i en vanlig kontorsmiljö, och därmed uppfyller radionätverket även den specifikation som ställdes upp i början av projektet. Test har inte utförts utomhus, då det är utanför skyltens tänkta användningsområde.
+
+Robustheten i radiokommunikationen är relativt god. Vid längre avstånd gör systemet fler omsändningar av data över radiolänken, på grund av paketförluster. Dessa bidrar till längre uppdateringstider för skylten, men är acceptabla. Små avstånd (upp till 10 meter) ger mycket goda förhållanden mellan misslyckade och framgångsrika paketsändningar. Vid enstaka tillfällen händer det att många paket i följd tappas, vilket får som resultat att systemet går in i ett felhanteringsläge. Detta sker dock sällan, och endast vid långa avstånd med fysiska hinder för radiokommunikationen.
+
+\subsubsection{Fysiska dimensioner}
+\begin{table}[h]
+\centering
+	\begin{tabular}{|l|c|c|c|}
+	Basstation & 150 & 80 & 50 \\
+	Skylt & 150 & 80 & 20 \\
+	\end{tabular}
+\caption{Fysiska dimensioner}
+\label{tab:dimensiontable}
+\end{table}
+
+Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnadslådorna och elektroniken är hanterad för hand och med vanliga labb- och hemverkstadsverktyg. Skylten är smidig nog att hänga upp på en dörr, och basstationen är relativt lätt att ställa undan obemärkt på ett vanligt kontor. Ingen av enheterna gör ljud eller har någon nämnvärd värmeutveckling som begränsar placeringsmöjligheterna. Även vikten hos enheterna är låg. På detta sätt kan de fysiska dimensionerna anses uppfylla kravspecifikationen, men vid serieproduktion skulle inbyggnadslådorna och elektroniken behöva göras mindre och smidigare.
+
+\section{Diskussion och slutsatser}
+
+\subsection{Utvärdering av projektupplägg}
+
+\subsection{Sidospår: vad kunde gjorts annorlunda eller bättre}
+
+\subsubsection{Radio}
+Ett tidigt sidospår inom projektet var designvalet att basera radiolänken på XBee:s AT-läge. AT-läget är ett simpelt kommunikationsläge som kan ses som en trådlös ersättning av en serielänk, och har till skillnad från API-läget inte stöd för några avancerade protokollfunktioner som omsändning och paketinkapsling. Efter att ha arbetat med AT-läget och byggt upp en fungerande radiolänk, togs valet att gå över till API-läget på grund av den robustare kommunikationen och bättre kontrollen över radiolänkens status. Vidare behövde meddelanden delas upp i flera paket som dessutom behövde samordnas mellan varandra, vilket är olämpligt att implementera med XBee:s AT-läge.
+
+\subsubsection{E-Paper}
+Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider.
+
+\subsection{Jämförelser med liknande projekt}
+En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering.
+
+Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC.
+
+Inget annat projekt erbjuder en trådlös dörrskylt med energieffektiv display och radio, eller lång batteritid. Vidare finns inget annat projekt som erbjuder samma robusta kommunikationslänk eller användarvänlighet. Hummingbird kräver inte heller någon extern PC för att koppla upp sig mot internet, utan använder egen nätadapter för matningsspänning, och går att koppla direkt till en router via vanlig Ethernet.
+
+\subsection{Expansionsmöjligheter}
+En expansionsmöjlighet till projektet, som diskuterades tidigt under planeringsfasen, är att lägga till möjligheten för flera skyltar att ansluta sig till samma basstation. Vidare finns vidareutvecklingspotential för radion och sättet på vilket den anpassar sig till närliggande nätverk.
+
+Andra tänkbara vidareutvecklingar är tillägg av möjlighet för användaren att komma åt och konfigurera basstationer via ett webb-interface, eller att kontrollera hela nätverk av basstation-skyltpar via sitt lokala nätverk eller via internet.
+
+Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med relativ lätthet, givet industriell utvecklingsutrustning. Med för ändamålet specialutvecklade mönsterkort och ytmonterade komponenter skulle de fysiska dimensionerna på enheterna kunna krympas avsevärt. Vidare skulle kostnaderna per enhet sjunka dramatiskt vid serieproduktion. Användarvänligheten hos systemet skulle kunna förbättras genom att göra det lättare att komma åt SD-kortet och att byta och ladda skyltens batteri. 
+
+\subsection{Felanalys}
+Då systemet hanterar avläsning av temperaturer och endast klarar ett begränsat temperaturintevall
+görs här en felanalys. För de tillämpningsområden systemet är konstruerat för (hemanvändare)
+är mätfelen dock för små för att ha betydelse; noggrannheten är större än vad behovet åkallar.
+
+Temperatursensorerna arbetar med en temperaturupplösning på $0,5\,^{\circ}\mathrm{C}$ enligt datablad, se Appendix. Temperaturen levereras på en absolut skala och sensorerna ska leverera en exakthet på $\pm 0,5\,^{\circ}\mathrm{C}$ i intervallet $-10\,^{\circ}\mathrm{C}$ till $+85\,^{\circ}\mathrm{C}$. Resultatet som presenteras på LED-displayen är hela det avlästa värdet i binär form, medan ljuduppspelningen inte presenterar mer än en grads upplösning.
+Systemet arbetar med ett temperaturspann på $\pm 32\,^{\circ}\mathrm{C}$. Temperaturer utanför intervallet representeras som högsta respektive lägsta värde.
+
+\pagebreak
+
+\appendix
+\renewcommand{\appendixpagename}{Appendix}
+\appendixpage
+\renewcommand{\appendixtocname}{Appendix}
+
+\addappheadtotoc
 
 \end{document}
