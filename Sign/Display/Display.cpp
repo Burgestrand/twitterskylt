@@ -158,6 +158,7 @@ void Display::start_cmd(uint8_t cmd) {
 
 void Display::end_cmd() {
 	digitalWrite(cselect_pin, HIGH);
+	delay(20); // Avoid race-conditions
 	wait();
 }
 
