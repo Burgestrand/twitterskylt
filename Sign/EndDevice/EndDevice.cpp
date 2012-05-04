@@ -166,6 +166,7 @@ uint8_t EndDevice::start() {
 	DEBUG_MSG("[START]");
 	updateFlag = false; // Make sure this flag is reset as it may stay active if radio is reset while the flag is active
 	disableTimeout(); // Make sure the timer is not active afte a reset
+	wakeupFlag = false;
 	setTimeout(10000);
 	State = EndDeviceFormingNetwork;
 	return TICK_OK;
@@ -379,6 +380,7 @@ uint8_t EndDevice::requestWait() {
 
 			// Test if this was the final data packet for this message
 			if (zbrr.getData()[zbrr.getDataLength()-1] == 0) {
+				timesTimeout = 0; // Reset timeout counter as we got a complete message
 				DEBUG_MSG("  GOT MSG");
 				DEBUG_MSG((char *) data);
 				State = EndDeviceIdle;
