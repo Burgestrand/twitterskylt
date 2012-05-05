@@ -11,6 +11,13 @@
  *   switch (ed.tick()) {
  *     case TICK_...
  *   }
+ *
+ *   1 - Vcc
+ *   2 - TX
+ *   3 - RX
+ *   9 - 4
+ *   10 - GND
+ *   13 - 5
  */
 
 #include <Arduino.h>
@@ -56,6 +63,7 @@ enum EndDeviceState { EndDeviceStart
                     , EndDeviceRequestWait
                     , EndDeviceSleepWait
                     , EndDeviceSleeping
+                    , EndDeviceWaking
                     , EndDeviceResetStart
                     , EndDeviceResetWait
                     };
@@ -137,6 +145,7 @@ class EndDevice {
 		uint8_t requestStatus();
 		uint8_t sleepWait();
 		uint8_t sleeping();
+		uint8_t waking();
 		uint8_t resetStart();
 		uint8_t resetWait();
 };

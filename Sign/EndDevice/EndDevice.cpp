@@ -91,6 +91,7 @@ void EndDevice::disableTimeout() {
 	timeOutFlag = false;
 }
 
+#define LED_1 A0
 // Internal state handling ----------------------------------------------------
 uint8_t EndDevice::tick() {
 	xbee.readPacket();
@@ -123,6 +124,8 @@ uint8_t EndDevice::tick() {
 			return resetStart();
 		case EndDeviceResetWait:
 			return resetWait();
+		case EndDeviceWaking:
+			return waking();
 		default:
 			{ DEBUG_MSG("Bad state!"); }
 			return TICK_UNKNOWN_ERROR;
@@ -224,6 +227,7 @@ uint8_t EndDevice::joiningWait() {
 				State = EndDeviceJoiningWaitResponse;
 			} else {
 				// TODO Message not received
+				State = EndDeviceError;
 				return TICK_JOIN_NOT_DELIVERED;
 			}
 		} else {
@@ -252,6 +256,7 @@ uint8_t EndDevice::joiningWaitResponse() {
 				return TICK_JOIN_OK;
 			} else {
 				// TODO: Got wrong response, ignore it?
+				State = EndDeviceError;
 				return TICK_JOIN_BAD_MSG; // XXX: Not sure if this check/return value is needed really
 			}
 		} else {
@@ -297,15 +302,25 @@ uint8_t EndDevice::sleeping() {
 		digitalWrite(sleep_rq_pin, LOW);
 	}
 
-	if (resetFlag) {
-		State = EndDeviceResetStart;
-	} else if (wakeupFlag) {
-		State = EndDeviceIdle;
-	}
-	return TICK_OK;
+	State = EndDeviceWaking;
+	return TICK_SLEEPING;
 }
 
-// TODO: Any extra checks when waking the radio up to wait until radio is actually awake?
+// Radio has been requested to awake, wait for that to happen
+// Then go to idle/reset state depending on wake up reason.
+uint8_t EndDevice::waking() {
+	DEBUG_MSG("[WAKING]");
+	if (digitalRead(sleep_status_pin)) {
+		if (resetFlag) {
+			State = EndDeviceResetStart;
+		} else { // Must be the wakeupFlag that caused the awakening
+			State = EndDeviceIdle;
+		}
+		return TICK_OK;
+	} else {
+		return TICK_SLEEPING;
+	}
+}
 
 // Error state.
 uint8_t EndDevice::error() {
