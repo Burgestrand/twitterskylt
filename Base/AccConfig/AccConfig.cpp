@@ -69,7 +69,7 @@ int AccConfig::begin(char * configFile) {
   
     case 0:
 
-      if (!(pek == buf && (tmp == '\n' || tmp == ' ' || tmp == '\t'))) {
+      if (!(pek == buf && isWhitespace(tmp))) {
 	*pek = tmp;
 	pek++;
 	wscond = 1;
@@ -78,7 +78,7 @@ int AccConfig::begin(char * configFile) {
       
     case 1:
 
-      if (tmp == '\n' || tmp == ' ' || tmp == '\t') {
+      if (isWhitespace(tmp)) {
 	*pek = '\0';
 	pek++;
 	wscond = 2;
@@ -91,7 +91,7 @@ int AccConfig::begin(char * configFile) {
 
     case 2:
 
-      if (!(tmp == '\n' || tmp == ' ' || tmp == '\t')) {
+      if (!(isWhitespace(tmp))) {
 	*pek = tmp;
 	pek++;
 	wscond = 3;
@@ -132,8 +132,12 @@ int AccConfig::begin(char * configFile) {
   }
   
   if (wscond == 2) {
-    // no query so pointer is null
-    query = '\0';
+    // no query in file, make query with the given username
+    query = (char*) malloc(sizeof(char) * ((sizeof(buf) + 6))); //from: is 5 chars
+
+    strcpy(query,"from:");
+    strcat(query,buf);
+
   }
   else {
     pek = buf;
@@ -156,3 +160,9 @@ char * AccConfig::getUsername() {
 char * AccConfig::getQuery() {
   return query;
 }
+
+// returns true if whitespace, otherwise false
+bool AccConfig::isWhitespace (char chr){
+  return  (chr == ' ' || chr == '\n' || chr == '\t' || chr == '\r');
+}
+

@@ -38,6 +38,7 @@
 
 // Real hardware constans
 #ifndef TESTING
+
 // Join Button
 #define JOIN_BUTTON 2
 // Update Button
@@ -52,10 +53,14 @@
 #define BATT_A A0
 //Voltage divider control
 #define VDIV_D 6
+// XBee CTS Pin
+#define CTS_PIN 7
+adasd
 #endif
 
 // Testing setup constans
 #ifdef TESTING
+
 // Software serial pins for debugging
 #define SERIAL_RX 7
 #define SERIAL_TX 6
@@ -156,6 +161,7 @@ void setup () {
 
   pinMode(VDIV_D, OUTPUT);
   digitalWrite(VDIV_D, LOW);
+  pinMode(BATT_A, INPUT);
 #endif
 
 #ifdef TESTING
@@ -205,7 +211,6 @@ void loop () {
   
   // Necessary for the radio library to work
   switch (radio.tick()) {
-
     case TICK_ASSOC_FAIL:
       // Association failed (note: not pairing)
       invalidate_data();
