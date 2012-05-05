@@ -34,23 +34,30 @@ void setup(void)
 	Serial.begin(9600);
 	pinMode(errorPin, OUTPUT);
 	pinMode(assocPin, OUTPUT);
+
+        //Life sign on startup
+        showError();
+        showAssoc();
+
 	pinMode(53, OUTPUT);
 	coordinator.begin(Serial1);
 	pinMode(10, OUTPUT);
 	pinMode(4, OUTPUT);
 	digitalWrite(10, HIGH);
-	int configStatus = config.begin("KONF1.TXT");
+	int configStatus = config.begin("KONF0.TXT");
 	if (configStatus > 0) {
 		Serial.println("SD fail");
-		showError();
+		justShowError();
 		abort();
 	}
+
+
 	digitalWrite(4, HIGH);
 	byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
 	int ethernetStatus = Ethernet.begin(mac);
 	if (ethernetStatus > 0) {
 		Serial.println("eth fail");
-		showError();
+		justShowError();
 		abort();
 	}
 	
@@ -228,6 +235,12 @@ void showAssoc()
 void hideAssoc()
 {
 	digitalWrite(assocPin, LOW);
+}
+
+void justShowError()
+{
+        showError();
+        hideAssoc();
 }
 
 // Change this if we implement the watchdog reset timer.
