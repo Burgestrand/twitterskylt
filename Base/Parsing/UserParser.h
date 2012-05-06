@@ -13,6 +13,7 @@ class UserParser {
 	public:
 		UserParser(int *utcOffset);
 		bool parse(const char *buffer, int bufferSize);
+    void teardown();
 
 		struct State {
 			int *utcOffset;

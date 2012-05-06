@@ -17,7 +17,7 @@ HTTP::HTTP(const char *http_host, size_t buffer_size)
   this->_buffer_size = buffer_size;
 }
 
-void HTTP::destroy()
+void HTTP::teardown()
 {
   this->_client->stop();
   delete this->_client;

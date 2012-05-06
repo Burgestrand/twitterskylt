@@ -13,7 +13,7 @@ class TweetParser {
 	public:
 		TweetParser(char *text, size_t textLength, char *date, size_t dateLength);
 		bool parse(const char * buffer, int bufferSize);
-		void del();
+		void teardown();
 
 		struct State {
 			// The variables that result values should be written into.

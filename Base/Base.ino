@@ -118,9 +118,11 @@ void setupTimezone()
         finished = parser.parse(read_data, read_length);
       }
     }
+
+    parser.teardown();
   }
 
-  client->destroy();
+  client->teardown();
 
   DEBUG("UTC Offset: ");
   DEBUG(g_utc_offset);
@@ -201,10 +203,10 @@ void tweetTick()
     DEBUG(result);
 
 cleanup:
-    httpClient->destroy();
+    httpClient->teardown();
     delete httpClient;
 
-    parser.del();
+    parser.teardown();
   }
   else
   {

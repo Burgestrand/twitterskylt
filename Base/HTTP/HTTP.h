@@ -30,7 +30,7 @@ class HTTP
 {
   public:
     HTTP(const char *http_host, size_t buffer_size);
-    void destroy();
+    void teardown();
     http_error_t get(IPAddress host, const char *path, int argc, ...);
     const char *tick(int32_t *length);
     http_state_t state();

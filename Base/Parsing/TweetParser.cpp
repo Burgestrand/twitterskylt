@@ -69,6 +69,6 @@ bool TweetParser::parse(const char * buffer, int bufferSize)
 	return status == yajl_status_client_canceled;
 }
 
-void TweetParser::del() {
+void TweetParser::teardown() {
 	yajl_free(handle);
 }

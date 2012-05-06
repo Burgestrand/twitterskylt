@@ -53,3 +53,8 @@ bool UserParser::parse(const char *buffer, int bufferSize)
 	
 	return status == yajl_status_client_canceled;
 }
+
+void UserParser::teardown()
+{
+  yajl_free(this->handle);
+}
