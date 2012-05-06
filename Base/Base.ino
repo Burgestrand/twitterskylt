@@ -19,46 +19,70 @@
 #include <TweetParser.h>
 #include <UserParser.h>
 
+//
+// Function prototypes
+//
+void fail_hard(const char *error);
+
+//
+// Defines
+//
+#define HTTP_BUFFER_SIZE 128
+
+#define DEBUG(x) Serial.println((x))
+
+//
+// Global variables
+//
+
 Coordinator coordinator;
+
+int g_utc_offset = 0;
 
 const int errorPin = 22;
 const int assocPin = 24;
 unsigned long int blinkTimer = 0;
 unsigned long int tempTimer = 0;
-int timezone;
 boolean assocPinStatus = false;
 AccConfig config;
 
+//
+// Main program
+//
+
 void setup(void)
 {
+  // Setup Serial interface to 9600 baud
   Serial.begin(9600);
+
+  // Activate pins for output and show life signs on startup
   pinMode(errorPin, OUTPUT);
   pinMode(assocPin, OUTPUT);
-
-  //Life sign on startup
   showError();
   showAssoc();
+
+  // TODO: what pins are these magic numbers for?
+  // 53, 10, 4
 
   pinMode(53, OUTPUT);
   coordinator.begin(Serial1);
   pinMode(10, OUTPUT);
   pinMode(4, OUTPUT);
   digitalWrite(10, HIGH);
-  int configStatus = config.begin("KONF0.TXT");
-  if (configStatus > 0) {
-    Serial.println("SD fail");
-    justShowError();
-    abort();
-  }
 
+  // Read user configuration
+  int configStatus = config.begin("KONF0.TXT");
+  if (configStatus > 0)
+  {
+    fail_hard("SD Fail");
+  }
 
   digitalWrite(4, HIGH);
   byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
   int ethernetStatus = Ethernet.begin(mac);
-  if (ethernetStatus > 0) {
-    Serial.println("eth fail");
-    justShowError();
-    abort();
+  if (ethernetStatus > 0)
+  {
+    fail_hard("ETH fail");
   }
 
   Serial.println("everything ok!");
@@ -72,62 +96,41 @@ void setup(void)
 
 void setupTimezone()
 {
-  size_t buffer_size = 1024;
-  HTTP *client = new HTTP("api.twitter.com", buffer_size);
+  HTTP *client = new HTTP("api.twitter.com", HTTP_BUFFER_SIZE);
+  http_error_t error = client->get(IPAddress(199, 59, 150, 9), "/1/users/show.json", 2, "screen_name", "door_sign");
 
-  Serial.println("Get: ");
-  int get = client->get(IPAddress(199, 59, 150, 9), "/1/users/show.json", 2, "screen_name", "door_sign");
-
-  if (get == 0)
+  if (error != HTTP_OK)
   {
-    Serial.println("Get success!");
-    Serial.println();
-    Serial.println();
-
+    DEBUG(client->explainError(error));
+  }
+  else
+  {
+    UserParser parser = UserParser(&g_utc_offset);
     const char *read_data = NULL;
     int32_t read_length = 0;
 
-    UserParser parser = UserParser(&timezone);
     bool finished = false;
     while (!finished)
     {
       read_data = client->tick(&read_length);
       if (read_length > 0)
+      {
         finished = parser.parse(read_data, read_length);
-      Serial.print("tick: ");
-      //Serial.println(read_length, DEC);
-      //Serial.println(read_data);
-      //Serial.println();
-
-      //delay(1000);
+      }
     }
-    Serial.println("timezone:");
-    Serial.println(timezone);
-  }
-  else
-  {
-    Serial.println("Get error");
-    Serial.println(get);
-    Serial.println();
-    //couldn't connect to twitter
-    timezone = 0;
   }
 
   client->destroy();
 
-  /*
-    URL: "api.twitter.com/1/users/show.json"
-    Param 1: "screen_name"
-    Value 1: config.getUsername()
-    Eventuellt returnera statuskod om det misslyckas och då antingen visa fel och avsluta eller välja default.
-  */
+  DEBUG("UTC Offset: ");
+  DEBUG(g_utc_offset);
 }
 
 void loop(void)
 {
   ethernetTick();
   radioTick();
-  Serial.println("loop");
+  DEBUG("loop");
   tweetTick();
   delay(10); // Rate limit for output
 }
@@ -154,8 +157,6 @@ HTTP *httpClient = NULL;
 unsigned long nextRequest = 0;
 unsigned long updateInterval = 60 * 1000; // 1 minute interval
 
-#define HTTP_BUFFER_SIZE 200
-
 void tweetTick()
 {
   char *text, *date, *result;
@@ -168,40 +169,46 @@ void tweetTick()
     text = ALLOC_STR(160);
     date = ALLOC_STR(40);
     TweetParser parser = TweetParser(text, 160, date, 40);
-    Serial.println("lets get");
+
     // calculate next time to do the request
     nextRequest += updateInterval;
+
+    DEBUG("Fetching new tweet");
     httpClient = new HTTP("search.twitter.com", HTTP_BUFFER_SIZE);
-    // new request
     http_error_t error = httpClient->get(IPAddress(199,59,148,201), "/search.json", 6, "q", "from:door_sign", "result_type", "recent", "rpp", "1");
 
     if (error != 0)
     {
       // Show error somehow
-      Serial.println(httpClient->explainError(error));
+      DEBUG(httpClient->explainError(error));
       goto cleanup;
     }
 
-    while (!finished) {
+    while (!finished)
+    {
       buffer = httpClient->tick(&length);
-      if (length > 0) {
+      if (length > 0)
+      {
         finished = parser.parse(buffer, strlen(buffer));
       }
     }
-    Serial.println(date);
-    Serial.println(text);
 
-    result = Formatting::format(text, date, timezone);
+    DEBUG(date);
+    DEBUG(text);
+
+    result = Formatting::format(text, date, g_utc_offset);
     coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));
-    Serial.println(result);
+    DEBUG(result);
 
 cleanup:
     httpClient->destroy();
+    delete httpClient;
+
     parser.del();
   }
   else
   {
-    Serial.println("no");
+    DEBUG("tweetTick(): nothing to do");
   }
 }
 
@@ -259,4 +266,16 @@ void justShowError()
 // Change this if we implement the watchdog reset timer.
 void abort() {
   for (;;);
+}
+
+/*
+ * Allows us to fail with an error message. This will hang
+ * the Arduino and allow the watchdog to reset it.
+ */
+void fail_hard(const char *error)
+{
+  Serial.println(error);
+  showError();
+  hideAssoc();
+  abort();
 }
