@@ -37,7 +37,7 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	return state->foundCount != MAX_FOUND_COUNT;
 }
 
-TweetParser::TweetParser(char *text, int textLength, char *date, int dateLength)
+TweetParser::TweetParser(char *text, size_t textLength, char *date, size_t dateLength)
 {
 	this->state.text = text;
 	this->state.textLength = textLength;

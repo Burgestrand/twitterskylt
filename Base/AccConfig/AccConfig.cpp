@@ -17,10 +17,10 @@ when there is no more hashtags hashtags[i] is null
 
 #include "AccConfig.h"
 
-int AccConfig::begin(char * configFile) {
- 
-  buf = NULL; 
-  
+int AccConfig::begin(const char * _configFile) {
+  buf = NULL;
+  char *configFile = strclone(_configFile);
+
   // Inits the SD shield
   pinMode(53, OUTPUT);
 
@@ -35,21 +35,22 @@ int AccConfig::begin(char * configFile) {
   }
 
   File f = SD.open(configFile);
-  
+  xfree(configFile);
+
   if (!f) {
     // couldn't open file
     return 1;
   }
-  
+
   unsigned long file_size = f.size();
-  
-  buf = (char *) malloc(sizeof(char) * (file_size + 1));
+
+  buf = ALLOC_STR(file_size);
 
   if (buf == NULL) {
     //couln't allocate memory
     return 4;
   }
-  
+
   char tmp;
   char * pek = buf;
 
@@ -64,9 +65,9 @@ int AccConfig::begin(char * configFile) {
 
   while(f.available()) {
     tmp = (char) f.read();
-    
+
     switch (wscond) {
-  
+
     case 0:
 
       if (!(pek == buf && isWhitespace(tmp))) {
@@ -75,7 +76,7 @@ int AccConfig::begin(char * configFile) {
 	wscond = 1;
       }
       break;
-      
+
     case 1:
 
       if (isWhitespace(tmp)) {
@@ -103,24 +104,24 @@ int AccConfig::begin(char * configFile) {
       pek++;
     }
   }
-  
+
 
   if (wscond == 0) {
     // no username in file
     buf = NULL;
     return 2;
   }
-  
+
   // loops while theres no space at the end of query
   do {
     pek--;
   } while(*pek < 33);
-  
+
   // adds a null char at end
   pek++;
   *pek = '\0';
 
-  int diff = (pek - buf) + 1; // have to include all numbers
+  unsigned long diff = (pek - buf) + 1; // have to include all numbers
   if (file_size != diff) {
     char * new_ptr = (char *) realloc(buf, diff);
     if (new_ptr != NULL)
@@ -130,7 +131,7 @@ int AccConfig::begin(char * configFile) {
       return 4;
     }
   }
-  
+
   if (wscond == 2) {
     // no query in file, make query with the given username
     query = (char*) malloc(sizeof(char) * ((sizeof(buf) + 6))); //from: is 5 chars

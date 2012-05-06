@@ -24,16 +24,16 @@ void HTTP::destroy()
   xfree(this->_buffer);
 }
 
-int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
+http_error_t HTTP::get(IPAddress host, const char *path, int argc, ...)
 {
   if (argc % 2) // We must have an even number of arguments
   {
-    return -1;
+    return HTTP_INVALID_ARGUMENTS;
   }
 
   if ( ! _client->connect(host, 80))
   {
-    return -2;
+    return HTTP_CONNECTION_FAILED;
   }
 
   // Extract the query parameters
@@ -78,7 +78,7 @@ int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   // Cleanup
   xfree(host_header);
 
-  return 0;
+  return HTTP_OK;
 }
 
 char *HTTP::_build_query(int argc, char **raw_query_params)
@@ -201,6 +201,24 @@ void HTTP::body(const char *data, size_t length)
   {
     this->_body = ALLOC_STR(length);
     strncpy(this->_body, data, length);
+  }
+}
+
+const char *HTTP::explainError(http_error_t error)
+{
+  switch (error)
+  {
+    case HTTP_OK:
+      return "no error";
+
+    case HTTP_INVALID_ARGUMENTS:
+      return "invalid arguments (must be divisible by two)";
+
+    case HTTP_CONNECTION_FAILED:
+      return "connection failed";
+
+    default:
+      return "unknown error";
   }
 }
 

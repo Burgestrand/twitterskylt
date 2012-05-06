@@ -8,6 +8,5 @@
 #define HUGE_VAL 18446744073709551615
 #define ENOMEM 35
 #define EINVAL 36
-#define YAJL_VERSION 2
 
 #endif

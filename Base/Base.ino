@@ -60,7 +60,7 @@ void setup(void)
 		justShowError();
 		abort();
 	}
-	
+
 	Serial.println("everything ok!");
 	attachInterrupt(0, pairUp, FALLING);
 	hideError();
@@ -145,7 +145,7 @@ void radioTick()
 		showError();
 	}
 	else {
-		hideError(); 
+		hideError();
 	}
 }
 
@@ -157,38 +157,50 @@ unsigned long updateInterval = 60 * 1000; // 1 minute interval
 
 void tweetTick()
 {
-  char * text;
-  char * date;
+  char *text, *date, *result;
+  bool finished = false;
+  int32_t length = 0;
+  const char *buffer;
+
   if (millis() >= nextRequest)
   {
-	text = (char *) calloc(161, sizeof(char));
-	date = (char *) calloc(41, sizeof(char));
-	TweetParser parser = TweetParser(text, 160, date, 40);
-	Serial.println("lets get");
+    text = ALLOC_STR(160);
+    date = ALLOC_STR(40);
+    TweetParser parser = TweetParser(text, 160, date, 40);
+    Serial.println("lets get");
     // calculate next time to do the request
     nextRequest += updateInterval;
     httpClient = new HTTP("search.twitter.com", HTTP_BUFFER_SIZE);
     // new request
-	int8_t ret = httpClient->get(IPAddress(199,59,148,201), "/search.json", 6, "q", "from:door_sign", "result_type", "recent", "rpp", "1");
-	int32_t length = 0;
-	bool finished = false;
-	while (!finished) {
-		const char * buffer = httpClient->tick(&length);
-		if (length > 0) {
-			finished = parser.parse(buffer, strlen(buffer));
-		}
-	}
-	Serial.println(date);
-	Serial.println(text);
-	httpClient->destroy();
-	parser.del();
-	char * result = Formatting::format(text, date, timezone);
-	coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));
-	Serial.println(result);
+    http_error_t error = httpClient->get(IPAddress(199,59,148,201), "/search.json", 6, "q", "from:door_sign", "result_type", "recent", "rpp", "1");
+
+    if (error != 0)
+    {
+      // Show error somehow
+      Serial.println(httpClient->explainError(error));
+      goto cleanup;
+    }
+
+    while (!finished) {
+      buffer = httpClient->tick(&length);
+      if (length > 0) {
+        finished = parser.parse(buffer, strlen(buffer));
+      }
+    }
+    Serial.println(date);
+    Serial.println(text);
+
+    result = Formatting::format(text, date, timezone);
+    coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));
+    Serial.println(result);
+
+    cleanup:
+      httpClient->destroy();
+      parser.del();
   }
   else
   {
-		Serial.println("no");
+    Serial.println("no");
   }
 }
 
@@ -203,7 +215,7 @@ void assocLed(uint8_t state) {
     else {
 		hideAssoc();
     }
-  }  
+  }
 }
 
 void pairUp() {

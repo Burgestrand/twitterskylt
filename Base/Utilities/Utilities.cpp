@@ -45,7 +45,7 @@ xcalloc(size_t count, size_t size)
 int
 find(const char *haystack, size_t length, const char *needle, const char **cursor)
 {
-  for (int i = 0; i < length; ++i)
+  for (unsigned int i = 0; i < length; ++i)
   {
     if (**cursor == haystack[i])
     {
@@ -89,7 +89,7 @@ char *url_encode(const char *str)
   char *result = ALLOC_STR(strlen(str) * 3);
   char *result_cursor = result;
 
-  for (cursor = str; current = *cursor; cursor++) // let’s hope all our urlencoded strings ends with \0
+  for (cursor = str; (current = *cursor); cursor++) // let’s hope all our urlencoded strings ends with \0
   {
     if (isalnum(current) || current == '-' || current == '_' || current == '.' || current == '~')
     {
