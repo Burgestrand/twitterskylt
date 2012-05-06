@@ -46,7 +46,7 @@ int AccConfig::begin(char * configFile) {
   buf = (char *) malloc(sizeof(char) * (file_size + 1));
 
   if (buf == NULL) {
-    //couln't allocate memory
+    //couldn't allocate memory
     return 4;
   }
   
@@ -133,10 +133,12 @@ int AccConfig::begin(char * configFile) {
   
   if (wscond == 2) {
     // no query in file, make query with the given username
-    query = (char*) malloc(sizeof(char) * ((sizeof(buf) + 6))); //from: is 5 chars
+    //from: is 5 chars and  +exclude:retweets 18 chars
+    query = (char*) malloc(sizeof(char) * ((strlen(buf) + 24)));
 
     strcpy(query,"from:");
     strcat(query,buf);
+    strcat(query," +exclude:retweets"); //space is important!
 
   }
   else {
