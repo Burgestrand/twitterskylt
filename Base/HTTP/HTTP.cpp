@@ -131,6 +131,12 @@ uint32_t HTTP::_read()
   uint32_t available = 0;
   this->body(NULL, -1); // clear previous body
 
+  if (this->state() == HTTP_READING_BODY && ! this->_client->connected())
+  {
+    this->_state = HTTP_DONE;
+    return 0;
+  }
+
   available = this->_client->available();
   Serial.print("AVAILABLE: ");
   Serial.println(available, DEC);
