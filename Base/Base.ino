@@ -38,11 +38,17 @@ void setup(void)
         //Life sign on startup
         showError();
         showAssoc();
-
+	
+	// activates the SPI interface
 	pinMode(53, OUTPUT);
+
 	coordinator.begin(Serial1);
+
+	// sets CS to output for Ethernet and SD
 	pinMode(10, OUTPUT);
 	pinMode(4, OUTPUT);
+
+	// Want to use SD so deactivate Ethernet (active low)
 	digitalWrite(10, HIGH);
 	int configStatus = config.begin("KONF0.TXT");
 	if (configStatus > 0) {
@@ -51,7 +57,7 @@ void setup(void)
 		abort();
 	}
 
-
+	// Want to use Ethernet so deactivate SD (active low)
 	digitalWrite(4, HIGH);
 	byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
 	int ethernetStatus = Ethernet.begin(mac);
