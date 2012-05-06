@@ -69,12 +69,17 @@ void setup(void)
   showAssoc();
 
   // TODO: what pins are these magic numbers for?
-  // 53, 10, 4
 
+  // activates the SPI interface
   pinMode(53, OUTPUT);
+
   coordinator.begin(Serial1);
+
+  // sets CS to output for Ethernet and SD
   pinMode(10, OUTPUT);
   pinMode(4, OUTPUT);
+
+  // Want to use SD so deactivate Ethernet (active low)
   digitalWrite(10, HIGH);
 
   // Read user configuration
@@ -84,7 +89,9 @@ void setup(void)
     fail_hard("SD Fail");
   }
 
+  // Want to use Ethernet so deactivate SD (active low)
   digitalWrite(4, HIGH);
+
   byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
   int ethernetStatus = Ethernet.begin(mac);
   if (ethernetStatus > 0)
