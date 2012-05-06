@@ -31,43 +31,43 @@ AccConfig config;
 
 void setup(void)
 {
-	Serial.begin(9600);
-	pinMode(errorPin, OUTPUT);
-	pinMode(assocPin, OUTPUT);
+  Serial.begin(9600);
+  pinMode(errorPin, OUTPUT);
+  pinMode(assocPin, OUTPUT);
 
-        //Life sign on startup
-        showError();
-        showAssoc();
+  //Life sign on startup
+  showError();
+  showAssoc();
 
-	pinMode(53, OUTPUT);
-	coordinator.begin(Serial1);
-	pinMode(10, OUTPUT);
-	pinMode(4, OUTPUT);
-	digitalWrite(10, HIGH);
-	int configStatus = config.begin("KONF0.TXT");
-	if (configStatus > 0) {
-		Serial.println("SD fail");
-		justShowError();
-		abort();
-	}
+  pinMode(53, OUTPUT);
+  coordinator.begin(Serial1);
+  pinMode(10, OUTPUT);
+  pinMode(4, OUTPUT);
+  digitalWrite(10, HIGH);
+  int configStatus = config.begin("KONF0.TXT");
+  if (configStatus > 0) {
+    Serial.println("SD fail");
+    justShowError();
+    abort();
+  }
 
 
-	digitalWrite(4, HIGH);
-	byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
-	int ethernetStatus = Ethernet.begin(mac);
-	if (ethernetStatus > 0) {
-		Serial.println("eth fail");
-		justShowError();
-		abort();
-	}
+  digitalWrite(4, HIGH);
+  byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0xF9, 0x83 };
+  int ethernetStatus = Ethernet.begin(mac);
+  if (ethernetStatus > 0) {
+    Serial.println("eth fail");
+    justShowError();
+    abort();
+  }
 
-	Serial.println("everything ok!");
-	attachInterrupt(0, pairUp, FALLING);
-	hideError();
-	hideAssoc();
-	blinkTimer = 0;
+  Serial.println("everything ok!");
+  attachInterrupt(0, pairUp, FALLING);
+  hideError();
+  hideAssoc();
+  blinkTimer = 0;
 
-	setupTimezone();
+  setupTimezone();
 }
 
 void setupTimezone()
@@ -86,14 +86,14 @@ void setupTimezone()
 
     const char *read_data = NULL;
     int32_t read_length = 0;
-	
-	UserParser parser = UserParser(&timezone);
-	bool finished = false;
+
+    UserParser parser = UserParser(&timezone);
+    bool finished = false;
     while (!finished)
     {
       read_data = client->tick(&read_length);
-	  if (read_length > 0)
-	  	finished = parser.parse(read_data, read_length);
+      if (read_length > 0)
+        finished = parser.parse(read_data, read_length);
       Serial.print("tick: ");
       //Serial.println(read_length, DEC);
       //Serial.println(read_data);
@@ -101,52 +101,53 @@ void setupTimezone()
 
       //delay(1000);
     }
-	Serial.println("timezone:");
-	Serial.println(timezone);
+    Serial.println("timezone:");
+    Serial.println(timezone);
   }
   else
   {
     Serial.println("Get error");
     Serial.println(get);
     Serial.println();
-	//couldn't connect to twitter
-	timezone = 0;
+    //couldn't connect to twitter
+    timezone = 0;
   }
+
   client->destroy();
 
-	/*
-	URL: "api.twitter.com/1/users/show.json"
-	Param 1: "screen_name"
-	Value 1: config.getUsername()
-	Eventuellt returnera statuskod om det misslyckas och då antingen visa fel och avsluta eller välja default.
-	*/
+  /*
+    URL: "api.twitter.com/1/users/show.json"
+    Param 1: "screen_name"
+    Value 1: config.getUsername()
+    Eventuellt returnera statuskod om det misslyckas och då antingen visa fel och avsluta eller välja default.
+  */
 }
 
 void loop(void)
 {
-	ethernetTick();
-	radioTick();
-	Serial.println("loop");
-	tweetTick();
-	delay(10); // Rate limit for output
+  ethernetTick();
+  radioTick();
+  Serial.println("loop");
+  tweetTick();
+  delay(10); // Rate limit for output
 }
 
 void ethernetTick()
 {
-	Ethernet.renew();
+  Ethernet.renew();
 }
 
 void radioTick()
 {
-	uint8_t st = coordinator.tick();
-	uint8_t s = coordinator.getState();
-	assocLed(s);
-	if (st == 1 || st == 3) {
-		showError();
-	}
-	else {
-		hideError();
-	}
+  uint8_t st = coordinator.tick();
+  uint8_t s = coordinator.getState();
+  assocLed(s);
+  if (st == 1 || st == 3) {
+    showError();
+  }
+  else {
+    hideError();
+  }
 }
 
 HTTP *httpClient = NULL;
@@ -194,9 +195,9 @@ void tweetTick()
     coordinator.setData((uint8_t *)result, (uint8_t)strlen(result));
     Serial.println(result);
 
-    cleanup:
-      httpClient->destroy();
-      parser.del();
+cleanup:
+    httpClient->destroy();
+    parser.del();
   }
   else
   {
@@ -210,10 +211,10 @@ void assocLed(uint8_t state) {
   }
   else {
     if(coordinator.getAssoc()) {
-		showAssoc();
+      showAssoc();
     }
     else {
-		hideAssoc();
+      hideAssoc();
     }
   }
 }
@@ -224,38 +225,38 @@ void pairUp() {
 
 void blinkPairUp() {
   if(millis() >= blinkTimer) {
-	digitalWrite(assocPin, (assocPinStatus = !assocPinStatus));
+    digitalWrite(assocPin, (assocPinStatus = !assocPinStatus));
     blinkTimer = millis() + 500;
   }
 }
 
 void showError()
 {
-	digitalWrite(errorPin, HIGH);
+  digitalWrite(errorPin, HIGH);
 }
 
 void hideError()
 {
-	digitalWrite(errorPin, LOW);
+  digitalWrite(errorPin, LOW);
 }
 
 void showAssoc()
 {
-	digitalWrite(assocPin, HIGH);
+  digitalWrite(assocPin, HIGH);
 }
 
 void hideAssoc()
 {
-	digitalWrite(assocPin, LOW);
+  digitalWrite(assocPin, LOW);
 }
 
 void justShowError()
 {
-        showError();
-        hideAssoc();
+  showError();
+  hideAssoc();
 }
 
 // Change this if we implement the watchdog reset timer.
 void abort() {
-	for (;;);
+  for (;;);
 }
