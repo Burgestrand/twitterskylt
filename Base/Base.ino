@@ -29,6 +29,13 @@ void fail_hard(const char *error);
 //
 #define HTTP_BUFFER_SIZE 128
 
+#define DESTROY(class_pointer) do { \
+    if (class_pointer != NULL)      \
+    {                               \
+      class_pointer->teardown();    \
+      delete class_pointer;         \
+    }                               \
+  } while(0)
 #define DEBUG(x) Serial.println((x))
 
 //
@@ -122,7 +129,7 @@ void setupTimezone()
     parser.teardown();
   }
 
-  client->teardown();
+  DESTROY(client);
 
   DEBUG("UTC Offset: ");
   DEBUG(g_utc_offset);
@@ -155,7 +162,6 @@ void radioTick()
   }
 }
 
-HTTP *httpClient = NULL;
 unsigned long nextRequest = 0;
 unsigned long updateInterval = 60 * 1000; // 1 minute interval
 
@@ -176,7 +182,7 @@ void tweetTick()
     nextRequest += updateInterval;
 
     DEBUG("Fetching new tweet");
-    httpClient = new HTTP("search.twitter.com", HTTP_BUFFER_SIZE);
+    HTTP *httpClient = new HTTP("search.twitter.com", HTTP_BUFFER_SIZE);
     http_error_t error = httpClient->get(IPAddress(199,59,148,201), "/search.json", 6, "q", "from:door_sign", "result_type", "recent", "rpp", "1");
 
     if (error != 0)
@@ -203,8 +209,7 @@ void tweetTick()
     DEBUG(result);
 
 cleanup:
-    httpClient->teardown();
-    delete httpClient;
+    DESTROY(httpClient);
 
     parser.teardown();
   }
