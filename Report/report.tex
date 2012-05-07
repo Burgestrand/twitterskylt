@@ -12,6 +12,9 @@
 \usepackage{float}
 \usepackage{listings}
 
+% Harvard style references
+%\usepackage{harvard}
+
 % Swedish
 \usepackage[swedish]{babel}
 
@@ -175,7 +178,7 @@ Den hårdvara som utgör skylt och basstation ska baseras på en lämplig microc
 Konfigureringen av systemet ska bestå av att ange namnet på det offentliga Twitter-konto vars tweets man vill visa upp. Om man så önskar ska man även kunna ange att endast tweets med en specifik hashtag ska visas på skylten, men detta är valfritt. Användaren ska sköta konfigureringen genom att med sin dator redigera en enkel textfil på ett SD-kort som följer med skylten.
 
 \subsection{Bakgrund och sammanhang}
-Den ursprungliga idén till projektet kommer från en artikel i IEEE Spectrum av Erico Guizzo (Guizzo, 2011), där författaren beskriver en elektronisk dörrskylt som visar upp meddelanden från hans Twitter-konto. Målet med projektet är att vidareutveckla samma idé, bland annat genom att göra den mindre otymplig och mer energieffektiv. \\
+Den ursprungliga idén till projektet kommer från en artikel i IEEE Spectrum av Erico Guizzo \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}, där författaren beskriver en elektronisk dörrskylt som visar upp meddelanden från hans Twitter-konto. Målet med projektet är att vidareutveckla samma idé, bland annat genom att göra den mindre otymplig och mer energieffektiv. \\
 
 Syftet med dörrskylten i den ursprungliga artikeln var att kunna lämna meddelanden på sin kontorsdörr även om man inte är på plats, exempelvis för att man har valt att arbeta hemifrån. Den möjliggör även en centralisering av statusmeddelanden som man vill sprida till folk i sitt arbete: de visas både på webben och på dörrskylten. \\
 
@@ -279,17 +282,17 @@ Som många andra hemsidor erbjuder Twitter ett HTTP-baserat API. Detta kan anvä
 Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format.
 
 \subsection{Arduino}
-Arduino är en microcontroller-plattform vars design och källkod publiceras under öppen licens (Arduino, 2012). Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och -varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet. \\
+Arduino är en microcontroller-plattform vars design och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och -varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet. \\
 
-På grund av sin enkelhet och flexibilitet är Arduino en populär plattform för prototyper och hobbyprojekt, men den erbjuder också relativt avancerad funktionalitet. En utvecklare kan med hjälp av utbyggnadskort (Arduino, 2012) och kreativ programmering utnyttja Arduinons fulla potential. Dessa egenskaper är stora bidragande faktorer till att Arduino valdes som plattform för systemet, men även att det finns ett stort community på internet, och även många färdiga mjukvarubibliotek. Andra alternativ som övervägdes i projektets planeringsfas var STM32 från ARM och Cerebot II från Digilent. STM32 erbjuder bättre prestanda än övriga alternativ, men är sämre lämpad i övrigt för projektet, med avseende på kostnad, smidighet och tiden det tar att komma igång med utvecklingen. Cerebot II har liknande specifikationer som Arduino, men det finns färre färdiga tillbehör av den typ som behövs för projektet, och skulle bli otympligare fysiskt. Utöver detta saknas till stora delar det community och de färdiga bibliotek som finns till Arduino. \\
+På grund av sin enkelhet och flexibilitet är Arduino en populär plattform för prototyper och hobbyprojekt, men den erbjuder också relativt avancerad funktionalitet. En utvecklare kan med hjälp av utbyggnadskort \hyperref[arduino]{(Arduino, 2012)} och kreativ programmering utnyttja Arduinons fulla potential. Dessa egenskaper är stora bidragande faktorer till att Arduino valdes som plattform för systemet, men även att det finns ett stort community på internet, och även många färdiga mjukvarubibliotek. Andra alternativ som övervägdes i projektets planeringsfas var STM32 från ARM och Cerebot II från Digilent. STM32 erbjuder bättre prestanda än övriga alternativ, men är sämre lämpad i övrigt för projektet, med avseende på kostnad, smidighet och tiden det tar att komma igång med utvecklingen. Cerebot II har liknande specifikationer som Arduino, men det finns färre färdiga tillbehör av den typ som behövs för projektet, och skulle bli otympligare fysiskt. Utöver detta saknas till stora delar det community och de färdiga bibliotek som finns till Arduino. \\
 
 \subsubsection{Historia}
-Initiativet till Arduino togs vid den italienska högskolan Interaction Design Institute Ivrea. Det föddes ur det liknande projektet Wiring från samma högskola. Wiring bygger i sin tur på projektet Processing från Massachusetts Institute of Technology (Wiring, 2012). \\
+Initiativet till Arduino togs vid den italienska högskolan Interaction Design Institute Ivrea. Det föddes ur det liknande projektet Wiring från samma högskola. Wiring bygger i sin tur på projektet Processing från Massachusetts Institute of Technology \hyperref[wiring]{(Wiring, 2012)}. \\
 
-Samtliga projekt har haft som utgångspunkt att bygga på källkod och hårdvara publicerad under öppen licens. Skillnader som kan nämnas är att Processing från början inte var kopplat till en specifik hårdvaruplattform, utan var mer fokuserat på programmeringsspråk och utvecklingsmiljö. Dess programmeringsspråk byggde på Java, snarare än på C/C++ som Wiringprojektet och senare Arduino (Processing, 2012).
+Samtliga projekt har haft som utgångspunkt att bygga på källkod och hårdvara publicerad under öppen licens. Skillnader som kan nämnas är att Processing från början inte var kopplat till en specifik hårdvaruplattform, utan var mer fokuserat på programmeringsspråk och utvecklingsmiljö. Dess programmeringsspråk byggde på Java, snarare än på C/C++ som Wiringprojektet och senare Arduino \hyperref[processing]{(Processing, 2012)}.
 
 \subsubsection{Hårdvara}
-Arduino bygger på Atmels AVR-microcontrollers (de flesta varianterna av Arduino använder ATMega-serien). I sin grundform erbjuder Arduino en relativt omodifierad AVR-microcontroller och grundläggande kringelektronik för att stödja och programmera denna. Dessa kringkretsar består bland annat av en spänningsregulator, en oscillator och i vissa fall externt minne för att komplettera AVR:ens on-chip-minne  (Arduino, 2012). Dessutom finns grundläggande in- och utgångar på microcontrollern utdragna till anslutningar för att förenkla för användaren vid inkoppling av tillbehör eller övrig elektronik som ska användas i projektet. \\
+Arduino bygger på Atmels AVR-microcontrollers (de flesta varianterna av Arduino använder ATMega-serien). I sin grundform erbjuder Arduino en relativt omodifierad AVR-microcontroller och grundläggande kringelektronik för att stödja och programmera denna. Dessa kringkretsar består bland annat av en spänningsregulator, en oscillator och i vissa fall externt minne för att komplettera AVR:ens on-chip-minne  \hyperref[arduino]{(Arduino, 2012)}. Dessutom finns grundläggande in- och utgångar på microcontrollern utdragna till anslutningar för att förenkla för användaren vid inkoppling av tillbehör eller övrig elektronik som ska användas i projektet. \\
 
 De flesta Arduino-implementationer följer samma standard för de fysiska anslutningarna, för att vara kompatibla med varandra och tillåta smidig anslutning av utbyggnadskort. Dessa utbyggnadskort kallas i Arduino-sammanhang för Shields. Plattformen har även en USB- och Seriell-port för programmering och kommunikation med en PC. Nedan är en beskrivning av de Arduino-varianter och viktiga utbyggnadskort som används i det system som beskrivs i den här rapporten.
 
@@ -297,19 +300,19 @@ De flesta Arduino-implementationer följer samma standard för de fysiska anslut
 Eftersom Arduino anses användarvänlig och är en öppet licensierad plattform har den ett stort community av hobbyister och även mer avancerade användare på internet. Många bloggar och forum är dedikerade till elektronikprojekt genomförda med Arduino som utgångspunkt. Vidare finns ett stort antal mjukvarubibliotek tillgängliga, i många fall skrivna av community-medlemmar, och det finns goda möjligheter att få hjälp. Detta var ett av skälen till att Arduino valdes som plattform för arbetet. \\
 
 \subsubsection{Programmering}	
-Arduino inkluderar en utvecklingsmiljö för den mjukvara som ska köras på hårdvaruplattformen. Programmeringsspråket som används är C/C++. Det finns vissa mindre modfikationer, främst i form av tillägg för att underlätta hårdvarunära eller elektronikrelaterade operationer, exempelvis att skriva till en digital utgång. Detta sker genom färdiga funktioner och basbibliotek, samt viss modifiering av koden innan kompilering. Utvecklingsmiljön använder kompilatorn avr-gcc för att kompilera kod som ska köras på Arduinons AVR-microcontroller, och programmeraren kan utan problem använda sig av AVR-anpassad kod skriven i ANSI-C (Arduino, 2012).
+Arduino inkluderar en utvecklingsmiljö för den mjukvara som ska köras på hårdvaruplattformen. Programmeringsspråket som används är C/C++. Det finns vissa mindre modfikationer, främst i form av tillägg för att underlätta hårdvarunära eller elektronikrelaterade operationer, exempelvis att skriva till en digital utgång. Detta sker genom färdiga funktioner och basbibliotek, samt viss modifiering av koden innan kompilering. Utvecklingsmiljön använder kompilatorn avr-gcc för att kompilera kod som ska köras på Arduinons AVR-microcontroller, och programmeraren kan utan problem använda sig av AVR-anpassad kod skriven i ANSI-C \hyperref[arduino]{(Arduino, 2012)}.
 
 \subsection{Energieffektiva Displaytekniker}
 
 \subsubsection{E-Paper}
-E-Paper är en typ av displayteknologi som är utvecklad för att vara energieffektiv, och för att efterlikna en tryckt boktext. Tekniken använder ingen bakgrundsbelysning, utan fungerar, precis som en tryckt text, genom att reflektera snarare än att sända ut ljus (Epaper Central, 2012). Detta gör att E-Paper inte kan användas i mörker. Den egenskap som gör E-Paper attraktivt är i först hand att tekniken inte använder någon energi för att visa en statisk bild, utan endast för att byta tillstånd. Detta gör att E-paper kan behålla och visa en bild utan matningsspänning ansluten, vilket gör tekniken användbar i en del applikationsområden där energieffektivitet är högt prioriterat. Exempel som kan nämnas är busskurer, smarta kreditkort, E-boksläsare och elektroniska prisskyltar i affärer. I fallet med E-boksläsare är dessutom likheten med boktext en eftertraktad egenskap. Displayer som tillverkas med E-paper-teknik kan även göras böjbara och ytterst tunna. \\
+E-Paper är en typ av displayteknologi som är utvecklad för att vara energieffektiv, och för att efterlikna en tryckt boktext. Tekniken använder ingen bakgrundsbelysning, utan fungerar, precis som en tryckt text, genom att reflektera snarare än att sända ut ljus \hyperref[epapercentral]{(Epaper Central, 2012)}. Detta gör att E-Paper inte kan användas i mörker. Den egenskap som gör E-Paper attraktivt är i först hand att tekniken inte använder någon energi för att visa en statisk bild, utan endast för att byta tillstånd. Detta gör att E-paper kan behålla och visa en bild utan matningsspänning ansluten, vilket gör tekniken användbar i en del applikationsområden där energieffektivitet är högt prioriterat. Exempel som kan nämnas är busskurer, smarta kreditkort, E-boksläsare och elektroniska prisskyltar i affärer. I fallet med E-boksläsare är dessutom likheten med boktext en eftertraktad egenskap. Displayer som tillverkas med E-paper-teknik kan även göras böjbara och ytterst tunna. \\
 
 De uppenbara fördelarna med E-paper är att energiförbrukningen för textuppvisningen minskar dramatiskt och att man frångår behovet av bakgrundsbelysning. Utöver detta finns det andra, mer subjektiva, fördelar, såsom att läsupplevelsen kan uppfattas som mer naturlig och bekväm då E-paper liknar en tryckt bok utseendemässigt, och inte behöver uppdateras kontinuerligt. \\
 
 En stor nackdel som vanligen nämns i samband med E-paper är att tekniken inte klarar av snabba uppdateringar, vilket omöjliggör mer avancerade menysystem och användargränssnitt. Dessutom är E-paper relativt dyrt i dagsläget, och de flesta kommersiellt tillgängliga displayerna med tekniken stödjer endast svart-vitt eller motsvarande. Färgdisplayer är dock på väg ut på marknaden (TechOn, 2009).
 
 \subsubsection{Bistabila LCD}
-Tekniken för bistabila LCD har utvecklats under de senaste åren, och ett antal olika lösningar har tagits fram. Bistabila LCD är baserade, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att man kan släppa genom eller reflektera inkommande ljus genom att positionera de olika lagren av flytande kristall i förhållande till varandra (Kent Displays, 2012). Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan. \\
+Tekniken för bistabila LCD har utvecklats under de senaste åren, och ett antal olika lösningar har tagits fram. Bistabila LCD är baserade, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att man kan släppa genom eller reflektera inkommande ljus genom att positionera de olika lagren av flytande kristall i förhållande till varandra \hyperref[kent]{(Kent Displays, 2012)}. Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan. \\
 
 Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som båda teknikerna har är den relativt, jämfört med konventionell displayteknik, långsamma uppdateringshastigheten. Det rör sig dock om två nya tekniker som fortfarande utvecklas.
 
@@ -345,17 +348,17 @@ Basstationen är alltid aktiv och lyssnar kontinuerligt efter inkommande förfr�
 \subsection{Arduinoplattformar}
 
 \subsubsection{AVR och energieffektivitet}
-Arduino bygger på microcontrollers ur Atmels AVR-serie. AVR är relativt enkla att bygga med och att programmera, samtidigt som de erbjuder den prestanda och konfigurerbarhet som behövs i många projekt som baseras runt microcontrollers. Just i detta projekt är även energieffektiveten av stor vikt, och AVR erbjuder många möjligheter att spara energi. Detta sker främst genom att under körtid försätta hela eller delar av systemet i sömnläge. Exempelvis kan programmeraren samoptimera energiförbrukning och prestanda genom att sätta exakt klockfrekvens. Enligt databladet för AVR ATMega328 (som exempel) kan AVR ge en exekveringshastighet på nära 1 MIPS per MHz, vilket är mycket effektivt (Atmel, 2012). \\
+Arduino bygger på microcontrollers ur Atmels AVR-serie. AVR är relativt enkla att bygga med och att programmera, samtidigt som de erbjuder den prestanda och konfigurerbarhet som behövs i många projekt som baseras runt microcontrollers. Just i detta projekt är även energieffektiveten av stor vikt, och AVR erbjuder många möjligheter att spara energi. Detta sker främst genom att under körtid försätta hela eller delar av systemet i sömnläge. Exempelvis kan programmeraren samoptimera energiförbrukning och prestanda genom att sätta exakt klockfrekvens. Enligt databladet för AVR ATMega328 (som exempel) kan AVR ge en exekveringshastighet på nära 1 MIPS per MHz, vilket är mycket effektivt \hyperref[atmel]{(Atmel, 2012)}. \\
 
-Som exempel på moduläriteten och energieffektiviteten hos AVR kan nämnas att systemutvecklaren har frihet att stänga ner oanvända delar av microcontrollern, såsom inbyggda A/D-omvandlare eller extraklockor (Atmel, 2012).
+Som exempel på moduläriteten och energieffektiviteten hos AVR kan nämnas att systemutvecklaren har frihet att stänga ner oanvända delar av microcontrollern, såsom inbyggda A/D-omvandlare eller extraklockor \hyperref[atmel]{(Atmel, 2012)}.
 
 \subsubsection{Skylt}
-Arduino Pro är en nedskalad variant av Arduino, och har endast grundläggande funktionalitet och fysiska kontakter. Varianten är byggd för att klara batteridrift och för att ta liten plats i konstruktionen, egenskaper som passar bra in på den produkt arbetet syftar till att framställa. Som namnet antyder är Arduino Pro något mindre lättanvänd då den saknar USB-anslutning och kräver att användaren klarar av att bygga egna anslutningar. Den Arduino Pro som valts för arbetet bygger på en ATMega328, baserad på 8-bit-arkitekturen AVR, klockad till 8MHz och använder 3.3V. En Arduino Pro utgör grunden i skylten. ATMega328 är utrustad med 32 KByte flashminne och kan maximalt stödja 23 I/O-pinnar (Atmel, 2012).
+Arduino Pro är en nedskalad variant av Arduino, och har endast grundläggande funktionalitet och fysiska kontakter. Varianten är byggd för att klara batteridrift och för att ta liten plats i konstruktionen, egenskaper som passar bra in på den produkt arbetet syftar till att framställa. Som namnet antyder är Arduino Pro något mindre lättanvänd då den saknar USB-anslutning och kräver att användaren klarar av att bygga egna anslutningar. Den Arduino Pro som valts för arbetet bygger på en ATMega328, baserad på 8-bit-arkitekturen AVR, klockad till 8MHz och använder 3.3V. En Arduino Pro utgör grunden i skylten. ATMega328 är utrustad med 32 KByte flashminne och kan maximalt stödja 23 I/O-pinnar \hyperref[atmel]{(Atmel, 2012)}.
 
 \subsubsection{Basstation}
-Arduino Mega är en större variant av Arduino, baserad på ATMega2560 som har mer on-chip-minne och fler anslutningspinnar än exempelvis ATMega328 som många andra Arduino-varianter bygger på. Vidare erbjuder Arduino Mega fler inbyggda hårdvaruserieportar och smidigare utdragningar av matningsspänning och jord till färdiga anslutningar. Plattformens dimensioner, minnesstorlek och många anslutningar gjorde den till ett bra val för arbetet. Basstationen är baserad på en Arduino Mega. Arduino Mega har 256 KByte flashminne, betydligt mer än de mindre kretsarna i samma familj, och stödjer upp till 86 I/O-pinnar (Atmel, 2012). \\
+Arduino Mega är en större variant av Arduino, baserad på ATMega2560 som har mer on-chip-minne och fler anslutningspinnar än exempelvis ATMega328 som många andra Arduino-varianter bygger på. Vidare erbjuder Arduino Mega fler inbyggda hårdvaruserieportar och smidigare utdragningar av matningsspänning och jord till färdiga anslutningar. Plattformens dimensioner, minnesstorlek och många anslutningar gjorde den till ett bra val för arbetet. Basstationen är baserad på en Arduino Mega. Arduino Mega har 256 KByte flashminne, betydligt mer än de mindre kretsarna i samma familj, och stödjer upp till 86 I/O-pinnar \hyperref[atmel]{(Atmel, 2012)}. \\
 
-Ethernet Shield är ett utbyggnadskort till Arduino som utökar dess funktionalitet genom att lägga till möjlighet till nätverksuppkoppling via 10/100Mb Ethernet med en vanlig RJ45-anslutning. Kortet agerar symbiot och drar matningsspänning från sitt värdkort. Kommunikationen med värdplattformen sker via SPI. Huvudfunktionaliteten på Ethernetkortet är att tillhandahålla (utöver fysiska anslutningar och spänningsreglering) en TCP/IP-stack. Detta sker med hjälp av en krets, Wiznet W5100, på kortet (Arduino, 2012). Basstationen använder en Ethernet Shield för att ansluta till internet. \\
+Ethernet Shield är ett utbyggnadskort till Arduino som utökar dess funktionalitet genom att lägga till möjlighet till nätverksuppkoppling via 10/100Mb Ethernet med en vanlig RJ45-anslutning. Kortet agerar symbiot och drar matningsspänning från sitt värdkort. Kommunikationen med värdplattformen sker via SPI. Huvudfunktionaliteten på Ethernetkortet är att tillhandahålla (utöver fysiska anslutningar och spänningsreglering) en TCP/IP-stack. Detta sker med hjälp av en krets, Wiznet W5100, på kortet \hyperref[arduino]{(Arduino, 2012)}. Basstationen använder en Ethernet Shield för att ansluta till internet. \\
 
 XBee Shield är ett utbyggnadskort för att lägga till funktionalitet för XBee-modem för användning tillsammans med Arduino. Utbyggnadskortet är relativt okomplicerat, och dess största bidrag är spänningsreglering och fysiskt smidig anslutning till resten av systemet. Basstationen använder en XBee-shield, medan skylten använder en mindre, nedskalad variant.
 
@@ -370,7 +373,7 @@ En central del i projektet är den trådlösa kommunikationen mellan skylt och b
 \subsubsection{Uppgift}
 Huvuduppgiften för det trådlösa nätverket är att överföra textdata över en radiolänk. Datan hämtas från Twitter och behandlas av basstationen, som sedan skickar den vidare trådlöst via radiolänken till skylten, som slutligen visar upp datan på displaymodulen. \\
 
-Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar (Dell, 2012), av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt mångar liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både robust för att garantera tillförlitlig dataöverföring, och dynamisk för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
+Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt mångar liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både robust för att garantera tillförlitlig dataöverföring, och dynamisk för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
 
 Kravet på robusthet innebär att radiolänken måste implementera ett protokoll som stödjer felkontroll för skickade paket, såsom i form av sekvensnumrering, kontrollsummor och omsändning.
 
@@ -387,15 +390,15 @@ För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
     	\item Stödjer tillförlitlig överföring av data.
     	\item Kan konfigureras så att radiomodulerna ger respons på mottagna kommandon.
     	\end{itemize}
-(ZigBee, 2012), (Sensor Networks.org, 2010), (EE Times, 2012), (Embedded Computing.com, 2011)
+\hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}
     	
-ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler (ZigBee, 2012). Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 nätverk (ZigBee, 2012). För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
+ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 nätverk \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
 
-ZigBee-nätverk kan innehålla tre olika typer av enheter: coordinator, router och end-device. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter (Digi, 2012). Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
+ZigBee-nätverk kan innehålla tre olika typer av enheter: coordinator, router och end-device. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[digi]{(Digi, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
 
 En router fungerar som en länk mellan coordinator (eller en annan router) och en eller flera end-devices eller andra routers. Dessa är inte aktuella för användning i det här projektet, då det inte finns något behov för en sådan trädstruktur på nätverket. \\
 
-End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden (Digi, 2012).. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
+End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden \hyperref[digi]{(Digi, 2012)}.. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
 
 \subsubsection{Hårdvara}
 ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (bland andra Atmel och Freescale), men efter undersökning av utbudet av hårdvara som stödjer standarden valdes XBee från tillverkaren Digi, eftersom XBee-modulerna jämfört med andra radiotransceivers i samma storlek:
@@ -407,12 +410,12 @@ ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (b
     	\item Erbjuder god räckvidd.
     	\item Går att programmera om och är relativt lätta att styra via kommandon.
 	\end{itemize}
-(Digi, 2012)
+\hyperref[digi]{(Digi, 2012)}
 	
 Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små U.FL-anslutningar för extern antenn.
-Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via U.FL-anslutningarna (Digi, 2012). Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
+Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via U.FL-anslutningarna \hyperref[digi]{(Digi, 2012)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
 
-XBee-modulerna har två operationslägen (xbee-arduino). AT-läget (Application Transparent) är ett enkelt läge för punkt-till-punkt-kommunikation, och kan ses som en trådlös ersättning för en seriellkabel (Digi, 2012). AT-läget har fördelen att det är mycket enkelt att konfigurera och erbjuder en simpel och snabb lösning för grundläggande radioöverföring. Nackdelarna med AT-läget är att mycket av den mer avancerade funktionaliteten går förlorad. Som nämnt ovan behövs robusthet i överföringen, och ihopparningen som den beskrivs ovan är över nivån för vad som är det tänkta användningsområdet för AT-läget. \\
+XBee-modulerna har två operationslägen \hyperref[xbeearduino]{(xbee-arduino, 2011)}. AT-läget (Application Transparent) är ett enkelt läge för punkt-till-punkt-kommunikation, och kan ses som en trådlös ersättning för en seriellkabel \hyperref[digi]{(Digi, 2012)}. AT-läget har fördelen att det är mycket enkelt att konfigurera och erbjuder en simpel och snabb lösning för grundläggande radioöverföring. Nackdelarna med AT-läget är att mycket av den mer avancerade funktionaliteten går förlorad. Som nämnt ovan behövs robusthet i överföringen, och ihopparningen som den beskrivs ovan är över nivån för vad som är det tänkta användningsområdet för AT-läget. \\
 
 Det andra läget som stödjs är API-läget (Application Programming Interface) och erbjuder den funktionalitet som saknas i AT-läget, med robusta överföringsmetoder och tillåter mer komplexa nätverksstrukturer. API-läget kräver mer konfiguration och mjukvarudetaljer, men tillåter implementering av de funktioner som eftersträvas inom projektet. API-läget valdes för att det:
 	
@@ -422,9 +425,9 @@ Det andra läget som stödjs är API-läget (Application Programming Interface) 
     	\item Ger nätverkskoordinatorn (här basstationen) möjlighet att dynamiskt söka av lediga kanaler och nätverksidentifierare, för att sätta upp nya nätverk utan att störa befintliga.
     	\item Ger programmareren bättre kontroll över nätverket och den data som skickas.
     	\end{itemize}
-(Digi, 2012)
+\hyperref[digi]{(Digi, 2012)}
     	
-Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA (Digi, 2012). Detta gör radiolänken till en stor energiförbrukningspunkt om man ser till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
+Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA \hyperref[digi]{(Digi, 2012)}. Detta gör radiolänken till en stor energiförbrukningspunkt om man ser till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
 
 Grundidén är att skyltmodulen är försatt i sömnläge större delen av tiden, och endast vaknar och är aktiv under korta perioder med regelbundna intervall, eller då användaren interagerar med det fysiska gränssnittet (knappsatsen). Då skyltmodulen vaknar, skickar den en förfrågan till basstationen om att hämta ny data, då sådan finns. Basstationen lyssnar konstant efter dataförfrågningar, utan att aktivt sända någon data utan att ha explicit blivit tillfrågad. \\
 
@@ -432,7 +435,7 @@ Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter an
 
 \subsubsection{Implementering}
 Målet i projektet har varit att i så stor utsträckning som möjligt nyttja de funktioner som finns inbyggda i ZigBee-protokollet och de mekanismer som stöds av XBee-modulerna.
-Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data (Tweets) till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta (EE Times, 2011),  (Embedded Computing.com, 2011). \\
+Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data (Tweets) till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta\hyperref[eetimes]{(EE Times, 2010)},  \hyperref[embedded]{(Embedded Computing, 2011)}. \\
 
 All data skickas över radiolänken som datapaket, snarare än som en enkel byteström. Datapaketen är uppbyggda av nyttodata, metadata samt överföringsdata. Överföringsdatan hjälper till med den rena överföringsbiten och består av kontrollsumma, sekvensnummer samt start- och stopptecken. Metadata ger information om nyttodatans egenskaper.
 Paketen är märkta med vilken typ av data det rör sig om. De olika pakettyperna är:
@@ -443,11 +446,11 @@ Paketen är märkta med vilken typ av data det rör sig om. De olika pakettypern
     	\item Leveransstatus: Bekräftelse på att ett utgående paket har skickats (eller inte)
     	\item Modemstatus: Statussignal från lokal radiomodul
     	\end{itemize}
-(Digi, 2012)
+\hyperref[digi]{(Digi, 2012)}
 
 Nyttodatan är den data som ska överföras, exempelvis i det aktuella projektet textdata från basstation till skylt eller statuskoder från modemen för att signallera nätverksstatus. \\
 
-Ett paket kan maximalt innehålla 72 bytes av nyttodata (Digi, 2012), som motsvarar maximalt 72 tecken, vilket är mindre än antalet tecken en Tweet kan innehålla. Detta gör det nödvändigt att dela upp längre meddelanden i flera olika paket, som sedan skickas numrerade över radiolänken. Om överföringen av ett uppdelat meddelande bryts mitt i ett meddelande (exempelvis tredje paketet förloras vid överföring), begär skylten omsändning. Om detta också misslyckas, väntar skylten en längre period och försöker sedan igen. För att möjliggöra smidig paketuppdelning används på basstationsidan en databuffert, som även underlättar för programlogiklagret och minimerar risken för felaktiga överföringar. \\
+Ett paket kan maximalt innehålla 72 bytes av nyttodata \hyperref[digi]{(Digi, 2012)}, som motsvarar maximalt 72 tecken, vilket är mindre än antalet tecken en Tweet kan innehålla. Detta gör det nödvändigt att dela upp längre meddelanden i flera olika paket, som sedan skickas numrerade över radiolänken. Om överföringen av ett uppdelat meddelande bryts mitt i ett meddelande (exempelvis tredje paketet förloras vid överföring), begär skylten omsändning. Om detta också misslyckas, väntar skylten en längre period och försöker sedan igen. För att möjliggöra smidig paketuppdelning används på basstationsidan en databuffert, som även underlättar för programlogiklagret och minimerar risken för felaktiga överföringar. \\
 
 Ihopparningen av moduler sker genom att basstationen sätter upp ett nätverk, och sedan signalerar att den är redo för att end-devices ansluter sig till nätverket. Basstationen är ansvarig för att sätta upp reglerna för enheter som ansluter sig, och nya enheter tillåts endast ansluta under en begränsad tidsperiod. Skyltmodulen söker efter nätverk i närheten, och ansluter sig. Detta koordineras genom att användaren trycker på fysiska knappar på basstation och skylt för att starta ihopparningen. \\
 
@@ -889,7 +892,7 @@ Med uppdateringsintervall på $5$ minuter och uppdateringstid på $10$ sekunder 
 
 Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(\approx 32-36 dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppmot $100$ dagar. \\
 
-Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare (Dimension Engineering, 2012). \\
+Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare \hyperref[dimension]{(Dimension Engineering, 2012)}. \\
 
 Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, men vi ser flera effektförbrukningsspikar under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figuren visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen.
 
@@ -964,9 +967,9 @@ Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. D
 Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider.
 
 \subsection{Jämförelser med liknande projekt}
-En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 (Guizzo, 2011). Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
+En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
 
-Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC (Instructables, 2011). \\
+Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
 
 Inget annat projekt erbjuder en trådlös dörrskylt med energieffektiv display och radio, eller lång batteritid. Vidare finns inget annat projekt som erbjuder samma robusta kommunikationslänk eller användarvänlighet. Hummingbird kräver inte heller någon extern PC för att koppla upp sig mot internet, utan använder egen nätadapter för matningsspänning, och går att koppla direkt till en router via vanlig Ethernet. \\
 
@@ -979,15 +982,184 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 
 \pagebreak
 
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{Referenser}
+\bibliographystyle{apalike}
+\begin{thebibliography}{9}
+
+\label{atmel}
+\bibitem{atmel}
+   Atmel, \\
+   \emph{ATMega328P}.
+   \url{http://www.atmel.com/devices/ATMEGA328.aspx}\\
+   \emph{ATMega2560}.
+   \url{http://www.atmel.com/devices/ATMEGA2560.aspx}\\
+   \emph{ATMega328P Datablad}.
+   \url{http://www.atmel.com/Images/doc8271.pdf}\\
+   2008-2012.
+
+\label{arduino}
+\bibitem{arduino}
+   Arduino,\\
+   \emph{Arduino}.
+   \url{http://www.arduino.cc/}\\
+   \emph{Arduino Pro}.
+   \url{http://arduino.cc/it/Main/ArduinoBoardPro}\\
+   \emph{Arduino Mega}.
+   \url{http://arduino.cc/it/Main/ArduinoBoardMega}\\
+   \emph{XBee Shield}
+   \url{http://arduino.cc/it/Main/ArduinoXbeeShield}\\
+   \emph{Ethernet Shield}
+   \url{http://arduino.cc/en/Main/ArduinoEthernetShield}
+   2009-2012.
+
+\label{cisco}
+\bibitem{cisco}
+    Cisco Systems,
+    \emph{CCNA 3 and 4 Companion Guide (Cisco Networking Academy Program), ss. 14, 391-392.}.
+    Cisco Press, Indianapolis, USA,
+    Upplaga 3,
+    2003.
+
+\label{dell}
+\bibitem{dell}
+    Dell,
+    \emph{Wireless vs. Wired},
+    \url{http://www.dell.com/content/topics/topic.aspx/global/learn/network/plan_vs?c=us&l=en&cs=19},
+    2012.
+
+\label{digi}
+\bibitem{digi}
+    Digi,\\
+\emph{XBee Series 1},
+\url{http://ftp1.digi.com/support/documentation/90000976_J.pdf}\\
+\emph{XCTU},
+\url{http://www.digi.com/support/productdetail?pid=3352&osvid=57&type=cabling}\\
+\emph{Choosing an XBee Antenna},
+\url{Choosing an XBee Antenna http://www.digi.com/technology/rf-tips/2007/08},\\
+    2012
+
+\label{dimension}
+\bibitem{dimension}
+    Dimension Engineering,
+    \emph{A beginner’s guide to switching regulators},
+    \url{http://www.dimensionengineering.com/info/switching-regulators},
+    2012.
+
+\label{eetimes}
+\bibitem{eetimes}
+    Drew Gislason, 
+    EE Times,
+    \emph{ZigBee Applications},
+    \url{ http://www.eetimes.com/design/embedded-internet-design/4201087/ZigBee-applications--Part-1-Sending-and-receiving-data/},
+    2010.
+
+\label{embedded}
+\bibitem{embedded}
+    Embedded Computing,
+    \emph{Smart energy apps making the move to ZigBee: Q\&A with Oyvind Strom, PhD, Senior Director of Wireless Microcontrollers, Atmel Corporation},
+    \url{http://embedded-computing.com/smart-microcontrollers-atmel-corporation-2#ixzz1Xs7COh4m},
+    2011.
+
+\label{epapercentral}
+\bibitem{epapercentral}
+    Epaper Central,
+    \url{http://www.epapercentral.com/},
+    2012.
+
+\label{spectrum}
+\bibitem{spectrum}
+    Erico Guizzo, 
+    IEEE Spectrum,
+    \emph{Send a tweet to your office door},
+    \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door},
+    2011.
+
+\label{instructables}
+\bibitem{instructables}
+    Instructables,
+    \emph{Arduino LCD Twitter Display},
+    \url{http://www.instructables.com/id/Arduino-LCD-Twitter-display/},
+    2011.
+
+\label{droms}
+\bibitem{droms}
+    Droms, R.,
+    \emph{Dynamic Host Configuration Protocol. The Internet Engineering Task Force.},
+    \url{http://www.ietf.org/rfc/rfc2131.txt},
+    1997. (2012-04-05)
+
+\label{kent}
+\bibitem{kent}
+    Kent Displays,
+    \url{http://www.kentdisplays.com/},
+    2012.
+
+\label{microsoft}
+\bibitem{microsoft}
+    Microsoft,
+    \emph{Naming, Files, Paths, and Namespace},
+    \url{http://msdn.microsoft.com/en-us/library/aa365247.aspx},
+    2012.
+
+\label{processing}
+\bibitem{processing}
+    Processing,
+    \emph{Processing},
+    \url{http://www.processing.org/},
+    2012.
+
+\label{sensornetworks}
+\bibitem{sensornetworks}
+    Sensor Networks,
+    \emph{Triple Security in ZigBee: Link, Network and Application layer Encryptions},
+    \url{http://sensor-networks.org/index.php?page=1010510536},
+    2010.
+
+\label{techon}
+\bibitem{techon}
+    TechOn,
+    \emph{Entire Surface of Handset Becomes LCD Display},
+    \url{http://techon.nikkeibp.co.jp/english/NEWS_EN/20090609/171529/},
+    2009.
+
+\label{wiring}
+\bibitem{wiring}
+    Wiring,
+    \emph{Wiring},
+    \url{http://wiring.org.co/},
+    2012.
+
+\label{wiznet}
+\bibitem{wiznet}
+    WIZnet Co., Ltd.,
+    \emph{W5100.  WIZnet.},
+    \url{http://www.wiznet.co.kr/Sub_Modules/en/product/Product_Detail.asp?cate1=5&cate2=7&cate3=26&pid=1011},
+    2012. (2012-04-04)
+
+\label{xbeearduino}
+\bibitem{xbeearduino}
+hyperref[xbeearduino]{(xbee-arduino, 2011)},
+\emph{hyperref[xbeearduino]{(xbee-arduino, 2011)}},
+\url{http://code.google.com/p/hyperref[xbeearduino]{(xbee-arduino, 2011)}/},
+2011.
+
+\label{zigbee}
+\bibitem{zigbee}
+    ZigBee Alliance,
+    \emph{ZigBee},
+    \url{http://www.zigbee.org/Specifications/ZigBee/Overview.aspx},
+    2012.
+
+\end{thebibliography}
+
 \appendix
 \renewcommand{\appendixpagename}{Appendix}
 \appendixpage
 \renewcommand{\appendixtocname}{Appendix}
 
 \addappheadtotoc
-
-\section{Referenser}
-\pagebreak
 
 \section{Blockschema, basstation}
 
@@ -1072,7 +1244,6 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 \caption{Komponentlista, basstation}
 \label{tab:korttable_bas}
 \end{table}
-\pagebreak
 
 \begin{table}[h]
 \centering
