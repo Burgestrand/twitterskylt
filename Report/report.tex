@@ -43,65 +43,65 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \begin{document}
 
-    \begin{titlepage}
+\begin{titlepage}
 
-        \begin{center}
+\begin{center}
 
-        \begin{figure}[H]
-        \includegraphics[width=1.0\textwidth, angle=0]{ChaGUsvart.png}
-        \label{fig:titel_img}
-        \end{figure}
+\begin{figure}[H]
+\includegraphics[width=1.0\textwidth, angle=0]{ChaGUsvart.png}
+\label{fig:titel_img}
+\end{figure}
 
-        \textsc{\LARGE Chalmers Tekniska Högskola}
-        \vspace{2 mm}
+\textsc{\LARGE Chalmers Tekniska Högskola}
+\vspace{2 mm}
 
-        \textsc{\Large Kandidatarbete D/IT 2012}\\
-        \vspace{2 mm}
-        \textsc{Grupp 43}
-        \vspace{5 mm}
+\textsc{\Large Kandidatarbete D/IT 2012}\\
+\vspace{2 mm}
+\textsc{Grupp 43}
+\vspace{5 mm}
 
 
-        % Title
-        \begin{center}
-        \line(1,0){400}
-        \end{center}
-        \vspace{4 mm}
-        {\huge \bfseries Tweet till Elektronisk Dörrskylt}\\[0.4cm]
+% Title
+\begin{center}
+\line(1,0){400}
+\end{center}
+\vspace{4 mm}
+{\huge \bfseries Tweet till Elektronisk Dörrskylt}\\[0.4cm]
 
-        \begin{center}
-        \line(1,0){400}
-        \end{center}
-        \vspace{15 mm}
+\begin{center}
+\line(1,0){400}
+\end{center}
+\vspace{15 mm}
 
-        % Author and supervisor
-        \begin{minipage}{0.6\textwidth}
-            \begin{flushleft} \large
-            \emph{:}\\
-            Andreas \textsc{Åkesson}\\ \texttt{andake @ student.chalmers.se}\\
-            Anton \textsc{Svensson}\\ \texttt{antonsv @ student.chalmers.se}\\
-            Fredrik \textsc{Brosser}\\ \texttt{frebro @ student.chalmers.se}\\
-            Jakob \textsc{Kallin}\\ \texttt{kjakob @ student.chalmers.se}\\
-            Kim \textsc{Burgestrand}\\ \texttt{kimbu @ student.chalmers.se}\\
-            Lars \textsc{Tidstam}\\ \texttt{larsti @ student.chalmers.se}\\
+% Author and supervisor
+\begin{minipage}{0.6\textwidth}
+\begin{flushleft} \large
+Andreas \textsc{Åkesson}\\ \texttt{andake @ student.chalmers.se}\\
+Anton \textsc{Svensson}\\ \texttt{antonsv @ student.chalmers.se}\\
+Fredrik \textsc{Brosser}\\ \texttt{frebro @ student.chalmers.se}\\
+Jakob \textsc{Kallin}\\ \texttt{kjakob @ student.chalmers.se}\\
+Kim \textsc{Burgestrand}\\ \texttt{kimbu @ student.chalmers.se}\\
+Lars \textsc{Tidstam}\\ \texttt{larsti @ student.chalmers.se}\\
+\end{flushleft}
+\end{minipage}
 
-            \end{flushleft}
-        \end{minipage}
+\vspace{15 mm}
 
-        \begin{minipage}{0.3\textwidth}
-            \begin{flushright} \large
-            \emph{Handledare:} \\
-            Peter \textsc{Lundin}
-            \end{flushright}
-        \end{minipage}
+\begin{minipage}{0.3\textwidth}
+\begin{flushright} \large
+\emph{Handledare:} \\
+Peter \textsc{Lundin}
+\end{flushright}
+\end{minipage}
 
-        \vfill
+\vfill
 
-        % Bottom of the page
-        {\large \today}
+% Bottom of the page
+{\large \today}
 
-        \end{center}
+\end{center}
 
-    \end{titlepage}
+\end{titlepage}
 \thispagestyle{empty}
 \pagebreak
 
@@ -215,7 +215,7 @@ Den hårdvara som utgör skylt och basstation ska baseras på en lämplig microc
 Konfigureringen av systemet ska bestå av att ange namnet på det offentliga Twitter-konto vars tweets man vill visa upp. Om man så önskar ska man även kunna ange att endast tweets med en specifik hashtag ska visas på skylten, men detta är valfritt. Användaren ska sköta konfigureringen genom att med sin dator redigera en enkel textfil på ett SD-kort som följer med skylten.
 
 \subsection{Bakgrund och sammanhang}
-Den ursprungliga idén till projektet kommer från en artikel i IEEE Spectrum av Erico Guizzo \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}, där författaren beskriver en elektronisk dörrskylt som visar upp meddelanden från hans Twitter-konto. Målet med projektet är att vidareutveckla samma idé, bland annat genom att göra den mindre otymplig och mer energieffektiv. \\
+Den ursprungliga idén till projektet kommer från en artikel i IEEE Spectrum av Erico Guizzo \hyperref[spectrum]{(Guizzo, 2011)}, där författaren beskriver en elektronisk dörrskylt som visar upp meddelanden från hans Twitter-konto. Målet med projektet är att vidareutveckla samma idé, bland annat genom att göra den mindre otymplig och mer energieffektiv. \\
 
 Syftet med dörrskylten i den ursprungliga artikeln var att kunna lämna meddelanden på sin kontorsdörr även om man inte är på plats, exempelvis för att man har valt att arbeta hemifrån. Den möjliggör även en centralisering av statusmeddelanden som man vill sprida till folk i sitt arbete: de visas både på webben och på dörrskylten. \\
 
@@ -344,12 +344,12 @@ Arduino inkluderar en utvecklingsmiljö för den mjukvara som ska köras på hå
 \subsubsection{E-Paper}
 E-Paper är en typ av displayteknologi som är utvecklad för att vara energieffektiv, och för att efterlikna en tryckt boktext. Tekniken använder ingen bakgrundsbelysning, utan fungerar, precis som en tryckt text, genom att reflektera snarare än att sända ut ljus \hyperref[epapercentral]{(Epaper Central, 2012)}. Detta gör att E-Paper inte kan användas i mörker. Den egenskap som gör E-Paper attraktivt är i först hand att tekniken inte använder någon energi för att visa en statisk bild, utan endast för att byta tillstånd. Detta gör att E-paper kan behålla och visa en bild utan matningsspänning ansluten, vilket gör tekniken användbar i en del applikationsområden där energieffektivitet är högt prioriterat. Exempel som kan nämnas är busskurer, smarta kreditkort, E-boksläsare och elektroniska prisskyltar i affärer. I fallet med E-boksläsare är dessutom likheten med boktext en eftertraktad egenskap. Displayer som tillverkas med E-paper-teknik kan även göras böjbara och ytterst tunna. \\
 
-De uppenbara fördelarna med E-paper är att energiförbrukningen för textuppvisningen minskar dramatiskt och att man frångår behovet av bakgrundsbelysning. Utöver detta finns det andra, mer subjektiva, fördelar, såsom att läsupplevelsen kan uppfattas som mer naturlig och bekväm då E-paper liknar en tryckt bok utseendemässigt, och inte behöver uppdateras kontinuerligt. \\
+De uppenbara fördelarna med E-paper är att energiförbrukningen för textuppvisningen minskar dramatiskt och att behovet av bakgrundsbelysning frångås. Utöver detta finns det andra, mer subjektiva, fördelar, såsom att läsupplevelsen kan uppfattas som mer naturlig och bekväm då E-paper liknar en tryckt bok utseendemässigt, och inte behöver uppdateras kontinuerligt. \\
 
 En stor nackdel som vanligen nämns i samband med E-paper är att tekniken inte klarar av snabba uppdateringar, vilket omöjliggör mer avancerade menysystem och användargränssnitt. Dessutom är E-paper relativt dyrt i dagsläget, och de flesta kommersiellt tillgängliga displayerna med tekniken stödjer endast svart-vitt eller motsvarande. Färgdisplayer är dock på väg ut på marknaden (TechOn, 2009).
 
 \subsubsection{Bistabila LCD}
-Tekniken för bistabila LCD har utvecklats under de senaste åren, och ett antal olika lösningar har tagits fram. Bistabila LCD är baserade, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att man kan släppa genom eller reflektera inkommande ljus genom att positionera de olika lagren av flytande kristall i förhållande till varandra \hyperref[mingu]{(M. Gu, 2006)}. Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan. \\
+Tekniken för bistabila LCD har utvecklats under de senaste åren, och ett antal olika lösningar har tagits fram. Bistabila LCD är baserade, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att inkommande ljus kan släppas genom eller reflekteras genom att positionera de olika lagren av flytande kristall i förhållande till varandra \hyperref[mingu]{(M. Gu, 2006)}. Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan. \\
 
 Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som båda teknikerna har är den relativt, jämfört med konventionell displayteknik, långsamma uppdateringshastigheten. Det rör sig dock om två nya tekniker som fortfarande utvecklas.
 
@@ -421,13 +421,13 @@ För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
 	
 	\begin{itemize}
     	\item Är en välkänd standard (bygger på IEEE 802.15.4), god dokumentation.
-    	\item Är billig och relativt enkel att implementera, vilket är lämpligt för mindre projekt. Den används av hobbyelektronikentusiaster, vilket ger värdefulla kunskapskällor i form av bloggar och tidningsartiklar, där man tar upp liknande problem som projektet behandlar.
-    	\item Stödjer en nätverksstruktur som passar projektet, där man har en basstation som koordinerar nätverket (Coordinator i ZigBee-terminologi) och en eller flera slutenheter (End Devices).
+    	\item Är billig och relativt enkel att implementera, vilket är lämpligt för mindre projekt. Den används av hobbyelektronikentusiaster, vilket ger värdefulla kunskapskällor i form av bloggar och tidningsartiklar, där liknande problem som projektet behandlar tas upp.
+    	\item Stödjer en nätverksstruktur som passar projektet, där det finns en basstation som koordinerar nätverket (Coordinator i ZigBee-terminologi) och en eller flera slutenheter (End Devices).
     	\item Är utvecklad för att vara energieffektiv.
     	\item Stödjer tillförlitlig överföring av data.
     	\item Kan konfigureras så att radiomodulerna ger respons på mottagna kommandon.
     	\end{itemize}
-\hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}
+\hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}\\
     	
 ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 nätverk \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
 
@@ -447,7 +447,7 @@ ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (b
     	\item Erbjuder god räckvidd.
     	\item Går att programmera om och är relativt lätta att styra via kommandon.
 	\end{itemize}
-\hyperref[digi]{(Digi, 2012a,b)}
+\hyperref[digi]{(Digi, 2012a,b)}\\
 	
 Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små U.FL-anslutningar för extern antenn.
 Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via U.FL-anslutningarna \hyperref[digi]{(Digi, 2012c)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
@@ -462,9 +462,9 @@ Det andra läget som stödjs är API-läget (Application Programming Interface) 
     	\item Ger nätverkskoordinatorn (här basstationen) möjlighet att dynamiskt söka av lediga kanaler och nätverksidentifierare, för att sätta upp nya nätverk utan att störa befintliga.
     	\item Ger programmareren bättre kontroll över nätverket och den data som skickas.
     	\end{itemize}
-\hyperref[digi]{(Digi, 2012a)}
+\hyperref[digi]{(Digi, 2012a)}\\
     	
-Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA \hyperref[digi]{(Digi, 2012a)}. Detta gör radiolänken till en stor energiförbrukningspunkt om man ser till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
+Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA \hyperref[digi]{(Digi, 2012a)}. Detta gör radiolänken till en stor energiförbrukningspunkt sett till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
 
 Grundidén är att skyltmodulen är försatt i sömnläge större delen av tiden, och endast vaknar och är aktiv under korta perioder med regelbundna intervall, eller då användaren interagerar med det fysiska gränssnittet (knappsatsen). Då skyltmodulen vaknar, skickar den en förfrågan till basstationen om att hämta ny data, då sådan finns. Basstationen lyssnar konstant efter dataförfrågningar, utan att aktivt sända någon data utan att ha explicit blivit tillfrågad. \\
 
@@ -527,7 +527,7 @@ Skyltens display matas med 3.3V och jord från arduinoplattformen. Mellan displa
 De knappar som används är enkla tryckknappar med pull-up-motstånd och små kondensatorer. Då en knapp trycks ned kopplas signalen ned till jord. Innan signalen skickas vidare som insignal till målarduinoplattformen skickas den genom en 7414 Schmitt-trigger med inverterarverkan, vilket gör insignalen från knappen aktiv hög. Vidare används LEDs som statusindikatorer, kopplade till digitala utgångar på arduinoplattformarna. Samma princip för tryckknappar och statusindikatorer används på både basstation och skyltmodul.
 
 \subsubsection{Batteri}
-Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3.7V och har inbyggt skydd mot överspänning (>4.25V), för stort strömuttag och skydd för minimumspänning (<2.75V).
+Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3.7V och har inbyggt skydd mot överspänning ($>4.25V$), för stort strömuttag och skydd för minimumspänning ($<2.75V$).
 
 \subsubsection{Batterinivåavläsning}
 Batterinivån på skyltmodulen avläses genom att en analogingång på skyltens arduinoplattform kopplas till en spänningsdelare. Spänningsdelaren slås till och från via en NMOS-transistor, och microcontrollern läser av spänningen via en A/D-omvandlare.
@@ -847,7 +847,7 @@ För att genomföra testet hämtade vi in 100 huvudsakligen svenska meddelanden 
 	\begin{enumerate}
     	\item Eftersom teckengränsen på ett meddelande är 140 tecken så kommer de flesta meddelanden att hamna under det. I och med att ett genomsnittligt ord på Twitter är omkring 6 tecken långt (inklusive föregående mellanslag) så räcker det med att ett eller två ord ska utelämnas av platsbrist för att ett avsevärt utrymme ska sparas in till justering.
     	\item Eftersom vår display har plats för 160 tecken så finns det plats för 20 tecken utöver meddelandets text. 14 av dessa är reserverade åt den datumstämpel som visas efter meddelandet, men de 6 ytterligare tecknen ger extra utrymme för justering.
-    	\end{enumerate}
+    \end{enumerate}
 
 
 Faktum är att praktiskt taget de enda ord i vårt test som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. I och med detta positiva resultat bestämde vi oss för att använda vår första algoritm i det färdiga systemet.
@@ -935,7 +935,7 @@ Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax 
 
 Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare \hyperref[dimension]{(Dimension Engineering, 2012)}. \\
 
-Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, men vi ser flera effektförbrukningsspikar under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figuren visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen.
+Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, flera effektförbrukningsspikar uppträder under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figuren visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen.
 
 \begin{figure}[H]
 \includegraphics[scale=0.70, angle=0]{effekt.png}
@@ -1204,9 +1204,9 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 
 \label{xbeearduino}
 \bibitem{xbeearduino}
-hyperref[xbeearduino]{(xbee-arduino, 2011)},
-\emph{hyperref[xbeearduino]{(xbee-arduino, 2011)}},
-\url{http://code.google.com/p/hyperref[xbeearduino]{(xbee-arduino, 2011)}/},
+xbee-arduino,
+\emph{xbee-arduino},
+\url{http://code.google.com/p/xbee-arduino/},
 2011. (2/1/2012)
 
 \label{zigbee}
