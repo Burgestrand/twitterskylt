@@ -55,7 +55,6 @@
 #define VDIV_D 6
 // XBee CTS Pin
 #define CTS_PIN 7
-adasd
 #endif
 
 // Testing setup constans
@@ -189,6 +188,7 @@ void setup () {
 
   // Show that we're done initializing
   disp.write("Initialized");
+
 }
 
 void loop () {
