@@ -40,6 +40,8 @@ breakatwhitespace=false,        % sets if automatic breaks should only happen at
 title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
 
+% Counter for custom lists
+\newcounter{qcounter}
 
 \begin{document}
 
@@ -964,6 +966,8 @@ Datumet läggs till på meddelandet efter att det har justerats. Eftersom det al
 
 \subsubsection{Funktionalitet}
 
+{\large \it TODO: skriva kort om det slutgiltiga systemets funktioner}
+
 \subsubsection{Energieffektivitet}
 För att mäta energieffektivteten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3.3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
 
@@ -1039,6 +1043,8 @@ Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnads
 
 \subsection{Utvärdering av projektupplägg}
 
+{\large \it TODO: diskuteras på Torsdagens (10/5) gruppmöte}
+
 \subsection{Sidospår och problem under projektet}
 
 \subsubsection{Operationslägen för XBee}
@@ -1065,14 +1071,14 @@ Gruppen övervägde flera alternativ, bland annat att försöka bygga basstation
 Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket YAJL och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standard värde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standard värdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
 
 \subsubsection{E-Paper}
-Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider.
+Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \href[epapercentral]{(Epaper Central, 2012)}.
 
 \subsection{Jämförelser med liknande projekt}
 En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
 
 Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
 
-Inget annat projekt erbjuder en trådlös dörrskylt med energieffektiv display och radio, eller lång batteritid. Vidare finns inget annat projekt som erbjuder samma robusta kommunikationslänk eller användarvänlighet. Hummingbird kräver inte heller någon extern PC för att koppla upp sig mot internet, utan använder egen nätadapter för matningsspänning, och går att koppla direkt till en router via vanlig Ethernet. \\
+Inget annat projekt erbjuder en twitteransluten, trådlös dörrskylt med energieffektiv display och radio, eller lång batteritid. Vidare finns inget annat projekt som erbjuder samma robusta kommunikationslänk eller användarvänlighet. Hummingbird kräver inte heller någon extern PC för att koppla upp sig mot internet, utan använder egen nätadapter för matningsspänning, och går att koppla direkt till en router via vanlig Ethernet. \\
 
 \subsection{Expansionsmöjligheter}
 En expansionsmöjlighet till projektet, som diskuterades tidigt under planeringsfasen, är att lägga till möjligheten för flera skyltar att ansluta sig till samma basstation. Vidare finns vidareutvecklingspotential för radion och sättet på vilket den anpassar sig till närliggande nätverk. \\
@@ -1092,27 +1098,26 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 \label{atmel}
 \bibitem{atmel}
    Atmel, \\
-   \emph{ATMega328P}.
-   \url{http://www.atmel.com/devices/ATMEGA328.aspx} (2012-01-24)\\
-   \emph{ATMega2560}.
-   \url{http://www.atmel.com/devices/ATMEGA2560.aspx} (2012-01-24)\\
-   \emph{ATMega328P Datablad}.
-   \url{http://www.atmel.com/Images/doc8271.pdf} (2012-02-15)\\
+   \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+   \item \emph{ATMega328P}.
+   \url{http://www.atmel.com/devices/ATMEGA328.aspx} (2012-01-24)
+   \item \emph{ATMega2560}.
+   \url{http://www.atmel.com/devices/ATMEGA2560.aspx} (2012-01-24)
+   \item \emph{ATMega328P Datablad}.
+   \url{http://www.atmel.com/Images/doc8271.pdf} (2012-02-15)
+   \end{list}
    2008-2012.
 
 \label{arduino}
 \bibitem{arduino}
    Arduino,\\
-   \emph{Arduino}.
-   \url{http://www.arduino.cc/} (2012-01-19)\\
-   \emph{Arduino Pro}.
-   \url{http://arduino.cc/it/Main/ArduinoBoardPro} (2012-01-19)\\
-   \emph{Arduino Mega}.
-   \url{http://arduino.cc/it/Main/ArduinoBoardMega} (2012-01-19)\\
-   \emph{XBee Shield}
-   \url{http://arduino.cc/it/Main/ArduinoXbeeShield} (2012-01-24)\\
-   \emph{Ethernet Shield}
-   \url{http://arduino.cc/en/Main/ArduinoEthernetShield} (2012-01-19)
+   \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+   \item{\emph{Arduino}. \url{http://www.arduino.cc/} (2012-01-19)}
+   \item{\emph{Arduino Pro}. \url{http://arduino.cc/it/Main/ArduinoBoardPro} (2012-01-19)}
+   \item{\emph{Arduino Mega}. \url{http://arduino.cc/it/Main/ArduinoBoardMega} (2012-01-19)}
+   \item{\emph{XBee Shield} \url{http://arduino.cc/it/Main/ArduinoXbeeShield} (2012-01-24)}
+   \item{\emph{Ethernet Shield} \url{http://arduino.cc/en/Main/ArduinoEthernetShield} (2012-01-19)}
+   \end{list}
    2009-2012.
 
 \label{cisco}
@@ -1133,12 +1138,14 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 \label{digi}
 \bibitem{digi}
     Digi,\\
-\emph{XBee Series 1},
-\url{http://ftp1.digi.com/support/documentation/90000976_J.pdf} (2012-01-24)\\
-\emph{XCTU},
-\url{http://www.digi.com/support/productdetail?pid=3352&osvid=57&type=cabling} (2012-02-23)\\
-\emph{Choosing an XBee Antenna},
-\url{Choosing an XBee Antenna http://www.digi.com/technology/rf-tips/2007/08} (2012-01-27),\\
+    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+    \item\emph{XBee Series 1},
+    \url{http://ftp1.digi.com/support/documentation/90000976_J.pdf} (2012-01-24)
+    \item \emph{XCTU},
+    \url{http://www.digi.com/support/productdetail?pid=3352&osvid=57&type=cabling} (2012-02-23)
+    \item \emph{Choosing an XBee Antenna},
+    \url{Choosing an XBee Antenna http://www.digi.com/technology/rf-tips/2007/08} (2012-01-27),
+    \end{list}
     2012
 
 \label{dimension}
@@ -1208,13 +1215,14 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 \label{kent}
 \bibitem{kent}
     Kent Displays Inc,
-    \emph{Kent Displays},
-
+    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+    \item \emph{Kent Displays},
     \url{http://www.kentdisplays.com/},
     2012. (2012-04-05) \\
-    \emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.},
-    \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf}, 2012. (2012-03-31)
-
+    \item \emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.},
+    \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf},
+    \end{list}
+     2012. (2012-03-31)
 
 \label{microsoft}
 \bibitem{microsoft}
@@ -1258,6 +1266,26 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     \emph{Entire Surface of Handset Becomes LCD Display},
     \url{http://techon.nikkeibp.co.jp/english/NEWS_EN/20090609/171529/},
     2009. (2012-03-30)
+
+\label{national}
+\bibitem{national}
+    The National
+    \emph{Facebook and Twitter key to Arab uprisings: report},
+    \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report},
+    2011. (8/5/2012)
+
+\label{twitter}
+\bibitem{twitter}
+    Twitter,
+    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+    \item \emph{How to Use Advanced Twitter Search}, \url{https://support.twitter.com/articles/71577}, (8/5/2012)
+    \item \emph{Twitter turns six}, \url{http://blog.twitter.com/2012/03/twitter-turns-six.html}, (8/5/2012)
+    \item \emph{REST API Resource}, \url{https://dev.twitter.com/docs/api}, (8/5/2012)
+    \item \emph{Using the Twitter Search API}, \url{https://dev.twitter.com/docs/using-search}, (8/5/2012)
+    \item \emph{Streaming API}, \url{https://dev.twitter.com/docs/streaming-api}, (8/5/2012)
+    \item \emph{Rate Limiting}, \url{https://dev.twitter.com/docs/rate-limiting}, (8/5/2012)
+    \end{list}
+    2012
 
 \label{wen}
 \bibitem{wen}
