@@ -517,18 +517,16 @@ Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en
 \end{figure}
 
 \subsection{Display}
-För att kunna visa upp twittermeddelandena på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \href[kent]{(Kent, 2010)}.
+För att kunna visa upp twittermeddelandena på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.
 
-Displayen skall kunna visa upp 160 tecken som beskrivits i avsnittet \href[skylt]{(Moduluppdelning - skylt)}, vilket ger utrymme att använda 240 pixlar per tecken. Med exempelvis tecken som är 12 pixlar breda och 20 pixlar höga kan man utnyttja hela displayen och det finns gott om pixlar till att visa upp tydliga tecken. Notera att tomt utrymme mellan tecken ingår i de 240 pixlarna.
+Displayen skall kunna visa upp 160 tecken som beskrivits i avsnittet \hyperref[skylt]{(Moduluppdelning - skylt)}, vilket ger utrymme att använda 240 pixlar per tecken. Med exempelvis tecken som är 12 pixlar breda och 20 pixlar höga kan man utnyttja hela displayen och det finns gott om pixlar till att visa upp tydliga tecken. Notera att tomt utrymme mellan tecken ingår i de 240 pixlarna.
 
 Det är viktigt att tecknen är lätta att läsa även på avstånd eftersom typisk användning innebär att man kan vilja se om meddelandet uppdateras genom att kasta en snabb blick när man går förbi skyltmodulen, och den fasta monteringen innebär att det är omöjligt att få skyltmodulen i ögonhöjd för alla som kan tänkas vilja läsa från den.
 
 \subsubsection{Displayens energieffektivitet}
 För att maximera skyltens batteritid är viktigt att displayen är energisnål. Eftersom den valda displayen endast kräver ström då den uppdateras passar den bra med resten av skyltmodulen som spenderar större delen av tiden i ett lågenergiläge och inte kräver uppdateringar av displayen.
 
-För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell \href[kenttable]. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.
-
-\label{sec:TORSDAG}
+För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell ~\ref{tab:kenttable}. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.
 
 \begin{table}[h]
 \centering
@@ -542,7 +540,7 @@ För att avgöra hur energisnål displayen är jämförs den med LCD-displayer a
 \label{tab:kenttable}
 \end{table}
 
-Strömförbrukningsvärdena har hämtats från respektive displays datablad \href[lcdalfa]{(DISPLAY Elektronik, 2009)}, \href[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \href[kent]{(Kent Displays Inc., 2010)}. Vi räknar med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten {HÄNVISA TILL STYCKE DÄR DET ANGES?}.
+Strömförbrukningsvärdena har hämtats från respektive displays datablad \hyperref[lcdalfa]{(DISPLAY Elektronik, 2009)}, \hyperref[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \hyperref[kent]{(Kent Displays Inc., 2010)}. Vi räknar med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten {HÄNVISA TILL STYCKE DÄR DET ANGES?}.
 
 Trots att den alfanumeriska displayen är av en enklare modell och vi har antagit att displayen uppdateras så ofta som möjligt så kräver Kent-displayen en fjärdedel så mycket energi. Vid normalt användande med färre uppdateringar skulle Kent-displayen kräva ännu mindre energi medan de andra skulle ligga kvar på samma nivå.
 
@@ -559,20 +557,20 @@ Med uppdateringskommandot anges vilken adress i minnet datan skall börja läsas
 
 Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Skyltmodulsarduinon har därför ett typsnitt lagrat i programminnet där den kan slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av {LINUXfonten} som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.
 
-Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur \href[fontA]{Fontexempel: del av ett A}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
+Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur ~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
 
 \begin{figure}[H]
-\includegraphics[scale=0.3, angle=0]{skyltFSM.png}
+\includegraphics[scale=0.3, angle=0]{fontA.png}
 \label{fig:fontA}
-\caption{Flödesschema över radio i skylt}
+\caption{Del av ett A}
 \end{figure}
 
-Ett exempel från det slutgiltiga typsnittet kan ses i figur \href[fontAA]{Fontexempel: ett litet å}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
+Ett exempel från det slutgiltiga typsnittet kan ses i figur ~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
 
 \begin{figure}[H]
-\includegraphics[scale=0.3, angle=0]{skyltFSM.png}
+\includegraphics[scale=0.3, angle=0]{fontAA.png}
 \label{fig:fontAA}
-\caption{Flödesschema över radio i skylt}
+\caption{Ett litet å}
 \end{figure}
 
 Översättningen från tecken till pixlar görs genom att varje rad i texten behandlas var för sig. Pixelrepresentationen av en textrad består av 20 pixelrader, eftersom alla tecken är 20 pixlar höga. Pixelraderna skapas och överförs en och en till displayens minne. En pixelrad byggs upp genom att textraden gås igenom och för varje tecken slås motsvarande pixelrad i tecknet upp för att sedan konkatineras med resterande teckens pixelrader. Om till exempel en textrad består av tecknen AB så kommer första pixelraden att innehålla första raden i tecknet A följt av första raden av teckent B. Nästa pixelrad består av andra pixelraden i A och andra pixelraden i B. Då samtliga 20 pixelrader har skickats iväg till displayens minne påbörjas arbetet med eventuella efterföljande textrader.
@@ -1071,7 +1069,7 @@ Gruppen övervägde flera alternativ, bland annat att försöka bygga basstation
 Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket YAJL och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standard värde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standard värdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
 
 \subsubsection{E-Paper}
-Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \href[epapercentral]{(Epaper Central, 2012)}.
+Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \hyperref[epapercentral]{(Epaper Central, 2012)}.
 
 \subsection{Jämförelser med liknande projekt}
 En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
