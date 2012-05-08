@@ -43,64 +43,65 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \begin{document}
 
-\begin{titlepage}
+    \begin{titlepage}
 
-\begin{center}
+        \begin{center}
 
-\begin{figure}[H]
-\includegraphics[width=1.0\textwidth, angle=0]{ChaGUsvart.png}
-\label{fig:titel_img}
-\end{figure}
+        \begin{figure}[H]
+        \includegraphics[width=1.0\textwidth, angle=0]{ChaGUsvart.png}
+        \label{fig:titel_img}
+        \end{figure}
 
-\textsc{\LARGE Chalmers Tekniska Högskola}
-\vspace{2 mm}
+        \textsc{\LARGE Chalmers Tekniska Högskola}
+        \vspace{2 mm}
 
-\textsc{\Large Kandidatarbete D/IT 2012}\\
-\vspace{2 mm}
-\textsc{Grupp 43}
-\vspace{5 mm}
+        \textsc{\Large Kandidatarbete D/IT 2012}\\
+        \vspace{2 mm}
+        \textsc{Grupp 43}
+        \vspace{5 mm}
 
 
-% Title
-\begin{center}
-\line(1,0){400}
-\end{center}
-\vspace{4 mm}
-{ \huge \bfseries Tweet till Elektronisk Dörrskylt}\\[0.4cm]
+        % Title
+        \begin{center}
+        \line(1,0){400}
+        \end{center}
+        \vspace{4 mm}
+        {\huge \bfseries Tweet till Elektronisk Dörrskylt}\\[0.4cm]
 
-\begin{center}
-\line(1,0){400}
-\end{center}
-\vspace{15 mm}
+        \begin{center}
+        \line(1,0){400}
+        \end{center}
+        \vspace{15 mm}
 
-% Author and supervisor
-\begin{minipage}{0.6\textwidth}
-\begin{flushleft} \large
-\emph{:}\\
-Andreas \textsc{Åkesson}\\ \texttt{andake @ student.chalmers.se}\\
-Anton \textsc{Svensson}\\ \texttt{antonsv @ student.chalmers.se}\\
-Fredrik \textsc{Brosser}\\ \texttt{frebro @ student.chalmers.se}\\
-Jakob \textsc{Kallin}\\ \texttt{kjakob @ student.chalmers.se}\\
-Kim \textsc{Burgestrand}\\ \texttt{kimbu @ student.chalmers.se}\\
-Lars \textsc{Tidstam}\\ \texttt{larsti @ student.chalmers.se}\\
+        % Author and supervisor
+        \begin{minipage}{0.6\textwidth}
+            \begin{flushleft} \large
+            \emph{:}\\
+            Andreas \textsc{Åkesson}\\ \texttt{andake @ student.chalmers.se}\\
+            Anton \textsc{Svensson}\\ \texttt{antonsv @ student.chalmers.se}\\
+            Fredrik \textsc{Brosser}\\ \texttt{frebro @ student.chalmers.se}\\
+            Jakob \textsc{Kallin}\\ \texttt{kjakob @ student.chalmers.se}\\
+            Kim \textsc{Burgestrand}\\ \texttt{kimbu @ student.chalmers.se}\\
+            Lars \textsc{Tidstam}\\ \texttt{larsti @ student.chalmers.se}\\
 
-\end{flushleft}
-\end{minipage}
-\begin{minipage}{0.3\textwidth}
-\begin{flushright} \large
-\emph{Handledare:} \\
-Peter \textsc{Lundin}
-\end{flushright}
-\end{minipage}
+            \end{flushleft}
+        \end{minipage}
 
-\vfill
+        \begin{minipage}{0.3\textwidth}
+            \begin{flushright} \large
+            \emph{Handledare:} \\
+            Peter \textsc{Lundin}
+            \end{flushright}
+        \end{minipage}
 
-% Bottom of the page
-{\large \today}
+        \vfill
 
-\end{center}
+        % Bottom of the page
+        {\large \today}
 
-\end{titlepage}
+        \end{center}
+
+    \end{titlepage}
 \thispagestyle{empty}
 \pagebreak
 
@@ -571,7 +572,9 @@ Hantering av lånetidsuppdatering kan implementeras med:
     	\item En funktion som anropas för tidavläsning
 	\end{enumerate}
 	
-Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden. I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo 232 sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i “loopen”, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut. Den slutliga lösningen blev alternativ 2, eftersom att “loop()” ska köras ofta (se avsnitt TIDIGARE) och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar som kan behövas i andra delar av programmet.\\
+Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden. I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo 232 sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i “loopen”, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
+
+ Den slutliga lösningen blev alternativ 2, eftersom att “loop()” ska köras ofta (se avsnitt TIDIGARE) och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar som kan behövas i andra delar av programmet.\\
 
 Implementationen bryter mot DHCP specifikationen på några punkter:
 
@@ -579,6 +582,8 @@ Implementationen bryter mot DHCP specifikationen på några punkter:
 	\item Om lånetiden är mindre än åtta minuter blir det problem om förnyelse misslyckas eftersom en förfrågan kan ta upp till 60 sekunder. Under den tiden kan lånetiden redan passerat och     basstationen använder IP-adressen felaktigt.
     	\item Då millis slår över går det inte att kontrollera om lånetiden är slut. I det fallet görs ett försök att låna om IP-adressen omedelbart även om inte T1 har passerats.
 	\end{itemize}	
+
+Eftersom att basstationen kommer vara ansluten till ett trådbundet nätverk kommer första punkten inte vara något problem, eftersom att den minsta låntiden i praktiken är 15 minuter \hyperref[wen]{(Windows Enterprise Networking, 2007)}. Andra punkten är endast en rekommendation som bryts och då det blev alltför besvärligt att hantera millis överslag, som sker en gång ungefär vart 50:e dygn. Den effektivaste lösningen är således att begära förnyelse av IP-adressen vid överslag på millis.
 	
 \subsection{HTTP}
 För att hämta information från Twitter använder sig systemet av HTTP, som är det kommunikationsprotokoll som ligger till grund för webben. HTTP används för att skicka och ta emot resurser utifrån klient/server-modellen: En klient skickar en förfrågan till en server, som skickar tillbaka ett svar. En resurs är ett abstrakt begrepp som i IETF:s specifikation definieras som något med en identitet. De resurser som systemet efterfrågar från Twitter är användaruppgifter samt meddelanden och deras metadata. \\
@@ -974,7 +979,7 @@ Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnads
 
 \subsection{Utvärdering av projektupplägg}
 
-\subsection{Sidospår: vad kunde gjorts annorlunda eller bättre}
+\subsection{Sidospår och problem under projektet}
 
 \subsubsection{Operationslägen för XBee}
 Ett tidigt sidospår inom projektet var designvalet att basera radiolänken på XBee:s AT-läge. AT-läget är ett simpelt kommunikationsläge som kan ses som en trådlös ersättning av en serielänk, och har till skillnad från API-läget inte stöd för några avancerade protokollfunktioner som omsändning och paketinkapsling. Efter att ha arbetat med AT-läget och byggt upp en fungerande radiolänk, togs valet att gå över till API-läget på grund av den robustare kommunikationen och bättre kontrollen över radiolänkens status. Vidare behövde meddelanden delas upp i flera paket som dessutom behövde samordnas mellan varandra, vilket är olämpligt att implementera med XBee:s AT-läge.
@@ -1174,6 +1179,14 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     \emph{Entire Surface of Handset Becomes LCD Display},
     \url{http://techon.nikkeibp.co.jp/english/NEWS_EN/20090609/171529/},
     2009. (3/30/2012)
+
+\label{wen}
+\bibitem{wen}
+    Windows Enterprise Networking,
+    \emph{Configuring lease time.},
+    Microsoft Windows DHCP Team Blog,
+    \url{http://blogs.technet.com/b/teamdhcp/archive/2007/02/07/configuring-lease-time.aspx},
+    2007. (2012-0X-XX)
 
 \label{wiring}
 \bibitem{wiring}
