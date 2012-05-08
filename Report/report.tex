@@ -498,23 +498,27 @@ När skyltmodulen har anslutit sig till ett nätverk skickar den ett meddelande 
 
 Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överföring av kommandon och XBee-modulernas svar på dessa kommandon. Överföringen sker på ett liknande sätt som dataöverföringen via radiolänken, men på ett mer uppstrukturerat och väldefinierat sätt, då det endast finns en begränsad uppsättning kommandon och svar. Då de ges vissa kommandon svarar XBee-modemen med data, och på vissa andra endast med OK-meddelanden. Dessa kommandosvar ger arduinoplattformarna bättre kontroll över XBee-modemens exakta status, och hjälper även vid felsökning under utvecklingen. \\
 
-Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur ~\ref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3, angle=0]{basFSM.png}
+\end{center}
+\caption{Flödesschema över radio i basstation}
+\label{fig:radio_bas}
+\end{figure}
+
+Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur ~\ref{fig:radio_bas} på sida ~\pageref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
 
 Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan via radiolänken och väntar på att skylten ska verifiera överföringen. Då överföringen verifierats återvänder basstationen till sitt passiva lyssningstillstånd. Om basstationen vid något tillfälle avviker från de väldefinierade tillstånden, får ett oväntat och ohanterbart svar eller måste vänta för länge på svar, går den in i ett felläge och signallerar detta till omvärlden. \\
 
 \begin{figure}[H]
-\includegraphics[scale=0.3, angle=0]{basFSM.png}
-\label{fig:radio_bas}
-\caption{Flödesschema över radio i basstation}
-\end{figure}
-
-Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur ~\ref{fig:radio_skylt} Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas.
-
-\begin{figure}[H]
+\begin{center}
 \includegraphics[scale=0.3, angle=0]{skyltFSM.png}
-\label{fig:radio_skylt}
+\end{center}
 \caption{Flödesschema över radio i skylt}
+\label{fig:radio_skylt}
 \end{figure}
+
+Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur ~\ref{fig:radio_skylt} på sida ~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas.
 
 \subsection{Display}
 För att kunna visa upp twittermeddelandena på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.
@@ -560,17 +564,21 @@ Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i s
 Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur ~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
 
 \begin{figure}[H]
-\includegraphics[scale=0.3, angle=0]{fontA.png}
-\label{fig:fontA}
+\begin{center}
+\includegraphics[scale=0.5, angle=0]{fontA.png}
+\end{center}
 \caption{Del av ett A}
+\label{fig:fontA}
 \end{figure}
 
 Ett exempel från det slutgiltiga typsnittet kan ses i figur ~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
 
 \begin{figure}[H]
-\includegraphics[scale=0.3, angle=0]{fontAA.png}
-\label{fig:fontAA}
+\begin{center}
+\includegraphics[scale=0.5, angle=0]{fontAA.png}
+\end{center}
 \caption{Ett litet å}
+\label{fig:fontAA}
 \end{figure}
 
 Översättningen från tecken till pixlar görs genom att varje rad i texten behandlas var för sig. Pixelrepresentationen av en textrad består av 20 pixelrader, eftersom alla tecken är 20 pixlar höga. Pixelraderna skapas och överförs en och en till displayens minne. En pixelrad byggs upp genom att textraden gås igenom och för varje tecken slås motsvarande pixelrad i tecknet upp för att sedan konkatineras med resterande teckens pixelrader. Om till exempel en textrad består av tecknen AB så kommer första pixelraden att innehålla första raden i tecknet A följt av första raden av teckent B. Nästa pixelrad består av andra pixelraden i A och andra pixelraden i B. Då samtliga 20 pixelrader har skickats iväg till displayens minne påbörjas arbetet med eventuella efterföljande textrader.
@@ -997,18 +1005,22 @@ Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax 
 
 Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare \hyperref[dimension]{(Dimension Engineering, 2012)}. \\
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.70, angle=0]{effekt.png}
+\end{center}
+\caption{Effektanalys för skylt}
+\label{fig:effectgraph}
+\end{figure}
+
 Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, flera effektförbrukningsspikar uppträder under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figur ~\ref{fig:effectgraph} visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen. De spikar som noteras kommer från radion, först sändning, sedan mottagning, samt från display.
 
 \begin{figure}[H]
-\includegraphics[scale=0.70, angle=0]{effekt.png}
-\label{fig:effectgraph}
-\caption{Effektanalys för skylt}
-\end{figure}
-
-\begin{figure}[H]
+\begin{center}
 \includegraphics[scale=0.35, angle=0]{battery.png}
-\label{fig:batterygraph}
+\end{center}
 \caption{Urladdningsförlopp för LiPo-batteri}
+\label{fig:batterygraph}
 \end{figure}
 
 Batteriet som valdes visade sig vara ett mycket bra val, då det ger en lång batteritid, men fortfarande är litet och smidigt nog att bygga in i produkten. Eftersom det rör sig om ett LiPo-batteri så har dock den avläsningsmetod som används i projektet visat sig vara otillräcklig. LiPo-batterier har en relativt konstant spännings-tid-kurva, undantaget relativt skarpa förändringar i början och slutet av urladdningscykeln. \\
