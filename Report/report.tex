@@ -513,10 +513,12 @@ Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen. Skyltm
 \caption{Flödesschema över radio i skylt}
 \end{figure}
 
+\subsection{Display}
+
 \subsection{Övriga uppkopplingar}
 Systemet använder en uppsättning handbyggda kretsar för små uppgifter såsom användargränssnitt. Dessa kretsar är relativt simpla och befinner sig i konstruktionens utkant. Detta kapitel beskriver de sådana kretsar som byggts inom ramarna för projektet.
 
-\subsubsection{Avkopplingskondensatoreroch kondensatorbank till display}
+\subsubsection{Avkoppling och kondensatorbank}
 XBee-modulerna på basstationen och skylten matas med 5V och 3.3V, från sina respektive arduinoplattformar. För att buffra mot eventuella störningar på matningsspänningen används avkopplingskondensatorer av olika storlek, som rekommenderat i databladet för XBee-modulerna. \\
 
 Skyltens display matas med 3.3V och jord från arduinoplattformen. Mellan display och arduino finns en kondensatorbank inkopplad, med en i sammanhanget stor elektrolytkondensator på 470$\mu$F, och två mindre, snabbare 10$\mu$F-kondensatorer. 
@@ -533,10 +535,8 @@ Batterinivån på skyltmodulen avläses genom att en analogingång på skyltens 
 \subsubsection{Batteriladdning}
 Batteriet laddas via en kontakt på basstationen. Det kort som används för att ladda batteriet tar sin matningsspänning och jord från Arduinoplattformen (5V) och reglerar ner spänningen till lämplig nivå för att ladda Litium-Polymer-batteriet. Övriga komponenter på kortet är kondensatorer enligt rekommendationerna för spänningsregulatorn, samt resistanser som fungerar som strömbegränsande för lysdioder. Laddningsstatus visas på en LED.
 
-\subsubsection{Inbyggnadslåda}
-Projektet är inbyggt i en ABS-plastlåda där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
-
-\subsection{Display}
+\subsubsection{Inbyggnadslådor och mekanik}
+Delsystemen (skylt och basstation) är inbygga i ABS-plastlådor där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
 
 \section{Systembeskrivning, programlogik}
 Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer. \\
@@ -1243,7 +1243,7 @@ hyperref[xbeearduino]{(xbee-arduino, 2011)},
 \end{figure}
 \pagebreak
 
-\section{Kopplingsschema, Stödkretsar basstation}
+\section{Kopplingsschema för stödkretsar i basstation}
 
 \begin{figure}[H]
 \includegraphics[scale=1.0, angle=0]{sch_bas.png}
@@ -1252,7 +1252,7 @@ hyperref[xbeearduino]{(xbee-arduino, 2011)},
 \end{figure}
 \pagebreak
 
-\section{Kopplingsschema, Stödkretsar skylt}
+\section{Kopplingsschema för stödkretsar i skyltmodul}
 
 \begin{figure}[H]
 \includegraphics[scale=1.0, angle=0]{sch_skylt.png}
@@ -1261,7 +1261,7 @@ hyperref[xbeearduino]{(xbee-arduino, 2011)},
 \end{figure}
 \pagebreak
 
-\section{Komponentlista, Stödkretsar}
+\section{Komponentlista, stödkretsar}
 
 \begin{table}[h]
 \centering
@@ -1293,7 +1293,7 @@ hyperref[xbeearduino]{(xbee-arduino, 2011)},
 \end{table}
 \pagebreak
 
-\section{Komponentlista, Huvudsystem}
+\section{Komponentlista, huvudsystem}
 
 \begin{table}[h]
 \centering
