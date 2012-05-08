@@ -1,0 +1,24 @@
+digraph G {
+
+	Start -> FormingNetwork
+	FormingNetwork -> Error [label="Network \n formation \n error"];
+	FormingNetwork -> JoiningSend
+	JoiningSend -> JoiningWait
+	JoiningWait -> JoiningWaitResponse
+	JoiningWaitResponse -> Error [label="No response \n from base station"];
+	JoiningWaitResponse -> Idle
+	Idle -> SleepWait
+	Idle -> RequestSend [label="Requesting \n data"];
+	SleepWait -> Sleeping
+	Sleeping -> ResetStart [label="Reset"];
+	Sleeping -> Idle
+	Error
+	RequestSend -> RequestStatus
+	RequestStatus -> Error [label="Error sending \n request"];
+	RequestStatus -> RequestWait
+	RequestWait -> Error [label="Timeout"];
+	RequestWait -> RequestSend [label="More packets \n in message"];
+	RequestWait -> Idle [label="Done"];
+	ResetStart -> ResetWait
+	ResetWait -> Start
+}
