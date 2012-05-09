@@ -109,35 +109,34 @@ The main focus points of the project have been to construct an energy efficient,
 \begin{table}[h]
 \centering
 	\begin{tabular}{|l|l|}
-Skylt & Display med trådlös mottagare som visar data skickad från basstationen.\\
-Basstation & Sändare med internetåtkomst som skickar data trådlöst till skylten.\\
-Systemet & Kombinationen av basstation och skylt, hela konstruktionen.\\
-Radiolänken & Den trådlösa kommunikationslänken mellan basstation och skyltmodul.\\
-Tweet & Ett meddelande bestående av maximalt 140 tecken som skickats till Twitter.\\
-Hashtag & Etikett en användare kan sätta på tweets för att markera och organisera\\
-Displaysträng & Den textsträng som skickas från basstationen till skylten \\
-Escape-tecken & Tecken som gör att efterföljande tecken tolkas annorlunda.\\
-AVR & Microprocessorarkitektur som används av Arduinoplattformen-\\
-Arduino & Datorplattformsprojekt bestående av utvecklingsmiljö och hårdvara.\\
-TCP & Transmission Control Protocol. Förbindelseorienterat dataprotokoll.\\
-UDP & User Datagram Protocol. Förbindelselöst dataprotokoll.\\
-IP & Internet Protocol. Protokoll för routing och addressering.\\
-DHCP & Protokoll för att automatiskt ge datorer deras nätverksinställningar.\\
-SD & Secure Digital. Ett digitalt minneskortsformat.\\
-Ethernet & En samling tekniker för nätverksuppkoppling\\
-Lånetid & Tid som en dator fått låna en IP-address från en DHCP server.\\
 A/D-Omvandlare & Omvandlar en analog signal till digital.\\
 API & Application Programming Interface, avancerat operationsläge för XBee.\\
-AT & Application Transparent, simpelt point-to-point-läge för XBee.\\
+Arduino & Datorplattformsprojekt bestående av utvecklingsmiljö och hårdvara.\\
+AT & Application Transparent, simpelt point-to-point-läge för XBee.\\	
+AVR & Microprocessorarkitektur som används av Arduinoplattformen-\\
+Basstation & Sändare med internetåtkomst som skickar data trådlöst till skylten.\\
 Coordinator & Basenheten i ett ZigBee-nätverk, koordinerar av andra enheter.\\
+DHCP & Protokoll för att automatiskt ge datorer deras nätverksinställningar.\\
+Displaysträng & Den textsträng som skickas från basstationen till skylten \\
 End Device & Ändenhet i nätverket, förmedlar data uppåt i nätverkshierarkin.\\
+Escape-tecken & Tecken som gör att efterföljande tecken tolkas annorlunda.\\
+Ethernet & En samling tekniker för nätverksuppkoppling\\
+Hashtag & Etikett en användare kan sätta på tweets för att markera och organisera\\
 I/O & Input/Output, in- eller utgångsanslutning på microcontroller.\\
+IP & Internet Protocol. Protokoll för routing och addressering.\\
 Kontrollsumma & Kontroll av överförda paket i syfte att upptäcka fel.\\
+Lånetid & Tid som en dator fått låna en IP-address från en DHCP server.\\
 PAN & Personal Area Network, ett ZigBee-nätverk.\\
 PAN-ID & Ett (helst unikt) Identifikationsnummer för ett PAN.\\
-Radiolänken & Den trådlösa kommunikationslänken mellan basstation och skyltmodul.\\
 Radio-modul & XBee och den gränssnittskod som interagerar med XBee.\\
+Radiolänken & Den trådlösa kommunikationslänken mellan basstation och skyltmodul.\\
+SD & Secure Digital. Ett digitalt minneskortsformat.\\
 Sekvensnumrering & Numrering av paket som skickas över nätverket.\\
+Skylt & Display med trådlös mottagare som visar data skickad från basstationen.\\
+Systemet & Kombinationen av basstation och skylt, hela konstruktionen.\\
+TCP & Transmission Control Protocol. Förbindelseorienterat dataprotokoll.\\
+Tweet & Ett meddelande bestående av maximalt 140 tecken som skickats till Twitter.\\
+UDP & User Datagram Protocol. Förbindelselöst dataprotokoll.\\
 XBee-modul & Hårdvaran som ansvarar för sändning och mottagning av radiosignaler.\\
 ZigBee & Det nätverksprotokoll som XBee bygger på och använder.\\
 	\end{tabular}
@@ -276,7 +275,7 @@ Twitter utgörs av ett stort antal användare. En användare identifieras av ett
 
 En tweet (härefter meddelande) är ett inlägg på Twitter. Det tillhör en användare och består av upp till 140 Unicode-tecken. Detta meddelande kan innehålla hashtags (se nedan), som ingår i meddelandets metadata. En användares samling av meddelanden kallas för tidslinje. \\
 
-En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({\#}, hash). En hashtag används för att kategorisera meddelandet, som sedan kan hittas genom en sökning på denna hashtag. En hashtag kan vara upp till 139 tecken lång och ett meddelande kan innehålla så många hashtags som ryms i dess 140 tecken. \\
+En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({\#}, hash). En hashtag används förs att kategorisera meddelandet, som sedan kan hittas genom en sökning på denna hashtag. En hashtag kan vara upp till 139 tecken lång och ett meddelande kan innehålla så många hashtags som ryms i dess 140 tecken. \\
 
 En retweet är en kopia av ett existerande meddelande, återpublicerat av en annan användare. En retweet tillhör den andra användarens tidslinje. Den innehåller en kopia av det fullständiga originalmeddelandet och inleds med strängen {\it RT @user: }, där user är den ursprungliga författarens användarnamn. Detta innebär att en retweet kan innehålla upp till 161 tecken: 140 för det ursprungliga meddelandet, 15 för ett användarnamn av maximal längd och 6 för formateringen runt användarnamnet.
 
@@ -472,7 +471,7 @@ Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överför
 \label{fig:radio_bas}
 \end{figure}
 
-Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur ~\ref{fig:radio_bas} på sida ~\pageref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
+Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur~\ref{fig:radio_bas} på sida~\pageref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
 
 Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan via radiolänken och väntar på att skylten ska verifiera överföringen. Då överföringen verifierats återvänder basstationen till sitt passiva lyssningstillstånd. Om basstationen vid något tillfälle avviker från de väldefinierade tillstånden, får ett oväntat och ohanterbart svar eller måste vänta för länge på svar, går den in i ett felläge och signallerar detta till omvärlden. \\
 
@@ -484,7 +483,7 @@ Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan
 \label{fig:radio_skylt}
 \end{figure}
 
-Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur ~\ref{fig:radio_skylt} på sida ~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas.
+Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas.
 
 \subsection{Display}
 För att kunna visa upp twittermeddelandena på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.
@@ -496,7 +495,7 @@ Det är viktigt att tecknen är lätta att läsa även på avstånd eftersom typ
 \subsubsection{Displayens energieffektivitet}
 För att maximera skyltens batteritid är viktigt att displayen är energisnål. Eftersom den valda displayen endast kräver ström då den uppdateras passar den bra med resten av skyltmodulen som spenderar större delen av tiden i ett lågenergiläge och inte kräver uppdateringar av displayen.
 
-För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell ~\ref{tab:kenttable}. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.
+För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell~\ref{tab:kenttable}. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.
 
 \begin{table}[h]
 \centering
@@ -527,7 +526,7 @@ Med uppdateringskommandot anges vilken adress i minnet datan skall börja läsas
 
 Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Skyltmodulsarduinon har därför ett typsnitt lagrat i programminnet där den kan slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av linuxsystemfonten, som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.
 
-Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur ~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
+Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
 
 \begin{figure}[H]
 \begin{center}
@@ -537,7 +536,7 @@ Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar än
 \label{fig:fontA}
 \end{figure}
 
-Ett exempel från det slutgiltiga typsnittet kan ses i figur ~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
+Ett exempel från det slutgiltiga typsnittet kan ses i figur~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
 
 \begin{figure}[H]
 \begin{center}
@@ -583,20 +582,13 @@ Efter att inställningarna har lästs in går basstationen in i en evig loop och
 
 \subsection{Konfigurering av systemet}
 En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta tweets ifrån, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden eftersom det blir onödigt omständigt samt en risk för kompileringsfel. Lösningen blev en konfigurationsfil lagrat på ett SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en söksträng.
+Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt. Den första strängen i filen ska innehålla namnet på den Twitter-användare vars tidszon datumet ska visas i. Därefter följer en söksträng med vilken användaren kan specificera vilka tweets som skall visas på skylten med hjälp av bland annat hashtags. Saknas söksträngen hämtas samtliga tweets skrivna från användarens konto. Användandet av söksträngar beskrivs i avdelningen \hyperref[twitterapi]{Twitters API}.
 
-Användaren kan konfigurera systemet genom att ange värdena på två olika parametrar:
-
-	\begin{enumerate}
-    	\item Användarnamn: Namnet på den Twitter-användare vars tidszon ska användas för att visa tid och datum på displayen.
-    	\item Söksträng: Den söksträng som ska användas för att filtrera meddelanden.
-	\end{enumerate}
-
-Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt. Den första raden i filen ska innehålla användarnamnet. Den andra raden ska innehålla söksträngen. Om söksträngen saknas så används istället söksträngen “from:namn +exclude:retweets”, där namn är det användarnamn som har angivits i filen. Användandet av söksträngar beskrivs i avdelningen \hyperref[twitterapi]{Twitters API}.
 
 \subsubsection{Inläsning}
-För att läsa från SD-kortet användes Arduinos standard bibliotek för SD-kort som i sin tur använder sdfatlib. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012e)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.
+För att läsa från SD-kortet användes Arduinos standard bibliotek för SD-kort som i sin tur använder biblioteket sdfatlib \hyperref[arduino]{(Arduino, 2012f)}. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012f)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.\\
 
-I konfigurationsfilen ska varje inställning separeras med mellanslag, tab eller nyradstecken. Först kommer användarnamnet därefter querysträngen. Inställningarna kommer man åt genom att kalla på metoder som returnerar dessa. När filen har öppnats allokeras ett minnesutrymme som är lika många bytes som filen är stor. Sedan läses hela filen in i minnet med undantag av blanktecken före och efter användarnamnet. När inläsningen är klar är det känt hur många signifikanta tecken som är inlästa. Om det är färre inlästa tecken än antalet i filen så allokeras ett nytt minnesutrymme som endast har plats för adekvata tecken. Minnesutrymme som tidigare bestod av vittecken kan på så vis frigöras.
+I konfigurationsfilen ska varje inställning separeras med mellanslag, tab eller nyradstecken. Först kommer användarnamnet därefter söksträngen. När filen har öppnats allokeras ett minnesutrymme som är lika många bytes som filen är stor. Sedan läses hela filen in i minnet med undantag av blanktecken före och efter användarnamnet. När inläsningen är klar är det känt hur många signifikanta tecken som är inlästa. Om det är färre inlästa tecken än antalet i filen så allokeras ett nytt minnesutrymme som endast har plats för adekvata tecken. Minnesutrymme som tidigare bestod av vittecken kan på så vis frigöras. Slutligen exponeras inställningarna för systemet genom metoder som returnerar dessa.
 
 \subsection{Förnyelse av IP-adress via DHCP}
 För att kommunicera över internet krävs det att basstationen har en IP-adress \hyperref[cisco]{(Cisco Systems, 2003)}. Tilldelningen kommer att ske med hjälp av nätverkets DHCP-server, som har en samling med lediga adresser. För att DHCP-servern inte ska få slut på adresser så är det brukligt att en lånetid sätts, det vill sig hur länge enheten kan vara säker på att ha den givna adressen. Arduinos Ethernet-bibliotek (v1.0) har inte implementerat stöd för att uppdatera lånetiden av IP-adressen, vilket kan leda till att kontakten med internet förloras.\\
@@ -613,9 +605,11 @@ Hantering av lånetidsuppdatering kan implementeras med:
     	\item En funktion som anropas för tidavläsning
 	\end{enumerate}
 	
-Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden. I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo 232 sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i “loopen”, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
+Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden.\\
 
- Den slutliga lösningen blev alternativ 2, eftersom att “loop()” ska köras ofta (se avsnitt TIDIGARE) och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar som kan behövas i andra delar av programmet.\\
+I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo $2^{32}$ sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i programloopen, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
+
+Den slutliga lösningen blev alternativ 2, eftersom att programloopen ska köras ofta och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar vilka kan behövas i andra delar av programmet.\\
 
 Implementationen bryter mot DHCP specifikationen på några punkter:
 
@@ -909,17 +903,21 @@ Datumet visas i det nedre högra hörnet av displayen och föregås av ett binde
 
 En komplikation som uppstår när metadata ska infogas i displayens nedre högra hörn är att algoritmen för avstavning potentiellt kan ha förbrukat detta utrymme genom att flytta ned ord, som i följande exempel med ett 124 tecken långt meddelande. \\
 
-Meddelande:
+Meddelande:\\
 
-a bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb \\ cccccccccccccccccccccccccccccccccccccccc  \\ dddddddddddddddddddddddddddddddddddddddd
+a bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccccccccccccccccccccc dddddddddddddddddddddddddddddddddddddddd
 
-Resultat efter justering: \\
-
-                                      	| Högermarginal \\
-a                                       | \\
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb| \\
-cccccccccccccccccccccccccccccccccccccccc| \\
-dddddddddddddddddddddddddddddddddddddddd| \\
+\begin{table}[h]
+\centering
+	\begin{tabular}{l|}
+	a \\
+	bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb \\
+	cccccccccccccccccccccccccccccccccccccccc \\
+	dddddddddddddddddddddddddddddddddddddddd \\
+	\end{tabular}
+\caption{Meddelandet efter avstavning och högermarginaljustering}
+\label{tab:msgexample}
+\end{table}
 
 I exemplet har ordet {\it bbb...} flyttats ned istället för att avstavas eftersom detta lämnar kvar tillräckligt med utrymme för resten av meddelandet. Problemet är att utrymmet i det nedre högra hörnet nu är förbrukat, vilket gör det omöjligt att infoga ett datum. Detta går att lösa genom att justera algoritmen för justering, men detta gör den mer komplicerad och kräver att den har kunskap om hur den justerade strängen ska användas, vilket ökar antalet beroenden mellan funktioner. \\
 
@@ -943,7 +941,7 @@ Datumet läggs till på meddelandet efter att det har justerats. Eftersom det al
 
 \subsubsection{Funktionalitet}
 
-{\large \it TODO: skriva kort om det slutgiltiga systemets funktioner}
+{\large \it \colorbox{yellow}{TODO: skriva kort om det slutgiltiga systemets funktioner}}
 
 \subsubsection{Energieffektivitet}
 För att mäta energieffektivteten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3.3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
@@ -984,7 +982,7 @@ Arduinoplattformen använder sig av en linjär spänningsregulator, vilket inneb
 \label{fig:effectgraph}
 \end{figure}
 
-Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, flera effektförbrukningsspikar uppträder under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figur ~\ref{fig:effectgraph} visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen. De spikar som noteras kommer från radion, först sändning, sedan mottagning, samt från display.
+Systemet är försatt i strömsparläge den allra största delen av driftstiden. Aktiv tid uppgår till maximalt $3\%$, typiskt $1\%$ av tiden, beroende mestadels på radiokommunikationen. Under sömnperioden är effektförbrukningen relativt liten, men under en längre period. Som motsats är uppdateringsperioden kort, flera effektförbrukningsspikar uppträder under uppdateringen. Dessa kommer av radiokommunikation (sändning och mottagning), samt uppdatering av display. Displayen uppdateras mycket snabbt, och sändning av data går också idealt snabbt, dock med risk för omsändning vid misslyckande. Mottagning av och avlyssning efter data på radiolänken är den aktivitet som bidrar mest till energiförbrukningen under uppdateringscykeln. Figur~\ref{fig:effectgraph} visar effektförbrukning i hela systemet under en uppdateringscykel, där två datapaket tas emot från basstationen. De spikar som noteras kommer från radion, först sändning, sedan mottagning, samt från display.
 
 \begin{figure}[H]
 \begin{center}
@@ -996,7 +994,7 @@ Systemet är försatt i strömsparläge den allra största delen av driftstiden.
 
 Batteriet som valdes visade sig vara ett mycket bra val, då det ger en lång batteritid, men fortfarande är litet och smidigt nog att bygga in i produkten. Eftersom det rör sig om ett LiPo-batteri så har dock den avläsningsmetod som används i projektet visat sig vara otillräcklig. LiPo-batterier har en relativt konstant spännings-tid-kurva, undantaget relativt skarpa förändringar i början och slutet av urladdningscykeln. \\
 
-Batteriavläsningen tar för närvarande endast hänsyn till den spänning som fås ut från batteriet, vilket inte fungerar som en bra indikator för laddningsstatus. Figur ~\ref{fig:batterygraph} visar att spänningen som fås från batteriet hålls relativt konstant under urladdningscykeln, fram till en skarp nedåtsväng mot slutet. En alternativ lösning för batteristatusavläsning togs fram, där systemet konstant håller reda på strömmen som dras från batteriet, och utför en integration av strömmen. Med kompletterande information om batteriets initiala laddning kan därefter kvarvarande laddning räknas ut. Vidare fås detaljerad information om hur batteriet används, som kan användas till att räkna fram en uppskattning av återstående batteritid. \\
+Batteriavläsningen tar för närvarande endast hänsyn till den spänning som fås ut från batteriet, vilket inte fungerar som en bra indikator för laddningsstatus. Figur~\ref{fig:batterygraph} visar att spänningen som fås från batteriet hålls relativt konstant under urladdningscykeln, fram till en skarp nedåtsväng mot slutet. En alternativ lösning för batteristatusavläsning togs fram, där systemet konstant håller reda på strömmen som dras från batteriet, och utför en integration av strömmen. Med kompletterande information om batteriets initiala laddning kan därefter kvarvarande laddning räknas ut. Vidare fås detaljerad information om hur batteriet används, som kan användas till att räkna fram en uppskattning av återstående batteritid. \\
 
 Denna lösning är dock inte implementerad i systemet, då det skulle innebära mycket extra beräkningskraft som går åt till att beräkna batteritid, samt en del extra hårdvara. Bland annat skulle en avläsningsbar strömprob behöva kopplas till microcontrollern, samt att externa minneskretsar skulle behöva läggas till för att spara datan relaterat till batterihanteringen. Inom projektet togs snabbt beslutet att detta skulle vara mycket onödigt, på grund av extra kostnader och platsbrist, både fysiskt i enheten och i form av I/O-pinnar på microcontrollern. Vidare skulle det bidra relativt lite till användarupplevelsen. Med nuvarande lösning ger systemet en varning om att batterinivån är låg då spänningen från batteriet börjar sjunka. Då vet samtidigt användaren om att det verkligen är dags att ladda batteriet, då batterinivåvarningen kommer relativt sent i urladdningscykeln. Användaren informeras om den låga batterinivån via en status-LED på skylten. \\
 
@@ -1024,7 +1022,7 @@ Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnads
 
 \subsection{Utvärdering av projektupplägg}
 
-{\large \it TODO: diskuteras på Torsdagens (10/5) gruppmöte}
+{\large \it \colorbox{yellow}{TODO: diskuteras på Torsdagens (10/5) gruppmöte}}
 
 \subsection{Sidospår och problem under projektet}
 
@@ -1098,6 +1096,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
    \item{\emph{Arduino Mega}. \url{http://arduino.cc/it/Main/ArduinoBoardMega} (2012-01-19)}
    \item{\emph{XBee Shield} \url{http://arduino.cc/it/Main/ArduinoXbeeShield} (2012-01-24)}
    \item{\emph{Ethernet Shield} \url{http://arduino.cc/en/Main/ArduinoEthernetShield} (2012-01-19)}
+   \item{\emph{Arduino SD} \url{http://arduino.cc/en/Reference/SD} (2012-04-14)}
    \end{list}
    2009-2012.
 
@@ -1417,14 +1416,14 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
 
 {\bf Konstruktion}
 	\begin{enumerate}
-    	\item Tweethämtning - Kim
-    	\item Parsing - Jakob
-    	\item Formattering - Kim, Jakob
-    	\item Användarkonfigurering (SD-kort) - Andreas, Anton
-    	\item Ethernet - Andreas, Anton
-    	\item Radiolänk - Lars, Fredrik
-    	\item Display - Lars, Anton
-    	\item Övrig elektronik och mekanik - Fredrik\\
+    	\item Tweethämtning - {\it Kim}
+    	\item Parsing - {\it Jakob}
+    	\item Formattering - {\it Kim, Jakob}
+    	\item Användarkonfigurering (SD-kort) - {\it Andreas, Anton}
+    	\item Ethernet - {\it Andreas, Anton}
+    	\item Radiolänk - {\it Lars, Fredrik}
+    	\item Display - {\it Lars, Anton}
+    	\item Övrig elektronik och mekanik - {\it Fredrik}\\
     	\end{enumerate}
 {\bf Rapport}
 	\begin{enumerate}
@@ -1433,7 +1432,7 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
     	\item Arbetsmetod
     	\item Systembeskrivning
     	\item Resultat
-    	\item Diskussion och slutsatser\\
+    	\item Diskussion och slutsatser
     	\item Appendix
 	\end{enumerate}
 {\bf Presentation}
