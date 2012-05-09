@@ -117,6 +117,7 @@ void Display::clear_buffer() {
 
 void Display::reset() {
 	digitalWrite(reset_pin, LOW);
+	delay(1);
 	digitalWrite(reset_pin, HIGH);
 	wait();
 }
@@ -152,13 +153,14 @@ void Display::sleep() {
 }
 
 void Display::start_cmd(uint8_t cmd) {
+	wait(); // According to datasheet the busy pin should be low before starting a new command.
 	digitalWrite(cselect_pin, LOW);
 	send(cmd);
 }
 
 void Display::end_cmd() {
 	digitalWrite(cselect_pin, HIGH);
-	delay(20); // Avoid race-conditions
+	delay(20); // Avoid race-conditions, dunno if this is the right way. XXX
 	wait();
 }
 
