@@ -302,9 +302,9 @@ Under arbetets gång har alltså varje medlem i projektet kunnat publicera sina 
 \section{Bakomliggande tekniker och tjänster}
 
 \subsection{Twitter}
-Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och är nu den största tjänsten av sitt slag. Den har idag över 300 miljoner medlemmar världen över. \\
+Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över (Twitter, 2012).\\
 
-Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren.
+Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren (The National, 2011).
 
 \subsubsection{Terminologi}
 Twitter utgörs av ett stort antal användare. En användare identifieras av ett användarnamn som är högst 15 tecken långt. \\
@@ -316,7 +316,8 @@ En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({
 En retweet är en kopia av ett existerande meddelande, återpublicerat av en annan användare. En retweet tillhör den andra användarens tidslinje. Den innehåller en kopia av det fullständiga originalmeddelandet och inleds med strängen {\it RT @user: }, där user är den ursprungliga författarens användarnamn. Detta innebär att en retweet kan innehålla upp till 161 tecken: 140 för det ursprungliga meddelandet, 15 för ett användarnamn av maximal längd och 6 för formateringen runt användarnamnet.
 
 \subsubsection{API}
-Som många andra hemsidor erbjuder Twitter ett HTTP-baserat API. Detta kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden. \\
+\label{twitterapi}
+Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas (Twitter, 2012). Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
 
 Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format.
 
@@ -544,7 +545,7 @@ För att avgöra hur energisnål displayen är jämförs den med LCD-displayer a
 \label{tab:kenttable}
 \end{table}
 
-Strömförbrukningsvärdena har hämtats från respektive displays datablad \hyperref[lcdalfa]{(DISPLAY Elektronik, 2009)}, \hyperref[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \hyperref[kent]{(Kent Displays Inc., 2010)}. Vi räknar med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten {HÄNVISA TILL STYCKE DÄR DET ANGES?}.
+Strömförbrukningsvärdena har hämtats från respektive displays datablad \hyperref[lcdalfa]{(DISPLAY Elektronik, 2009)}, \hyperref[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \hyperref[kent]{(Kent Displays Inc., 2010)}. Vi räknar med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten.
 
 Trots att den alfanumeriska displayen är av en enklare modell och vi har antagit att displayen uppdateras så ofta som möjligt så kräver Kent-displayen en fjärdedel så mycket energi. Vid normalt användande med färre uppdateringar skulle Kent-displayen kräva ännu mindre energi medan de andra skulle ligga kvar på samma nivå.
 
@@ -559,7 +560,7 @@ Med uppdateringskommandot anges vilken adress i minnet datan skall börja läsas
 
 \subsubsection{Hantering av tecken och teckensnitt}
 
-Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Skyltmodulsarduinon har därför ett typsnitt lagrat i programminnet där den kan slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av {LINUXfonten} som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.
+Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Skyltmodulsarduinon har därför ett typsnitt lagrat i programminnet där den kan slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av linuxsystemfonten, som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.
 
 Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur ~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
 
@@ -607,18 +608,25 @@ Batteriet laddas via en kontakt på basstationen. Det kort som används för att
 Delsystemen (skylt och basstation) är inbygga i ABS-plastlådor där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
 
 \section{Systembeskrivning, programlogik}
-Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer. \\
+Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer.\\
 
-Vid uppstart av skylten går den in i en evig loop och skickar var femte minut en förfrågan till basstationen om vilket meddelande som ska visas upp. När ett svar har tagits emot visas meddelandet och dess metadata upp på displayen. \\
+Vid uppstart av skylten går den in i en evig loop och skickar var femte minut en förfrågan till basstationen om vilket meddelande som ska visas upp. När ett svar har tagits emot visas meddelandet och dess metadata upp på displayen.\\
 
-Vid uppstart av basstationen läses en konfiguration in för att ställa in vilka meddelanden som ska hämtas in från Twitter och vilken tidszon som datum ska visas i. Om någon av inställningarna är ogiltiga meddelas ett fel. \\
+Vid uppstart av basstationen läses en konfiguration in för att ställa in vilka meddelanden som ska hämtas in från Twitter och vilken tidszon som datum ska visas i. Om någon av inställningarna är ogiltiga meddelas ett fel.\\
 
-Efter att inställningarna har lästs in går basstationen in i en evig loop och väntar på förfrågningar om meddelanden från skylten. När en förfrågan tas emot så hämtar basstationen in det senaste meddelandet från Twitters API som går igenom användarens filter. Om ett svar tas emot formateras meddelandet och skickas till skylten för att visas upp. Om ett svar inte tas emot så görs två ytterligare försök innan ett fel meddelas.
+Efter att inställningarna har lästs in går basstationen in i en evig loop och väntar på förfrågningar om meddelanden från skylten. När en förfrågan tas emot så hämtar basstationen in det senaste meddelandet från Twitters API som går igenom användarens filter. Om ett svar tas emot formateras meddelandet och skickas till skylten för att visas upp.
 
 \subsection{Konfigurering av systemet}
-En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta tweets ifrån, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden eftersom det blir onödigt omständigt samt risk för kompileringsfel. Lösningen blev en konfigurationsfil lagrat på ett SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en söksträng.\\
+En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta tweets ifrån, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden eftersom det blir onödigt omständigt samt en risk för kompileringsfel. Lösningen blev en konfigurationsfil lagrat på ett SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en söksträng.
 
-Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt. Den första strängen i filen ska innehålla namnet på den Twitter-användare vars tidszon datumet ska visas i. Med söksträngen kan användaren specificera vilka tweets som skall visas på skylten med hjälp av bland annat hashtags. Saknas söksträngen hämtas samtliga tweets från användarens konto.
+Användaren kan konfigurera systemet genom att ange värdena på två olika parametrar:
+
+	\begin{enumerate}
+    	\item Användarnamn: Namnet på den Twitter-användare vars tidszon ska användas för att visa tid och datum på displayen.
+    	\item Söksträng: Den söksträng som ska användas för att filtrera meddelanden.
+	\end{enumerate}
+
+Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt. Den första raden i filen ska innehålla användarnamnet. Den andra raden ska innehålla söksträngen. Om söksträngen saknas så används istället söksträngen “from:namn +exclude:retweets”, där namn är det användarnamn som har angivits i filen. Användandet av söksträngar beskrivs i avdelningen \hyperref[twitterapi]{Twitters API}.
 
 \subsubsection{Inläsning}
 För att läsa från SD-kortet användes Arduinos standard bibliotek för SD-kort som i sin tur använder sdfatlib. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012e)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.
@@ -700,7 +708,7 @@ Av dessa datatyper är fält och objekt sammansatta: De innehåller andra värde
 
 En JSON-fil består av antingen ett objekt eller ett fält, som i sin tur kan innehålla ytterligare värden enligt reglerna för respektive datatyp. \\
 
-Den förväntade statusen i svaret på en GET-förfrågan är 200 OK, som innebär att resursen har bifogats i svarets meddelandekropp som avsett. \\
+Den förväntade statusen i svaret på en GET-förfrågan är {\it 200 OK}, som innebär att resursen har bifogats i svarets meddelandekropp som avsett. \\
 
 \subsubsection{Avläsning och intolkning}
 Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kilobyte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne. \\
@@ -762,36 +770,35 @@ Denna metod har två begränsningar:
 Dessa begränsningar är dock inga problem i systemet eftersom inga av de objektnycklar som behöver läsas in förekommer mer än en gång i något av de svar som tas emot från Twitters API. Eftersom Twitters API dessutom är versionsangivet bör risken vara minimal att beteendet förändras i framtiden, och om en godtycklig förändring mot förmodan sker så skulle också alla andra algoritmer för avläsning potentiellt kunna misslyckas.
 
 \subsection{Twitters API}
-Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att komma åt stora delar av Twitters innehåll. \\
+Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att komma åt stora delar av Twitters innehåll. Systemet använder sig av detta API för att komma åt två olika delar av Twitters innehåll: användaruppgifter och meddelanden. \\
 
-Samtliga URL:er innehåller en parameter för version och en för format. Version anger den version av Twitters API som ska användas. Format anger det filformat som svaret på klientens förfrågningar ska skickas i: XML eller JSON. I samtliga URL:er nedan är dessa parameter angivna med värdena {\it 1} och {\it JSON} respektive. \\
+\subsubsection{Användaruppgifter}
 
-Systemet använder sig av Twitters API för att komma åt två olika delar av Twitters innehåll: användaruppgifter och meddelanden.
+Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}. Användarnamnet erhålls av systemet genom konfigurationsfilen.
 
-Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}. \\
+Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln {\it $utc_offset$} och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
 
-Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln utc \textunderscore offset och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
+Värt att notera är att denna UTC-offset inte inkluderar eventuell tidsskillnad på grund av sommartid. Eftersom basstationen inte själv innehåller någon klocka så hanterar systemet inte heller denna tidsskillnad, utan det krävs att användaren själv ändrar inställningarna på sitt Twitter-konto för att rätt tid ska visas på skylten. En möjlig lösning på problemet är att låta användaren själv ange sin tidszon i konfigurationsfilen, men detta valdes bort då det skulle leda till en mer komplicerad implementation och ett mer komplicerat användargränssnitt.
 
 \subsubsection{Meddelanden}
-Det enklaste sättet att hämta en användares meddelanden från Twitters API är att skicka en förfrågan efter användarens tidslinje, som besvaras med en lista över användarens senaste meddelanden. Problemet med denna metod är att den inte tillåter någon filtrering av listan; all filtrering, exempelvis för att få fram meddelanden med vissa hashtags, måste göras av klienten. Detta kräver att klienten potentiellt behöver hämta in flera meddelanden på samma gång för att hitta det första som går igenom filtret, samt skicka ytterligare förfrågningar till Twitters API om inget av de inhämtade meddelandena gick igenom filtret. Detta kräver i sin tur komplex logik hos klienten, mer minnesutrymme och mer nätverkstrafik. \\
+Den söksträng som användaren har angivit i konfigurationsfilen används för att hämta de meddelanden som ska visas på skylten. De meddelanden som matchar söksträngen skickas som svar på förfågningar till följande URL, där där söksträng är den angivna söksträngen: \url{http://search.twitter.com/search.json?q=söksträng&result_type=recent&rpp=1}. De parametrar utöver söksträngen som ingår i URL:en har följande verkan:
 
-En metod som förlitar sig på att Twitters servrar själva filtrerar användarens meddelanden och sedan skickar enbart det matchande är att föredra. Detta erbjuds av Twitters sök-API, som tar emot söksträngar med samma syntax som den vanliga sökningen på Twitters hemsida och svarar med de meddelanden som matchar. Söksträngen består av en lista av operatorer som tillåter omfattande filtrering av resultatet. \\
+	\begin{itemize}
+    	\item {\it $result_type=recent$} sorterar de matchande meddelandena efter publiceringsdatum i fallande ordning.
+    	\item {\it $rpp=1$} begränsar antalet resultat till ett. {\it $rpp$} står för {\it $return per page$} \hyperref[twitter]{(Twitter, 2012b)}.
+	\end{itemize}
 
-Till skillnad från en förfrågan till en specifik användares tidslinje returnerar en förfrågan till Twitters sök-API meddelanden från samtliga Twitter-användare. Dessa behöver filtreras så att enbart meddelanden från systemets användare returneras. Denna filtrering görs med operatorn {\it from:username}, där username är namnet på den användare vars meddelanden ska returneras. \\
-
-För att hitta meddelanden som innehåller en viss hashtag skickas denna hashtag in som söksträng till Twitters sök-API.
-
-För att utelämna retweets från resultatet används operatorn {\it +exclude:retweets}.
+Söksträngar som ingår i förfrågningar till Twitters sök-API använder samma syntax som den vanliga sökfunktionen på Twitters hemsida. Denna syntax finns dokumenterad på Twitters hemsida \hyperref[twitter]{(Twitter, 2012a)}.
 
 \subsubsection{Begränsningar}
 Twitters API och systemets användning av det lyder under följande begränsningar:
 	
 	\begin{itemize}
-    	\item Meddelanden som är äldre än en vecka kan inte hämtas in. Twitters sök-API kan bara användas för att hitta meddelanden som är {\it ungefär en vecka} gamla ({\it omkring 6-9 dagar} i en annan del av dokumentationen). Detta är inget problem så länge basstationen är aktiverad, men så fort den stängs av och sätts på igen kommer den enbart att ha tillgång till meddelanden från den senaste veckan. Om det senaste meddelandet är äldre kommer den felaktigt att rapportera till skylten att inga meddelanden finns tillgängliga. Om skylten sedan stängs av (exempelvis för att laddas) kommer den vid uppstart inte att ha tillgång till det meddelande som den visade upp före avstängning.
-    	\item Vissa meddelanden kan saknas helt i sökresultaten. Eftersom Twitters sök-API {\it fokuserar på relevans, inte fullständighet}. Vilka meddelanden som saknas är inte tydligt dokumenterat, och det är också ytterst svårt att testa. I värsta fall kan denna begränsning leda till utelämnade meddelanden vid godtyckliga tillfällen.
-    	\item Systemet förlitar sig på en sökoperator som inte är dokumenterad. För att utelämna retweets från API-svaren använder sig systemet av sökoperatorn {\it +exclude:retweets}. I samtliga tester har den fungerat som avsett men i värsta fall kan dess beteende ändras i framtiden. Om operatorn helt skulle försvinna skulle det innebära att systemet också tar emot retweets, som kan innehålla fler än 140 tecken. För att säkerställa att detta scenario aldrig leder till några problem läses endast de 140 första tecknen av samtliga meddelanden in. Detta leder till att retweets som visas på skylten kan få viss text utelämnad men aldrig krascha systemet.
-    	\item Meddelanden kan inte hämtas in i realtid. Eftersom Twitters REST-baserade API som svar på varje förfrågan enbart skickar den data som är aktuell vid samma tidpunkt måste klienten regelbundet skicka förfrågningar för att få den senaste datan. Twitter erbjuder också ett strömbaserat API som kontinuerligt skickar data i realtid, men detta kräver autentisering vilket gör klientens implementation och användargränssnitt mer komplicerat.
-    	\item Meddelanden kan hämtas in högst 150 gånger per timme. Twitters API begränsar antalet förfrågningar per IP-adress till 150 per timme. Detta innebär att systemet maximalt kan skicka förfrågningar ungefär två gånger per minut. Eftersom systemet frågar efter nya meddelanden mindre ofta än detta är denna begränsning inget problem.
+     	\item Meddelanden som är äldre än en vecka kan inte hämtas in (Twitter, 2012). Twitters sök-API kan bara användas för att hitta meddelanden som är “ungefär en vecka” gamla (“omkring 6-9 dagar” i en annan del av dokumentationen). Detta är inget problem så länge basstationen är aktiverad, men så fort den stängs av och sätts på igen kommer den enbart att ha tillgång till meddelanden från den senaste veckan. Om det senaste meddelandet är äldre kommer den felaktigt att rapportera till skylten att inga meddelanden finns tillgängliga. Om skylten sedan stängs av (exempelvis för att laddas) kommer den vid uppstart inte att ha tillgång till det meddelande som den visade upp före avstängning.
+    	\item Vissa meddelanden kan saknas helt i sökresultaten. Eftersom Twitters sök-API “fokuserar på relevans, inte fullständighet” (Twitter, 2012). Vilka meddelanden som saknas är inte tydligt dokumenterat, och det är också ytterst svårt att testa. I värsta fall kan denna begränsning leda till utelämnade meddelanden vid godtyckliga tillfällen.
+    	\item Systemet förlitar sig på en sökoperator som inte är dokumenterad. För att utelämna retweets från API-svaren använder sig systemet av sökoperatorn “+exclude:retweets”. I samtliga tester har den fungerat som avsett men i värsta fall kan dess beteende ändras i framtiden. Om operatorn helt skulle försvinna skulle det innebära att systemet också tar emot retweets, som kan innehålla fler än 140 tecken. För att säkerställa att detta scenario aldrig leder till några problem läses endast de 140 första tecknen av samtliga meddelanden in. Detta leder till att retweets som visas på skylten kan få viss text utelämnad men aldrig krascha systemet.
+    	\item Meddelanden kan inte hämtas in i realtid. Eftersom Twitters REST-baserade API som svar på varje förfrågan enbart skickar den data som är aktuell vid samma tidpunkt måste klienten regelbundet skicka förfrågningar för att få den senaste datan. Twitter erbjuder också ett strömbaserat API som kontinuerligt skickar data i realtid (Twitter, 2012), men detta kräver autentisering vilket gör klientens implementation och användargränssnitt mer komplicerat.
+    	\item Meddelanden kan hämtas in högst 150 gånger per timme (Twitter, 2012). Twitters API begränsar antalet förfrågningar per IP-adress till 150 per timme. Detta innebär att systemet maximalt kan skicka förfrågningar ungefär två gånger per minut. Eftersom systemet frågar efter nya meddelanden mindre ofta än detta är denna begränsning inget problem.
     	\end{itemize}
     	
 \subsection{Formatering}
@@ -806,7 +813,7 @@ Efter att ett meddelande har tagits emot från Twitters API men innan det visas 
 Resultatet av formateringen är en displaysträng som kan skickas från basstationen till skylten för att visa upp meddelandet och dess metadata.
 
 \subsubsection{Omkodning}
-De meddelanden som tas emot från Twitters API innehåller Unicode-tecken kodade i UTF-8. Eftersom displayen inte har stöd för UTF-8 behöver tecknen kodas om till den uppsättning som stöds. Displayen har stöd för ASCII-tecken samt bokstäverna Å, Ä och Ö, och är således lämplig för både engelska och svenska meddelanden.
+De meddelanden som tas emot från Twitters API innehåller Unicode-tecken kodade i UTF-8. Eftersom displayen inte har stöd för UTF-8 behöver tecknen kodas om till den uppsättning som stöds. Displayen har stöd för ASCII-tecken samt bokstäverna Å, Ä och Ö, och är således lämplig för både engelska och svenska meddelanden.\\
 
 Eftersom Arduino inte har inbyggt stöd för konvertering till och från UTF-8 så omkodar basstationen meddelandena från Twitters API enligt följande regler:
 	\begin{itemize}
@@ -908,7 +915,7 @@ För att snabbare kunna testa olika lösningar implementerades algoritmen först
     	\end{enumerate}
 
 \subsubsection{Resultat}
-Efter att vi hade färdigställt vår första algoritm så övervägde vi att ta fram en mer avancerad algoritm som testar flera olika sätt att justera texten och väljer det bästa, enligt någon definition. Den definition som vi kom fram till var att låta så få korta ord som möjligt brytas över två rader, eftersom korta ord generellt är svårare att läsa än långa ord när de bryts över två rader. Vi beslöt oss dock först för att testa vår första algoritm på faktiska meddelanden från Twitter, för att se hur den fungerar i praktiken. \\
+Efter att vi hade färdigställt vår första algoritm så övervägde vi att ta fram en mer avancerad algoritm som testar flera olika sätt att justera texten och väljer det bästa, enligt någon definition. Den definition som vi kom fram till var att låta så få korta ord som möjligt brytas över två rader, eftersom korta ord generellt är svårare att läsa än långa ord när de bryts över två rader. Vi beslöt oss dock först för att testa vår första algoritm på faktiska meddelanden från Twitter, för att se hur den fungerar i praktiken.\\
 
 För att genomföra testet hämtade vi in 100 huvudsakligen svenska meddelanden från Twitters API, körde algoritmen på dem och granskade resultatet för hand. Vi kom fram till att vår första algoritm fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Vi tror att detta beror på två anledningar:
 
@@ -917,13 +924,12 @@ För att genomföra testet hämtade vi in 100 huvudsakligen svenska meddelanden 
     	\item Eftersom vår display har plats för 160 tecken så finns det plats för 20 tecken utöver meddelandets text. 14 av dessa är reserverade åt den datumstämpel som visas efter meddelandet, men de 6 ytterligare tecknen ger extra utrymme för justering.
     \end{enumerate}
 
-
 Faktum är att praktiskt taget de enda ord i vårt test som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. I och med detta positiva resultat bestämde vi oss för att använda vår första algoritm i det färdiga systemet.
 
 \subsection{Metadata}
 Eftersom displayen har rum för 160 tecken finns det möjlighet att visa mer text än enbart ett meddelande, som högst är 140 tecken långt. Under projektets planeringsfas diskuterades vilken eventuell metadata som skulle visas. Främst diskuterades publiceringsdatum och användarnamn. \\
 
-Publiceringsdatum är önskvärt att visa på displayen eftersom det ger meddelandet ett sammanhang. Många av de meddelanden som sätts upp på dörrskyltar handlar om tillfällig frånvaro, och då är det ofta viktigt för läsarna att veta när meddelandet publicerades. Användarnamn ger också ett sammanhang, men eftersom en dörrskylt redan är fysiskt monterad på användarens kontorsdörr blir informationen vanligtvis överflödig. Vi bestämde oss således för att enbart ta med meddelandets publiceringsdatum som metadata.
+Publiceringsdatum är önskvärt att visa på displayen eftersom det ger meddelandet ett sammanhang. Många av de meddelanden som sätts upp på dörrskyltar handlar om tillfällig frånvaro, och då är det ofta viktigt för läsarna att veta när meddelandet publicerades. Användarnamn ger också ett sammanhang, men eftersom en dörrskylt redan är fysiskt monterad på användarens kontorsdörr blir informationen vanligtvis överflödig. Vi bestämde oss således för att enbart ta med meddelandets publiceringsdatum som metadata.\\
 
 Datumet visas på formatet {\it dd/mm tt:ss}, där uttrycken syftar på följande information i meddelandets publiceringsdatum:
 
@@ -934,7 +940,7 @@ Datumet visas på formatet {\it dd/mm tt:ss}, där uttrycken syftar på följand
     	\item ss: Minuten på timmen, med inledande nolla (00-59).
     	\end{itemize}
     	
-ett mellanslag ({\it - dd/mm tt:ss}).
+Datumet visas i det nedre högra hörnet av displayen och föregås av ett bindestreck följt av ett mellanslag ({\it - dd/mm tt:ss}).\\
 
 En komplikation som uppstår när metadata ska infogas i displayens nedre högra hörn är att algoritmen för avstavning potentiellt kan ha förbrukat detta utrymme genom att flytta ned ord, som i följande exempel med ett 124 tecken långt meddelande. \\
 
@@ -954,7 +960,7 @@ I exemplet har ordet {\it bbb...} flyttats ned istället för att avstavas efter
 
 Istället löses detta problem genom att en 13 tecken lång platshållarsträng infogas i slutet på den lista av ord som ska justeras. Eftersom denna platshållare är lika lång som den metadata som ska infogas i meddelandet (ett datum samt det bindestreck och mellanslag som föregår det) kommer algoritmen för avstavning att garantera att det alltid finns plats över för att infoga metadatan. Infogandet av den faktiska metadatan består sedan av två steg: att ersätta platshållarsträngen med metadatan samt att infoga nyrader och blanksteg så att metadatan visas i displayens nedre högra hörn. \\
 
-Den platshållarsträng som används är {\it 0123456789abc}. Vilken sträng som helst skulle kunna användas så länge den består av 13 tecken och inte innehåller några mellanslag, men den aktuella strängen har en fördel: inga tecken förekommer två gånger. Detta används när metadatan ska placeras på rätt plats i meddelandet, då platshållarsträngens början identifieras genom att söka efter den första nollan från meddelandets slut. \\
+Den platshållarsträng som används är {\it 0123456789abc}. Vilken sträng som helst skulle kunna användas så länge den består av 13 tecken och inte innehåller några mellanslag, men den aktuella strängen har en fördel: inga tecken förekommer två gånger. Detta används när metadatan ska placeras på rätt plats i meddelandet, då platshållarsträngens början identifieras genom att söka efter den första nollan från meddelandets slut. 
 
 \subsubsection{Algoritm, metadata}
 Datumet läggs till på meddelandet efter att det har justerats. Eftersom det alltid ska visas det nedre högra hörnet av displayen kräver detta viss logik för att implementera, då längden på meddelandet och antalet nyrader i det är okänt.
