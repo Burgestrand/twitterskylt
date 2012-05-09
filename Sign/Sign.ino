@@ -29,55 +29,43 @@
 #define DISPLAY_BUSY_PIN 8
 #define DISPLAY_RESET_PIN 9
 
+// Small display related
+#define DISPLAY_SMALL_E 13
+#define DISPLAY_SMALL_RSC 12
+#define DISPLAY_SMALL_DATA 8
+
 // XBee sleep request/status
 #define SLEEP_RQ_PIN 4
 #define SLEEP_STATUS_PIN 5
 
-// Define this to compile code for the testing setup
-#define TESTING
-
 // Real hardware constans
-#ifndef TESTING
 
 // Join Button
 #define JOIN_BUTTON 2
 // Update Button
 #define UPDATE_BUTTON 3
 // Red LED
-#define ERROR_LED A1
+#define ERROR_LED A3
 // Yellow LED
 #define BATTERY_LED A2
 // Green LED
-#define ASSOC_LED A3
+#define ASSOC_LED A1
 // Analog battery reading
 #define BATT_A A0
 //Voltage divider control
 #define VDIV_D 6
 // XBee CTS Pin
 #define CTS_PIN 7
-#endif
-
-// Testing setup constans
-#ifdef TESTING
-
-// Software serial pins for debugging
-#define SERIAL_RX 7
-#define SERIAL_TX 6
-// The red led
-#define LED_1 A0
-// The yellow led
-#define LED_2 A1
-// The button closest to the leds
-#define BUTTON_1 2
-// The button furthest from the leds
-#define BUTTON_2 3
-#endif
-
-
 
 // Common global variables
 // The display
-Display disp(DISPLAY_SELECT_PIN, DISPLAY_BUSY_PIN, DISPLAY_RESET_PIN);
+//Display disp(DISPLAY_SELECT_PIN, DISPLAY_BUSY_PIN, DISPLAY_RESET_PIN); // For the KENT display, RIP.
+DisplaySmall disp(DISPLAY_SMALL_RSC, DISPLAY_SMALL_E
+  , DISPLAY_SMALL_DATA
+  , DISPLAY_SMALL_DATA + 1
+  , DISPLAY_SMALL_DATA + 2
+    DISPLAY_SMALL_DATA + 3
+);
 
 // The radio
 EndDevice radio(SLEEP_RQ_PIN, SLEEP_STATUS_PIN);
@@ -108,8 +96,6 @@ void invalidate_data(void) {
   new_msg = false;
 }
 
-// Real hardware global variables
-#ifndef TESTING
 // True if the battery level is low
 bool lowBattery = false;
 // Analog value read from voltage divider
@@ -130,27 +116,9 @@ float getBatteryVoltage(uint8_t pin) {
   float Vbatt = (2*batteryLevel*V_RES) - 0.04*(batteryLevel/Q_DROP);
   return Vbatt;
 }
-#endif
-
-// Testing global variables
-#ifdef TESTING
-// The serial connection used for debug output
-SoftwareSerial ss(SERIAL_RX, SERIAL_TX);
-
-// Debug output callback
-// XXX: Temporarily disabled
-void debug(char *msg) {
-  //ss.write("DEBUG: ");
-  //ss.write(msg);
-  //ss.write("\n");
-}
-#endif
-
-
 
 // Usual arduino functions
 void setup () {
-#ifndef TESTING
   pinMode(ASSOC_LED, OUTPUT);
   digitalWrite(ASSOC_LED, LOW);
   pinMode(ERROR_LED, OUTPUT);
@@ -161,20 +129,11 @@ void setup () {
   pinMode(VDIV_D, OUTPUT);
   digitalWrite(VDIV_D, LOW);
   pinMode(BATT_A, INPUT);
-#endif
 
-#ifdef TESTING
-  pinMode(LED_1, OUTPUT);
-  digitalWrite(LED_1, LOW);
-  pinMode(LED_2, OUTPUT);
-  digitalWrite(LED_2, LOW);
-
-  // Initialize debug serial port
-  ss.begin(9600);
-#endif
 
   // Initialize the display
-  disp.begin();  
+  //disp.begin();  // begin call for the KENT display
+  disp.begin(16, 2);
   
   // Initialize the radio
   radio.begin(9600);
@@ -202,12 +161,10 @@ void loop () {
     radio.joinNetwork();
   }
   
-#ifndef TESTING
   digitalWrite(VDIV_D, HIGH);
   batteryLevel = getBatteryVoltage(BATT_A);
   delay(1);
   digitalWrite(BATTERY_LED, (batteryLevel <= V_LOW ? HIGH : LOW));
-#endif
   
   // Necessary for the radio library to work
   switch (radio.tick()) {
@@ -215,45 +172,33 @@ void loop () {
       // Association failed (note: not pairing)
       invalidate_data();
       disp.write("Assoc fail");
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_JOIN_NOT_DELIVERED:
       // Could not deliver join message
       invalidate_data();
       disp.write("Join:\n No delivery");
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_JOIN_TIMEOUT:
       invalidate_data();
       disp.write("Join:\n Timeout");
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_JOIN_OK:
       invalidate_data();
       disp.write("Joined!");
-#ifndef TESTING
       digitalWrite(ASSOC_LED, HIGH);
-#endif
       break;
     case TICK_UPDATE_NO_DELIVERY:
       invalidate_data();
       disp.write("Update:\n No delivery");
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_UPDATE_TIMEOUT:
       invalidate_data();
       disp.write("Update:\n Timeout");
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_NEW_MSG:
       // Update message buffer if a different message is recieved and set a flag.
@@ -278,31 +223,19 @@ void loop () {
         uint8_t sleepRounds = 3;
         // Sleep until we've sleept long enough or a button has been pressed.
         while (sleepRounds-- && !joinPressed && !updatePressed) {
-#ifdef TESTING
-          digitalWrite(LED_1, LOW);
-#endif
           sleep();
-#ifdef TESTING
-          digitalWrite(LED_1, HIGH);
-#endif
         }
       }
       // If the join button was pressed we shouldn't update the message.
       if (!joinPressed) {
-        radio.wakeup();
         radio.getNewestMessage();
       }
       updatePressed = false;
       break;
     case TICK_UNKNOWN_ERROR:
-#ifdef TESTING
-      digitalWrite(LED_2, HIGH);
-#endif
     case TICK_JOIN_BAD_MSG:
       invalidate_data();
-#ifndef TESTING
       digitalWrite(ERROR_LED, HIGH);
-#endif
       break;
     case TICK_OK:
     default:
