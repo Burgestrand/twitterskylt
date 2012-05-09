@@ -5,7 +5,9 @@
 #include <EndDevice.h>
 #include <SPI.h>
 #include <avr/pgmspace.h>
-#include <Display.h>
+//#include <Display.h>
+#include <LiquidCrystal.h>
+#include <DisplaySmall.h>
 #include <Sleep.h>
 
 // TODO: 
@@ -60,12 +62,7 @@
 // Common global variables
 // The display
 //Display disp(DISPLAY_SELECT_PIN, DISPLAY_BUSY_PIN, DISPLAY_RESET_PIN); // For the KENT display, RIP.
-DisplaySmall disp(DISPLAY_SMALL_RSC, DISPLAY_SMALL_E
-  , DISPLAY_SMALL_DATA
-  , DISPLAY_SMALL_DATA + 1
-  , DISPLAY_SMALL_DATA + 2
-    DISPLAY_SMALL_DATA + 3
-);
+DisplaySmall disp(DISPLAY_SMALL_RSC, DISPLAY_SMALL_E, DISPLAY_SMALL_DATA, DISPLAY_SMALL_DATA + 1, DISPLAY_SMALL_DATA + 2, DISPLAY_SMALL_DATA + 3);
 
 // The radio
 EndDevice radio(SLEEP_RQ_PIN, SLEEP_STATUS_PIN);

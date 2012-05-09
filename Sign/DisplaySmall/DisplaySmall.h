@@ -13,7 +13,7 @@
 class DisplaySmall {
 	public:
 		// Define the pins used with the display.
-		Display(uint8_t rs, uint8_t e, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
+		DisplaySmall(uint8_t rs, uint8_t e, uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
 
 		// Initialize and clear the display.
 		void begin(uint8_t col, uint8_t row);
