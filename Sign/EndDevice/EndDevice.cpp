@@ -1,7 +1,6 @@
 #include "EndDevice.h"
 
 // Working on:
-// TODO: tick reading packets and states possibly not consuming them <- merge/semi-merge states kinda!
 // TODO: More robust long message handling?
 // TODO: Handle errors better
 
@@ -94,7 +93,21 @@ void EndDevice::disableTimeout() {
 #define LED_1 A0
 // Internal state handling ----------------------------------------------------
 uint8_t EndDevice::tick() {
-	xbee.readPacket();
+	// Avoid reading packet in states that does not
+	// check what the packet contains.
+	switch(State) {
+		case EndDeviceStart:
+		case EndDeviceResetStart:
+		case EndDeviceJoiningSend:
+		case EndDeviceIdle:
+		case EndDeviceSleeping:
+		case EndDeviceWaking:
+		case EndDeviceRequestSend:
+		//case Error: //?
+			break;
+		default:
+			xbee.readPacket();
+	}
 	switch(State) {
 		case EndDeviceStart:
 			return start();
