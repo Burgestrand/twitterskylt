@@ -120,11 +120,11 @@ DHCP & Protokoll för att automatiskt ge datorer deras nätverksinställningar.\
 Displaysträng & Den textsträng som skickas från basstationen till skylten \\
 End Device & Ändenhet i nätverket, förmedlar data uppåt i nätverkshierarkin.\\
 Escape-tecken & Tecken som gör att efterföljande tecken tolkas annorlunda.\\
-Ethernet & En samling tekniker för nätverksuppkoppling\\
+Ethernet & En samling metoder för nätverkskommunikation\\
 Hashtag & Etikett en användare kan sätta på tweets för att markera och organisera\\
 I/O & Input/Output, in- eller utgångsanslutning på microcontroller.\\
 IP & Internet Protocol. Protokoll för routing och addressering.\\
-Kontrollsumma & Kontroll av överförda paket i syfte att upptäcka fel.\\
+Kontrollsumma & Kontrolldata för överförda paket i syfte att upptäcka fel.\\
 Lånetid & Tid som en dator fått låna en IP-address från en DHCP server.\\
 PAN & Personal Area Network, ett ZigBee-nätverk.\\
 PAN-ID & Ett (helst unikt) Identifikationsnummer för ett PAN.\\
@@ -173,7 +173,7 @@ Ett ytterligare projektmål är att systemet skall vara användarvänligt och l�
 
 Systemet ska bestå av två delar: en skylt och en basstation. Skylten ska trådlöst hämta sina meddelanden från basstationen och visa upp dem på sin display. Basstationen ska i sin tur kontinuerligt hämta meddelanden genom användarens vanliga internetuppkoppling. Skylten ska vara helt fristående från basstationen så att monteringen blir så enkel som möjlig och inte kräver några sladdar. Fokuspunkten i energieffektivitetsdiskussionen ligger på skylten, då den till skillnad från basstationen är batteridriven. \\
 
-Skylten ska erbjuda användaren följande funktionalitet:
+Systemet ska erbjuda användaren följande funktionalitet:
 	\begin{itemize}
     	\item Välja vilket Twitter-konto som skylten ska visa upp tweets från.
     	\item Välja vilka tweets från det valda kontot som ska visas på skylten.
@@ -283,7 +283,7 @@ En retweet är en kopia av ett existerande meddelande, återpublicerat av en ann
 \label{twitterapi}
 Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012a)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
 
-Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format.
+Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se sida~\pageref{json}.
 
 \subsection{Arduino}
 Arduino är en microcontroller-plattform vars design och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012a)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och -varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet. \\
@@ -325,7 +325,7 @@ Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som b
 \subsection{Moduluppdelning}
 Systemet är konstruerat med moduläritet i åtanke, både för mjuk- och hårdvara. På en övergripande nivå är systemet uppdelat i två delar: basstation och skylt. Basstationen och skylten är i sin tur uppbyggda av flera olika submoduler för att hantera olika funktioner. \\
 
-Basstationen och skylten är båda baserade runt microcontrollerplattformar, och funktionalitet tillhandahålls av anslutna kringmoduler och -kretsar. De båda systemdelarna kommunicerar trådlöst via en radiolänk och är utrustade med varsin radiotranceiver.
+Basstationen och skylten är båda baserade runt microcontrollerplattformar. Till dessa plattformar finns anslutna kringmoduler och kringkretsar som ger de önskade I/O-funktionerna. De båda systemdelarna kommunicerar trådlöst via en radiolänk och är utrustade med varsin radiotranceiver.
 
 \subsubsection{Skylt}
 Skylten är baserad runt en Arduino Pro, som beskrivs i rapportens inledning. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med in- och ut-datapinnar, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
@@ -343,8 +343,8 @@ Skylten utför inget avancerat logikarbete; tyngdpunkten för skyltens design li
 Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av tweets. Basstationen är ansvarig för att hämta och formattera tweets. Efter att texten för en tweet har hämtats återstår följande justeringar:
 	
 	\begin{itemize}
-    	\item Tecken som inte stöds av skyltens display rensas bort eller ersättas.
-    	\item Texten ska avstavas så att för långa ord i slutet av en rad antingen delas upp med bindestreck eller flyttas ned på nästa rad.	
+    	\item Tecken som inte stöds av skyltens display rensas bort eller ersätts.
+    	\item Texten ska avstavas så att för långa ord i slutet av en rad antingen delas upp eller flyttas ned på nästa rad.	
 	\end{itemize}
 	
 Basstationen är alltid aktiv och lyssnar kontinuerligt efter inkommande förfrågningar. Internetuppkopplingen konfigureras automatiskt genom DHCP och använder sig av DNS för att kunna adressera Twitter i de HTTP-anrop som görs till dess API.
@@ -397,7 +397,7 @@ För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
     	\end{itemize}
 \hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}\\
     	
-ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 nätverk \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
+ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 unika PAN-ID. \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
 
 ZigBee-nätverk kan innehålla tre olika typer av enheter: coordinator, router och end-device. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[zigbee]{(ZigBee Alliance, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
 
@@ -436,7 +436,7 @@ Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i samma
 
 Grundidén är att skyltmodulen är försatt i sömnläge större delen av tiden, och endast vaknar och är aktiv under korta perioder med regelbundna intervall, eller då användaren interagerar med det fysiska gränssnittet (knappsatsen). Då skyltmodulen vaknar, skickar den en förfrågan till basstationen om att hämta ny data, då sådan finns. Basstationen lyssnar konstant efter dataförfrågningar, utan att aktivt sända någon data utan att ha explicit blivit tillfrågad. \\
 
-Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter andra nätverk. Sökningen fungerar genom att modulerna först söker igenom de tillgängliga frekvenskanalerna inom operationsbandet. Modulerna känner av och registrerar energinivåerna på de olika kanalerna, och på så sätt skapas en bild över vilken kanal där det finns minst traffik. En lämplig kanal väljs ut baserat på den insamlade informationen för att undvika kollisioner. Då en kanal valts sänds signaler ut på nätverket för att upptäcka coordinators (modulerna ansvariga för de enskilda nätverken), som svarar med att sända sitt PAN-ID för att markera sin närvaro. En Coordinator anpassar sig till den insamlade information genom att välja att skapa ett nytt nätverk på en ledig kanal och PAN-ID-plats, medan övriga nodtyper (End-Device / Router) med samma information kan göra ett informerat val om vilket nätverk som är mest lämpligt att ansluta till.
+Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter andra nätverk. Sökningen fungerar genom att modulerna först söker igenom de tillgängliga frekvenskanalerna inom operationsbandet. Modulerna känner av och registrerar energinivåerna på de olika kanalerna, och på så sätt skapas en bild över vilken kanal där det finns minst traffik. En lämplig kanal väljs ut baserat på den insamlade informationen för att undvika kollisioner. Då en kanal valts sänds signaler ut på nätverket för att upptäcka coordinators (modulerna ansvariga för de enskilda nätverken), som svarar med att sända sitt PAN-ID för att markera sin närvaro. En Coordinator anpassar sig till den insamlade information genom att välja att skapa ett nytt nätverk på en ledig kanal och PAN-ID-plats. Övriga nodtyper i nätverket (End-Devices eller Routers) kan med samma information göra ett informerat val om vilket nätverk som är mest lämpligt att ansluta till.
 
 \subsubsection{Implementering}
 Målet i projektet har varit att i så stor utsträckning som möjligt nyttja de funktioner som finns inbyggda i ZigBee-protokollet och de mekanismer som stöds av XBee-modulerna.
@@ -473,11 +473,11 @@ Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överför
 
 Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur~\ref{fig:radio_bas} på sida~\pageref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
 
-Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan via radiolänken och väntar på att skylten ska verifiera överföringen. Då överföringen verifierats återvänder basstationen till sitt passiva lyssningstillstånd. Om basstationen vid något tillfälle avviker från de väldefinierade tillstånden, får ett oväntat och ohanterbart svar eller måste vänta för länge på svar, går den in i ett felläge och signallerar detta till omvärlden. \\
+Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan via radiolänken och väntar på att skylten ska verifiera överföringen. Då överföringen verifierats återvänder basstationen till sitt passiva lyssningstillstånd. Om basstationen vid något tillfälle avviker från de väldefinierade tillstånden, får ett oväntat och ohanterbart svar eller måste vänta för länge på svar, går den in i ett felläge och signalerar detta till omvärlden. Felläget beskrivs i figur~\ref{fig:radio_bas} som {\it Error}, och systemet stannar i felläget tills användaren manuellt trycker på systemomstarts-knappen. \\
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.3, angle=0]{skyltFSM.png}
+\includegraphics[scale=0.35, angle=0]{skyltFSM.png}
 \end{center}
 \caption{Flödesschema över radio i skylt}
 \label{fig:radio_skylt}
@@ -549,7 +549,7 @@ Ett exempel från det slutgiltiga typsnittet kan ses i figur~\ref{fig:fontAA}. V
 Översättningen från tecken till pixlar görs genom att varje rad i texten behandlas var för sig. Pixelrepresentationen av en textrad består av 20 pixelrader, eftersom alla tecken är 20 pixlar höga. Pixelraderna skapas och överförs en och en till displayens minne. En pixelrad byggs upp genom att textraden gås igenom och för varje tecken slås motsvarande pixelrad i tecknet upp för att sedan konkatineras med resterande teckens pixelrader. Om till exempel en textrad består av tecknen AB så kommer första pixelraden att innehålla första raden i tecknet A följt av första raden av teckent B. Nästa pixelrad består av andra pixelraden i A och andra pixelraden i B. Då samtliga 20 pixelrader har skickats iväg till displayens minne påbörjas arbetet med eventuella efterföljande textrader.
 
 \subsection{Övriga uppkopplingar}
-Systemet använder en uppsättning handbyggda kretsar för små uppgifter såsom användargränssnitt. Dessa kretsar är relativt simpla och befinner sig i konstruktionens utkant. Detta kapitel beskriver de sådana kretsar som byggts inom ramarna för projektet.
+Systemet använder en uppsättning handbyggda kretsar för små uppgifter såsom användargränssnitt. Dessa kretsar är relativt simpla och befinner sig i konstruktionens utkant. Detta kapitel beskriver de stödkretsar som byggts inom ramarna för projektet.
 
 \subsubsection{Avkoppling och kondensatorbank}
 XBee-modulerna på basstationen och skylten matas med 5V och 3.3V, från sina respektive arduinoplattformar. För att buffra mot eventuella störningar på matningsspänningen används avkopplingskondensatorer av olika storlek, som rekommenderat i databladet för XBee-modulerna. \\
@@ -586,7 +586,7 @@ Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kor
 
 
 \subsubsection{Inläsning}
-För att läsa från SD-kortet användes Arduinos standard bibliotek för SD-kort som i sin tur använder biblioteket sdfatlib \hyperref[arduino]{(Arduino, 2012f)}. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012f)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.\\
+För att läsa från SD-kortet användes Arduinos standardbibliotek för SD-kort som i sin tur använder biblioteket sdfatlib \hyperref[arduino]{(Arduino, 2012f)}. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012f)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.\\
 
 I konfigurationsfilen ska varje inställning separeras med mellanslag, tab eller nyradstecken. Först kommer användarnamnet därefter söksträngen. När filen har öppnats allokeras ett minnesutrymme som är lika många bytes som filen är stor. Sedan läses hela filen in i minnet med undantag av blanktecken före och efter användarnamnet. När inläsningen är klar är det känt hur många signifikanta tecken som är inlästa. Om det är färre inlästa tecken än antalet i filen så allokeras ett nytt minnesutrymme som endast har plats för adekvata tecken. Minnesutrymme som tidigare bestod av vittecken kan på så vis frigöras. Slutligen exponeras inställningarna för systemet genom metoder som returnerar dessa.
 
@@ -596,7 +596,7 @@ För att kommunicera över internet krävs det att basstationen har en IP-adress
 Då DHCP initeras försöker basstationen att få IP-adress av DHCP-servern genom att skicka DHCP Discover meddelanden \hyperref[cisco]{(Cisco Systems, 2003)}. Om den inte får svar inom en minut så slutar den försöka. Om det däremot kommer ett erbjudande om IP-address från servern så svarar basstationen på erbjudandet och accepterar adressen. Basstationen har då IP-adressen under den period som servern har bestämt.    
 
 \subsubsection{Implementation}
-I enighet med DHCP ska förnyelseförsök av IP-adress ske vid halva lånetiden, T1, och vid sju åttondelar av lånetiden, T2, om det inte lyckades första gången. Första förfrågan sker endast till DHCP-servern som lånar ut IP-adressen till klienten, medan den andra förfrågningen går ut till alla på nätverket genom broadcast. En förfrågan ska gå till så att klienten skickar sitt meddelande med längre och längre intervall till dess att den får svar eller att 60 sekunder har passerat \hyperref[droms]{(Droms, 1997)}. Får klienten svar uppdateras dess lånetid och eventuella IP-adressändringar genomförs.\\
+I enighet med DHCP ska förnyelseförsök av IP-adress ske vid halva lånetiden, $T1$, och vid sju åttondelar av lånetiden, $T2$, om det inte lyckades första gången. Första förfrågan sker endast till DHCP-servern som lånar ut IP-adressen till klienten, medan den andra förfrågningen går ut till alla på nätverket genom broadcast. En förfrågan ska gå till så att klienten skickar sitt meddelande med längre och längre intervall till dess att den får svar eller att 60 sekunder har passerat \hyperref[droms]{(Droms, 1997)}. Får klienten svar uppdateras dess lånetid och eventuella IP-adressändringar genomförs.\\
 
 Hantering av lånetidsuppdatering kan implementeras med:
 
@@ -605,7 +605,7 @@ Hantering av lånetidsuppdatering kan implementeras med:
     	\item En funktion som anropas för tidavläsning
 	\end{enumerate}
 	
-Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för T1, T2 och lånetiden.\\
+Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för $T1$, $T2$ och lånetiden.\\
 
 I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo $2^{32}$ sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i programloopen, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
 
@@ -651,7 +651,7 @@ Ett HTTP-svar liknar en HTTP-förfrågan och består av fyra delar:
     	\end{enumerate}
 
 \subsection{JSON}
-
+\labeł{sec:json}
 JSON är ett textbaserat format för överföring av data. Det är ett av två format som används i svaren på förfrågningar till Twitters API; det andra är XML. Eftersom JSON har en enklare datamodell och mindre verbos syntax är den att föredra i sammanhang där minnesutrymmet och processorkraften är begränsad. Av denna anledning tar systemet emot data från Twitters API i JSON-format.
 
 	\begin{itemize}
@@ -672,7 +672,7 @@ Den förväntade statusen i svaret på en GET-förfrågan är {\it 200 OK}, som 
 \subsubsection{Avläsning och intolkning}
 Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kilobyte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne. \\
 
-För att lösa detta problem används en händelsebaserade strömparser. Till skillnad från en konventionell parser lagrar en händelsebaserad strömparser inte JSON-datan i minnet. Istället signalerar parsern händelser varje gång den påträffar ett värde medan den läser av JSON-filen. Dessa händelser hanteras sedan av en uppsättning olika funktioner som anropas av parsern genom funktionspekare. Detta tillvägagångssätt innebär att minnesåtgången är minimal eftersom enbart det värde som precis har lästs av behöver sparas i minnet. \\
+För att lösa detta problem används en {\it händelsebaserad strömparser}. Till skillnad från en konventionell parser lagrar en händelsebaserad strömparser inte JSON-datan i minnet. Istället signalerar parsern händelser varje gång den påträffar ett värde medan den läser av JSON-filen. Dessa händelser hanteras sedan av en uppsättning olika funktioner som anropas av parsern genom funktionspekare. Detta tillvägagångssätt innebär att minnesåtgången är minimal eftersom enbart det värde som precis har lästs av behöver sparas i minnet. \\
 
 Den parser som används i systemet heter Yajl. Den signalerar en händelse varje gång som den påträffar något av följande:
 
@@ -735,7 +735,7 @@ Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att 
 
 Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}. Användarnamnet erhålls av systemet genom konfigurationsfilen.
 
-Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln {\it $utc\textunderscoreoffset$} och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
+Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln {\it utc\textunderscore offset} och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
 
 Värt att notera är att denna UTC-offset inte inkluderar eventuell tidsskillnad på grund av sommartid. Eftersom basstationen inte själv innehåller någon klocka så hanterar systemet inte heller denna tidsskillnad, utan det krävs att användaren själv ändrar inställningarna på sitt Twitter-konto för att rätt tid ska visas på skylten. En möjlig lösning på problemet är att låta användaren själv ange sin tidszon i konfigurationsfilen, men detta valdes bort då det skulle leda till en mer komplicerad implementation och ett mer komplicerat användargränssnitt.
 
@@ -743,8 +743,8 @@ Värt att notera är att denna UTC-offset inte inkluderar eventuell tidsskillnad
 Den söksträng som användaren har angivit i konfigurationsfilen används för att hämta de meddelanden som ska visas på skylten. De meddelanden som matchar söksträngen skickas som svar på förfågningar till följande URL, där där söksträng är den angivna söksträngen: \url{http://search.twitter.com/search.json?q=söksträng&result_type=recent&rpp=1}. De parametrar utöver söksträngen som ingår i URL:en har följande verkan:
 
 	\begin{itemize}
-    	\item {\it $result\textunderscoretype=recent$} sorterar de matchande meddelandena efter publiceringsdatum i fallande ordning.
-    	\item {\it $rpp=1$} begränsar antalet resultat till ett. {\it $rpp$} står för {\it $return per page$} \hyperref[twitter]{(Twitter, 2012b)}.
+    	\item {\it result\textunderscore type=recent} sorterar de matchande meddelandena efter publiceringsdatum i fallande ordning.
+    	\item {\it $rpp=1$} begränsar antalet resultat till ett. {\it rpp} står för {\it return per page} \hyperref[twitter]{(Twitter, 2012b)}.
 	\end{itemize}
 
 Söksträngar som ingår i förfrågningar till Twitters sök-API använder samma syntax som den vanliga sökfunktionen på Twitters hemsida. Denna syntax finns dokumenterad på Twitters hemsida \hyperref[twitter]{(Twitter, 2012a)}.
