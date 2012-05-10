@@ -9,11 +9,21 @@ AccConfig conf = AccConfig("konf.txt");
 
 conf.getUsername, returns pointer to null-terminated char array
 
-char ** hashtags = conf.getHashtags, return pointer to char array with hashtags
-hashtags[0] get the 1st hashtag ...
-when there is no more hashtags hashtags[i] is null
+conf.getQuery, returns pointer to null-terminated char array
 
 **/
+
+/**
+   Error codes:
+   1: Unable to open the file
+   2: No username in the file
+   3: SD.begin failed
+   4: Unable to allocate memory for buffer
+   5: No file on SD card corresponds to given file name
+
+   If everything is all right zero will be returned
+ **/
+
 
 #include "AccConfig.h"
 
@@ -103,8 +113,7 @@ int AccConfig::begin(const char * _configFile) {
       *pek = tmp;
       pek++;
     }
-  }
-
+  } //end of while(f.available())
 
   if (wscond == 0) {
     // no username in file
@@ -112,10 +121,10 @@ int AccConfig::begin(const char * _configFile) {
     return 2;
   }
 
-  // loops while theres no space at the end of query
+  // put the pointer pek to the last char of importance
   do {
     pek--;
-  } while(*pek < 33);
+  } while(*pek < 33); //ASCII 33 is '!'
 
   // adds a null char at end
   pek++;
@@ -134,7 +143,7 @@ int AccConfig::begin(const char * _configFile) {
 
   if (wscond == 2) {
     // no query in file, make query with the given username
-    //from: is 5 chars and  +exclude:retweets 18 chars
+    // "from:" is 5 chars and " +exclude:retweets" is 18 chars
     query = (char*) malloc(sizeof(char) * ((strlen(buf) + 24)));
 
     strcpy(query,"from:");
@@ -154,18 +163,20 @@ int AccConfig::begin(const char * _configFile) {
   return 0; // everything was ok
 }
 
+// returns true if whitespace, otherwise false
+bool AccConfig::isWhitespace (char chr){
+  return  (chr == ' ' || chr == '\n' || chr == '\t' || chr == '\r');
+}
+
+
 // returns null pointer if no username found
 char * AccConfig::getUsername() {
   return buf;
 }
 
-// returns null pointer if no query found
+// returns default query if no query found
+// undefined if there is no username
 char * AccConfig::getQuery() {
   return query;
-}
-
-// returns true if whitespace, otherwise false
-bool AccConfig::isWhitespace (char chr){
-  return  (chr == ' ' || chr == '\n' || chr == '\t' || chr == '\r');
 }
 

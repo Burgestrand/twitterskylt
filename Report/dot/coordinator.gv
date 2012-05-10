@@ -1,0 +1,26 @@
+digraph G {
+
+	Reset -> Start
+	Start -> Init
+	Init -> NetworkFormationSend 
+	NetworkFormationSend -> NetworkFormationReceive
+	NetworkFormationReceive -> PermitJoiningSend
+	PermitJoiningSend -> PermitJoiningReceive
+	PermitJoiningReceive -> AwaitJoin
+	AwaitJoin -> JoinResponse
+	JoinResponse -> JoinResponseDelivery
+	JoinResponseDelivery -> Idle
+	Idle -> SendData [label="Data request"]
+	SendData -> SendDataDelivery
+	SendDataDelivery -> SendData [label="More packets \n to send"]
+	SendDataDelivery -> Idle
+	Idle -> ModemStatusAction [label="Message from \n local modem"]
+	ModemStatusAction -> Idle
+	ModemStatusAction -> Error [label="Modem \n error"]; 
+	SendDataDelivery -> Error [label="Timeout"];
+	JoinResponseDelivery -> Error [label="Timeout"];
+	PermitJoiningReceive -> Error [label="No response \n from modem"];
+	AwaitJoin -> Error [label="No enddevice \n found"];
+	NetworkFormationReceive -> Error [label="Network \n formation error"];
+
+}
