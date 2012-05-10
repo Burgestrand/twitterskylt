@@ -1022,7 +1022,19 @@ Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnads
 
 \subsection{Utvärdering av projektupplägg}
 
-{\large \it \colorbox{yellow}{TODO: diskuteras på Torsdagens (10/5) gruppmöte}}
+\subsubsection{Kommunikation och beslutsfattande}
+Genom kontinuerlig kommunikation via Google Groups, mail och veckomöten har samtliga gruppmedlemmar hållts involverade och uppdaterade. Kommunikationen bedöms ha fungerat utmärkt, med endast mindre missförstånd, såsom någon dubbelbokning av grupprum för möte. Arbetet har flutit på mycket bra, och inga konflikter inom gruppen eller större problem har uppkommit. De problem som faktiskt stötts på under projektet har varit rent konstruktionsmässiga eller elektronikmässiga, och har kunnat lösas. Vid de möten som hållts varje vecka har gruppen disktuerat projektets status och vad som har behövs göras. Beslut har tagits gemensamt i gruppen. Vid några tillfällen, såsom val av microcontrollerplattform och val av display, har det funnits olika alternativ som diskuterats inom gruppen. Vid dessa tillfällen har alternativen jämförts och beslut tagits med hela gruppens samtycke.\\
+
+Kommunikationen med handledaren har fungerat bra, denne har medverkat vid ungefär varannat gruppmöte. Vidare har handledaren kontaktats via mail då det behövts, samt kunnat följa projektets gång via loggboken. Handledaren har bidragit med värdefullt stöd och bra feedback under hårdvaruinköp samt under rapportskrivningen.
+
+\subsubsection{Arbetsfördelning}
+I efterhand kan sägas att upplägget med att fördela konstruktionsmoment till par av två gruppmedlemmar har varit lyckat. På detta sätt har medlemmarna inom ett arbetspar kunnat stödja varandra på ett bra sätt, samtidigt som man kunnat arbeta på tre parallella konstruktionsmoment samtidigt inom gruppen, genom tre grupper av två medlemmar vardera. En detalj som skulle kunna justeras är att en av arbetsgrupperna arbetat mycket på distans, vilket i sig inte är ett problem, men ibland har det varit önskvärt att ha en gruppmedlem från varje arbetspar på plats i arbetsrummet. Samtliga gruppmedlemmar har bidragit till projektet, och utfört de uppgifter man kommit överens om utan problem. Samarbetet i gruppen har fungerat mycket bra, utan några egentliga problem.
+	
+\subsubsection{Hårdvarubeställningar}
+Inköpen av hårdvara under projektet har fungerat smidigt via handledare och ansvariga på instutitionen. Det har inte varit problem på Chalmers sida att
+få den hårdvara gruppen velat ha. Ett misstag från gruppens sida som gjordes tidigt i projektet var dock att vänta för länge med beställningen av display. Då gruppen väl beslutat att använda E-Paper, visade det sig vara för lång leveranstid på sådana displayer. Istället fick man använda sig av en bistabil LCD från Kent, vilket i efterhand dock visade sig vara ett fullt jämförbart alternativ till E-Paper. Anledningen till att gruppen sköt upp beställningen av display var att tillräcklig information saknades, och att E-Paper ansågs som något av en risk på grund av dess höga komplexitet jämfört med en normal LCD.\\
+
+Av en tillfällighet har gruppen fått dubbla uppsättningar av många komponenter i projektet, något som har visat sig vara mycket användbart under konstruktionsfasen. Med dubbel uppsättning hårdvara har gruppen kunnat koppla upp testuppkopplingar som varit till stor hjälp under debugging och felsökning.
 
 \subsection{Sidospår och problem under projektet}
 
@@ -1051,6 +1063,9 @@ Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. D
 
 \subsubsection{E-Paper}
 Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \hyperref[epapercentral]{(Epaper Central, 2012)}.
+
+\subsubsection{Defekt ChLCD}
+Under projektets slutfas slutade skyltens display att fungera. Styrelektroniken verkar fortfarande fungera och displayen ger rätt svar på kommandon. Även läsning och skrivning till minnet på displayen verkar fungera. Däremot uppdateras aldrig själva displayytan, av okänd anledning. Tänkbara fel kan vara konstruktionsfel eller ESD-skador, men båda dessa förefaller osannolika. ESD-skador borde ha skadat styrelektroniken på displayen, medan konstruktionsfel är mycket ovanliga enligt tillverkaren. Tillverkaren, Kent Displays, kontaktades via mail (kontaktperson: Tony Emanuele, 2012-05-10), men inte heller de kunde ge någon förklaring till problemet. En ersättnings-display fick beställas.
 
 \subsection{Jämförelser med liknande projekt}
 En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
