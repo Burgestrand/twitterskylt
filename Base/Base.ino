@@ -38,6 +38,8 @@ void fail_hard(const char *error);
   } while(0)
 #define DEBUG(x) Serial.println((x))
 
+#define updateInterval 60000 // 1 minute interval
+
 //
 // Global variables
 //
@@ -110,6 +112,7 @@ void setup(void)
 
 void setupTimezone()
 {
+
   HTTP *client = new HTTP("api.twitter.com", HTTP_BUFFER_SIZE);
   http_error_t error = client->get(IPAddress(199, 59, 150, 9), "/1/users/show.json", 2, "screen_name", "door_sign");
 
@@ -119,21 +122,22 @@ void setupTimezone()
   }
   else
   {
-    UserParser parser = UserParser(&g_utc_offset);
+	
+    UserParser * parser = new UserParser(&g_utc_offset);
     const char *read_data = NULL;
     int32_t read_length = 0;
-
+	
     bool finished = false;
     while (!finished)
     {
       read_data = client->tick(&read_length);
       if (read_length > 0)
       {
-        finished = parser.parse(read_data, read_length);
+        finished = parser->parse(read_data, strlen(read_data));
       }
     }
-
-    parser.teardown();
+	
+    DESTROY(parser);
   }
 
   DESTROY(client);
@@ -170,7 +174,6 @@ void radioTick()
 }
 
 unsigned long nextRequest = 0;
-unsigned long updateInterval = 60 * 1000; // 1 minute interval
 
 void tweetTick()
 {
@@ -183,7 +186,7 @@ void tweetTick()
   {
     text = ALLOC_STR(160);
     date = ALLOC_STR(40);
-    TweetParser parser = TweetParser(text, 160, date, 40);
+    TweetParser * parser = new TweetParser(text, 160, date, 40);
 
     // calculate next time to do the request
     nextRequest += updateInterval;
@@ -198,16 +201,16 @@ void tweetTick()
       DEBUG(httpClient->explainError(error));
       goto cleanup;
     }
-
+	
     while (!finished)
     {
       buffer = httpClient->tick(&length);
       if (length > 0)
       {
-        finished = parser.parse(buffer, strlen(buffer));
+        finished = parser->parse(buffer, strlen(buffer));
       }
     }
-
+	
     DEBUG(date);
     DEBUG(text);
 
@@ -217,8 +220,10 @@ void tweetTick()
 
 cleanup:
     DESTROY(httpClient);
-
-    parser.teardown();
+    DESTROY(parser);
+    xfree(text);
+    xfree(date);
+    xfree(result);
   }
   else
   {
