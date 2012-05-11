@@ -22,6 +22,7 @@ void HTTP::teardown()
   this->_client->stop();
   delete this->_client;
   xfree(this->_buffer);
+  xfree(this->_body);
 }
 
 http_error_t HTTP::get(IPAddress host, const char *path, int argc, ...)
@@ -76,6 +77,8 @@ http_error_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   this->_state = HTTP_RECEIVING;
 
   // Cleanup
+  xfree(query_string);
+  xfree(http_query);
   xfree(host_header);
 
   return HTTP_OK;

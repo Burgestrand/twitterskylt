@@ -70,5 +70,5 @@ bool TweetParser::parse(const char * buffer, int bufferSize)
 }
 
 void TweetParser::teardown() {
-	yajl_free(handle);
+	yajl_free(this->handle);
 }
