@@ -3,8 +3,8 @@
 #include <XBee.h>
 #include <SoftwareSerial.h>
 #include <EndDevice.h>
-#include <SPI.h>
 #include <avr/pgmspace.h>
+//#include <SPI.h>
 //#include <Display.h>
 #include <LiquidCrystal.h>
 #include <DisplaySmall.h>
