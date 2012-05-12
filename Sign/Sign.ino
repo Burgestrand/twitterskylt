@@ -1,5 +1,7 @@
 
 #include <avr/interrupt.h>
+#include <stdlib.h> // XXX For testing purposes
+#include <string.h> // XXX For testing purposes
 #include <XBee.h>
 #include <SoftwareSerial.h>
 #include <EndDevice.h>
@@ -114,6 +116,24 @@ float getBatteryVoltage(uint8_t pin) {
   return Vbatt;
 }
 
+// XXX Output message length and current time (as given by millis, truncated to
+// 16 bits) to display. For testing packet-loss with the small display.
+void output_msg(char *msg) {
+	char lenbuf[4];
+	char timebuf[7];
+	char buf[34];
+
+	itoa(strlen(msg), lenbuf, 10);
+	itoa((uint16_t) millis(), timebuf, 10);
+
+	strcpy(buf, "MSGLEN: ");
+	strcat(buf, lenbuf);
+	strcat(buf, "\nTID: ");
+	strcat(buf, timebuf);
+
+	disp.write(buf);
+}
+
 // Usual arduino functions
 void setup () {
   pinMode(ASSOC_LED, OUTPUT);
@@ -212,7 +232,9 @@ void loop () {
       // The blocking write operation is safe here as the radio is sleeping.
       if (new_msg) {
           debug("PRINTING MESSAGE");
-          disp.write(message);
+          // XXX For testing purposes.
+          //disp.write(message);
+          output_msg(message);
           new_msg = false;
       }
       // Radio is sleeping and we have nothing to do; lets sleep!
