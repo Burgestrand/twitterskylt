@@ -11,16 +11,16 @@ extern "C" {
 
 class TweetParser {
 	public:
-		TweetParser(char *text, int textLength, char *date, int dateLength);
+		TweetParser(char *text, size_t textLength, char *date, size_t dateLength);
 		bool parse(const char * buffer, int bufferSize);
-		void del();
+		void teardown();
 
 		struct State {
 			// The variables that result values should be written into.
 			char *text;
-			char textLength;
+			size_t textLength;
 			char *date;
-			int dateLength;
+			size_t dateLength;
 			// Progress state.
 			bool textFound;
 			bool dateFound;

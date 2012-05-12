@@ -7,6 +7,15 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+// Different kinds of errors the HTTP client might encounter
+enum http_error_t
+{
+  HTTP_OK = 0,
+  HTTP_INVALID_ARGUMENTS = 1,
+  HTTP_CONNECTION_FAILED = 2,
+
+};
+
 // Different kinds of states the HTTP client might be in
 enum http_state_t
 {
@@ -21,12 +30,13 @@ class HTTP
 {
   public:
     HTTP(const char *http_host, size_t buffer_size);
-    void destroy();
-    int8_t get(IPAddress host, const char *path, int argc, ...);
+    void teardown();
+    http_error_t get(IPAddress host, const char *path, int argc, ...);
     const char *tick(int32_t *length);
     http_state_t state();
     const char *body();
     void body(const char *data, size_t length);
+    const char *explainError(http_error_t error);
 
   private:
     EthernetClient  *_client;

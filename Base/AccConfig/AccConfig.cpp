@@ -27,10 +27,10 @@ conf.getQuery, returns pointer to null-terminated char array
 
 #include "AccConfig.h"
 
-int AccConfig::begin(char * configFile) {
- 
-  buf = NULL; 
-  
+int AccConfig::begin(const char * _configFile) {
+  buf = NULL;
+  char *configFile = strclone(_configFile);
+
   // Inits the SD shield
   pinMode(53, OUTPUT);
 
@@ -45,21 +45,22 @@ int AccConfig::begin(char * configFile) {
   }
 
   File f = SD.open(configFile);
-  
+  xfree(configFile);
+
   if (!f) {
     // couldn't open file
     return 1;
   }
-  
+
   unsigned long file_size = f.size();
-  
-  buf = (char *) malloc(sizeof(char) * (file_size + 1));
+
+  buf = ALLOC_STR(file_size);
 
   if (buf == NULL) {
     //couldn't allocate memory
     return 4;
   }
-  
+
   char tmp;
   char * pek = buf;
 
@@ -74,9 +75,9 @@ int AccConfig::begin(char * configFile) {
 
   while(f.available()) {
     tmp = (char) f.read();
-    
+
     switch (wscond) {
-  
+
     case 0:
 
       if (!(pek == buf && isWhitespace(tmp))) {
@@ -85,7 +86,7 @@ int AccConfig::begin(char * configFile) {
 	wscond = 1;
       }
       break;
-      
+
     case 1:
 
       if (isWhitespace(tmp)) {
@@ -119,17 +120,17 @@ int AccConfig::begin(char * configFile) {
     buf = NULL;
     return 2;
   }
-  
+
   // put the pointer pek to the last char of importance
   do {
     pek--;
   } while(*pek < 33); //ASCII 33 is '!'
-  
+
   // adds a null char at end
   pek++;
   *pek = '\0';
 
-  int diff = (pek - buf) + 1; // have to include all numbers
+  unsigned long diff = (pek - buf) + 1; // have to include all numbers
   if (file_size != diff) {
     char * new_ptr = (char *) realloc(buf, diff);
     if (new_ptr != NULL)
@@ -139,7 +140,7 @@ int AccConfig::begin(char * configFile) {
       return 4;
     }
   }
-  
+
   if (wscond == 2) {
     // no query in file, make query with the given username
     // "from:" is 5 chars and " +exclude:retweets" is 18 chars

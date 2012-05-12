@@ -4,7 +4,7 @@ namespace Formatting
 {
 	char *add_date_placeholder(char *message)
 	{
-		char *placeholder = " 0123456789abc";
+		const char *placeholder = " 0123456789abc";
 		uint8_t length_after = strlen(message) + strlen(placeholder) + 1;
 		char * placeholder_message = (char *) realloc(message, length_after);
 		strcat(placeholder_message, placeholder);

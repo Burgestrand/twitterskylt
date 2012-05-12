@@ -17,23 +17,23 @@ HTTP::HTTP(const char *http_host, size_t buffer_size)
   this->_buffer_size = buffer_size;
 }
 
-void HTTP::destroy()
+void HTTP::teardown()
 {
   this->_client->stop();
   delete this->_client;
   xfree(this->_buffer);
 }
 
-int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
+http_error_t HTTP::get(IPAddress host, const char *path, int argc, ...)
 {
   if (argc % 2) // We must have an even number of arguments
   {
-    return -1;
+    return HTTP_INVALID_ARGUMENTS;
   }
 
   if ( ! _client->connect(host, 80))
   {
-    return -2;
+    return HTTP_CONNECTION_FAILED;
   }
 
   // Extract the query parameters
@@ -78,7 +78,7 @@ int8_t HTTP::get(IPAddress host, const char *path, int argc, ...)
   // Cleanup
   xfree(host_header);
 
-  return 0;
+  return HTTP_OK;
 }
 
 char *HTTP::_build_query(int argc, char **raw_query_params)
@@ -130,6 +130,12 @@ uint32_t HTTP::_read()
   uint32_t received  = 0;
   uint32_t available = 0;
   this->body(NULL, -1); // clear previous body
+
+  if (this->state() == HTTP_READING_BODY && ! this->_client->connected())
+  {
+    this->_state = HTTP_DONE;
+    return 0;
+  }
 
   available = this->_client->available();
   Serial.print("AVAILABLE: ");
@@ -201,6 +207,24 @@ void HTTP::body(const char *data, size_t length)
   {
     this->_body = ALLOC_STR(length);
     strncpy(this->_body, data, length);
+  }
+}
+
+const char *HTTP::explainError(http_error_t error)
+{
+  switch (error)
+  {
+    case HTTP_OK:
+      return "no error";
+
+    case HTTP_INVALID_ARGUMENTS:
+      return "invalid arguments (must be divisible by two)";
+
+    case HTTP_CONNECTION_FAILED:
+      return "connection failed";
+
+    default:
+      return "unknown error";
   }
 }
 

@@ -37,7 +37,7 @@ static int stringEvent(void *context, const unsigned char *str, size_t strLength
 	return state->foundCount != MAX_FOUND_COUNT;
 }
 
-TweetParser::TweetParser(char *text, int textLength, char *date, int dateLength)
+TweetParser::TweetParser(char *text, size_t textLength, char *date, size_t dateLength)
 {
 	this->state.text = text;
 	this->state.textLength = textLength;
@@ -69,6 +69,6 @@ bool TweetParser::parse(const char * buffer, int bufferSize)
 	return status == yajl_status_client_canceled;
 }
 
-void TweetParser::del() {
+void TweetParser::teardown() {
 	yajl_free(handle);
 }
