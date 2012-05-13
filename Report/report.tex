@@ -296,7 +296,7 @@ En retweet är en kopia av ett existerande meddelande, återpublicerat av en ann
 \label{twitterapi}
 Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012a)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
 
-Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se sida~\pageref{json}.
+Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se sida~\pageref{sec:json}.
 
 \subsection{Arduino}
 Arduino är en microcontroller-plattform vars mönsterkortsdesign och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012a)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och -varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet.\\
@@ -789,7 +789,7 @@ Eftersom Arduino inte har inbyggt stöd för konvertering till och från UTF-8 s
 	\end{itemize}
 
 \subsubsection{Algoritm, omkodning}
-UTF-8 är en teckenkodning som tillåter varierande antal bytes för att representera enstaka tecken. En fördel med UTF-8 gentemot många andra teckenkodningar är att UTF-8 även är ASCII-kompatibel, vilket innebär att alla tecken som är giltiga ASCII-tecken också är giltiga UTF-8-tecken. Det är dessutom något som gör algoritmen för att koda om UTF-8-meddelanden till skyltens teckenkodning markant enklare. (Alvestrand, 1998)\\
+UTF-8 är en teckenkodning som tillåter varierande antal bytes för att representera enstaka tecken. En fördel med UTF-8 gentemot många andra teckenkodningar är att UTF-8 även är ASCII-kompatibel, vilket innebär att alla tecken som är giltiga ASCII-tecken också är giltiga UTF-8-tecken. Det är dessutom något som gör algoritmen för att koda om UTF-8-meddelanden till skyltens teckenkodning markant enklare (Yergeau, 2003).\\
 
 Konverteringen består av två huvudkomponenter: gruppering av bytes till tecken, och uppslagning av tecken i en teckentabell för att representera ett tecken på skylten i passande kodning. Denna tabell tillåter uppslagning av ett godtyckligt antal tecken, och de tecken som inte har en översättning får således översättas med ett ersättningstecken.\\
 
@@ -1065,6 +1065,17 @@ Dessa kondensatorer behövs för att hantera den strömspik som displayen ger up
 I projektets slutfas slutade programmeringen av Arduino Mega:n (basstationen) att fungera. Elektrisk felsökning genomfördes på hårdvaran, men utan att något problem hittades. Efterforskningar på Arduinos forum gjordes, och det visade sig vara ett fel i konstruktionen av Arduinons bootloader, som gör att om vissa tecken eller sekvenser finns i den källkod som laddas upp, kan bootloadern gå in i ett felaktigt läge och fastna. Bootloadern är den del av Arduinos källkod som behövs för att starta igång den användarprogrammerade koden. \\
 
 Gruppen övervägde flera alternativ, bland annat att försöka bygga basstationen runt en annan typ av Arduino, men detta valdes bort på grund av den minnesbrist det skulle medföra. Efter en del arbete lyckades gruppen lägga in en ny bootloader på Arduino Mega:n, och arbetet kunde fortsätta. Den nya bootloadern hämtades från Arduinoprojektets hemsida och är en uppdaterad version av den som ursprungligen användes på Arduino Mega:n. Det vanliga sättet att lägga in bootloaders på Arduinokort, via Arduinos utvecklingsmiljö, fungerade inte. Istället fick de så kallade Fuse-bits sättas manuellt, vissa hårdvaruregister skrivas över, och en hex-fil föras över med hjälp av en extern programmeringskrets.
+
+\subsubsection{Svårigheter med externa bibliotek}
+Tidigt i projektet valdes Arduino-plattformen då den var välkänd av medlemmarna i gruppen och ansågs vara ett populärt projekt där mycket hjälp kunde fås från communityt. Som en del i det antagandet antogs även att mängden öppen källkod att ta del av, från allt såsom HTTP-klienter till JSON-parser, var både rik och väletablerad. Så visade sig dock inte vara fallet.\\
+
+Under arbetets gång började gruppen med existerande lösningar för både HTTP-anrop och parsning av JSON. Biblioteken som användes hette aJSON, \hyperref[github]{(GitHub, 2012b)} respektive HTTPClient \hyperref[github]{(GitHub, 2012c)}. Biblioteken är skrivna av samma författare, och i användningen av biblioteken stötte gruppen på problem.\\
+
+HTTPClient, ett bibliotek för att göra HTTP-anrop, användes en kort stund i början av projektet. Under användning märkte gruppen att biblioteket gav tillbaka korrupt data, vilket ledde till en närmre granskning av bibliotekets källkod för felsökning. Gruppen fann dock inga uppenbara indikationer på varför responsdatan returnerades som godtyckliga tecken.\\
+
+aJSON är ytterligare ett bibliotek från författaren till HTTPClient, som är ämnat att kunna läsa in JSON på Arduino. Biblioteket stödjer inte i skrivande stund UTF-8 — det specificeras dock inte vad det innebär — vilket arbetades runt genom att strippa vår data innan parsning. Det visade sig dock att även efter detta så fick aJSON vår Arduino att crasha. När både aJSON och HTTPClient orsakade problem som var svåra att lösa ansåg gruppen att det skulle ta mindre tid att skriva egna ersättare för ovan nämnda bibliotek, vilket också senare gjordes.\\
+
+HTTP-parsern fungerade till en början men slutade sedan att kompilera korrekt. Felsökning var för tidskrävande och för sent i projektet. Yajl använder ett antal konstanter som inte finns i AVR-C. Dessa fick definieras för hand med kvalificerade gissningar.
 
 \subsubsection{Minnesbrist vid parsing}
 Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket YAJL och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standard värde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standard värdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
