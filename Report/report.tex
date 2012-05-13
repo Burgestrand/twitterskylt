@@ -263,25 +263,25 @@ Versionshantering innebär ofta en central plats att lagra sin kod. För att und
 
 Av ovan nämnda anledningar valde gruppen därför att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (~10 år), och hör till de decentraliserade versionshanteringsystemen. Då några i gruppen sedan tidigare har erfarenhet med SVN, och några i gruppen föredrar Git, stod valet mellan dem.\\
 
-Jämfört SVN med Git så är SVN långsammare överlag, då alla operationer på projektbasen kräver att de kommunicerar via nätverk med den server där projektbasen ligger. I Git utförs dock majoriteten av alla kommandon enbart lokalt, vilket ger Git en stor hastighetsfördel över SVN (Git 2012a). Att Git arbetar lokalt innebär också att alla i gruppen kan arbeta på kodbasen och versionshantera sin kod utan att ha tillgång till internet eller någon central server. Av bland annat ovan nämnda anledningar valdes Git som versionshanteringssystem för projektet.
+Jämfört SVN med Git så är SVN långsammare överlag, då alla operationer på projektbasen kräver att de kommunicerar via nätverk med den server där projektbasen ligger. I Git utförs dock majoriteten av alla kommandon enbart lokalt, vilket ger Git en stor hastighetsfördel över SVN \hyperref[git]{(Git, 2012a)}. Att Git arbetar lokalt innebär också att alla i gruppen kan arbeta på kodbasen och versionshantera sin kod utan att ha tillgång till internet eller någon central server. Av bland annat ovan nämnda anledningar valdes Git som versionshanteringssystem för projektet.
 
 \subsubsection{Git och GitHub}
 Git är som tidigare nämnt ett decentraliserat versionshanteringssystem. Git används genom att först göra det arbete som är tänkt, och därefter spara dem lokalt i sitt projekts kodbas tillsammans med ett meddelande som beskriver varför ändringen gjordes och vad den gör. Efter en viss tid så ska ens egna arbete delas med sina medarbetare, och det görs genom att pusha sin kod till en plats där alla medarbetare kan nå koden. Om någon inte har hunnit pusha upp sin kod är det sedan varje individuell persons uppgift att slå ihop ändringarna och bestämma vad som ska finnas i slutresultatet.\\
 
-Som plats att spara koden på användes GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan sin start, och har sedan Maj 2012 över en och en halv miljon användare och över två och en halv miljoner publika projekt. (GitHub 2012a)\\
+Som plats att spara koden på användes GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan sin start, och har sedan Maj 2012 över en och en halv miljon användare och över två och en halv miljoner publika projekt \hyperref[github]{(GitHub, 2012a)}.\\
 
 Under arbetets gång kunde alltså varje medlem i projektet publicera sina ändringar på gruppens projekt som finns tillgängligt på GitHub, där de andra medlemmarna i projektet sedan kunde inspektera ändringarna, kommentera på enstaka rader, rapportera buggar och även göra mindre ändringar i koden från webben i de fall man inte kunde klona projektet till sin dator och jobba lokalt.
 
 \section{Bakomliggande tekniker och tjänster}
 
 \subsection{Twitter}
-Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över (Twitter, 2012c).\\
+Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över \hyperref[twitter]{(Twitter, 2012c)}.\\
 
-Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren (The National, 2011).\\
+Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren \hyperref[national]{(The National, 2011)}.\\
 
-Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas (Twitter, 2012d). Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
+Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012d)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
 
-Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format. (JSON beskrivs närmare under SYSTEMBESKRIVNING - MJUKVARA.)
+Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format. (JSON beskrivs närmare under \hyperref[programlogik]{Systembeskrivning, programlogik})
 
 \subsubsection{Terminologi}
 Twitter utgörs av ett stort antal användare. En användare identifieras av ett användarnamn som är högst 15 tecken långt. \\
@@ -586,6 +586,7 @@ Batteriet laddas via en kontakt på basstationen. Det kort som används för att
 Delsystemen (skylt och basstation) är inbygga i ABS-plastlådor där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
 
 \section{Systembeskrivning, programlogik}
+\label{programlogik}
 Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer.\\
 
 Vid uppstart av skylten går den in i en evig loop och skickar var femte minut en förfrågan till basstationen om vilket meddelande som ska visas upp. När ett svar har tagits emot visas meddelandet och dess metadata upp på displayen.\\
@@ -765,17 +766,6 @@ Den söksträng som användaren har angivit i konfigurationsfilen används för 
 Söksträngar som ingår i förfrågningar till Twitters sök-API använder samma syntax som den vanliga sökfunktionen på Twitters hemsida. Denna syntax finns dokumenterad på Twitters hemsida \hyperref[twitter]{(Twitter, 2012a)}.
 
 När en söksträng saknas i konfigurationsfilen används istället söksträngen {\it from:namn +exclude:retweets}, där namn är det användarnamn som har angivits i konfigurationsfilen. {\it from:namn} matchar enbart de meddelanden som har skrivits av användaren med det angivna användarnamnet. {\it +exclude:retweets} filtrerar bort de meddelanden som är retweets. Anledningen till detta är att retweets på grund av ett särskilt prefix kan bli längre än 140 tecken och därför inte garanterat kan visas på displayen.
-
-\subsubsection{Begränsningar}
-Twitters API och systemets användning av det lyder under följande begränsningar:
-	
-	\begin{itemize}
-     	\item Meddelanden som är äldre än en vecka kan inte hämtas in (Twitter, 2012). Twitters sök-API kan bara användas för att hitta meddelanden som är {\it ungefär en vecka} gamla ({\it omkring 6-9 dagar} i en annan del av dokumentationen). Detta är inget problem så länge basstationen är aktiverad, men så fort den stängs av och sätts på igen kommer den enbart att ha tillgång till meddelanden från den senaste veckan. Om det senaste meddelandet är äldre kommer den felaktigt att rapportera till skylten att inga meddelanden finns tillgängliga. Om skylten sedan stängs av (exempelvis för att laddas) kommer den vid uppstart inte att ha tillgång till det meddelande som den visade upp före avstängning.
-    	\item Vissa meddelanden kan saknas helt i sökresultaten. Eftersom Twitters sök-API {\it fokuserar på relevans, inte fullständighet} (Twitter, 2012). Vilka meddelanden som saknas är inte tydligt dokumenterat, och det är också ytterst svårt att testa. I värsta fall kan denna begränsning leda till utelämnade meddelanden vid godtyckliga tillfällen.
-    	\item Systemet förlitar sig på en sökoperator som inte är dokumenterad. För att utelämna retweets från API-svaren använder sig systemet av sökoperatorn {\it +exclude:retweets}. I samtliga tester har den fungerat som avsett men i värsta fall kan dess beteende ändras i framtiden. Om operatorn helt skulle försvinna skulle det innebära att systemet också tar emot retweets, som kan innehålla fler än 140 tecken. För att säkerställa att detta scenario aldrig leder till några problem läses endast de 140 första tecknen av samtliga meddelanden in. Detta leder till att retweets som visas på skylten kan få viss text utelämnad men aldrig krascha systemet.
-    	\item Meddelanden kan inte hämtas in i realtid. Eftersom Twitters REST-baserade API som svar på varje förfrågan enbart skickar den data som är aktuell vid samma tidpunkt måste klienten regelbundet skicka förfrågningar för att få den senaste datan. Twitter erbjuder också ett strömbaserat API som kontinuerligt skickar data i realtid (Twitter, 2012), men detta kräver autentisering vilket gör klientens implementation och användargränssnitt mer komplicerat.
-    	\item Meddelanden kan hämtas in högst 150 gånger per timme (Twitter, 2012). Twitters API begränsar antalet förfrågningar per IP-adress till 150 per timme. Detta innebär att systemet maximalt kan skicka förfrågningar ungefär två gånger per minut. Eftersom systemet frågar efter nya meddelanden mindre ofta än detta är denna begränsning inget problem.
-    	\end{itemize}
     	
 \subsection{Formatering}
 Efter att ett meddelande har tagits emot från Twitters API men innan det visas upp på skylten behöver det formateras. Formateringen innefattar fyra områden:
@@ -958,11 +948,11 @@ Algoritmen för justering utvärderades genom att testa den på 100 huvudsaklige
 
 Systemets användning av Twitters API lyder under vissa begränsningar från Twitters sida som systemet inte kan påverka. Dessa begränsningar påverkar dels hur pålitliga API-svaren är och dels hur snabbt systemet kan hämta in användarens senaste meddelande.\\
 
-Twitters sök-API kan bara användas för att hitta meddelanden som är “ungefär en vecka” gamla (Twitter, 2012e). Dessutom fokuserar API:et på “relevans, inte fullständighet”, vilket innebär att vissa meddelanden inte är tillgängliga (Twitter, 2012e). Den testning som gjordes under utvecklingen av systemet stötte inte på några av dessa problem, men de förtjänar att nämnas eftersom de skulle kunna påverka pålitligheten hos en färdig produkt baserad på systemet.\\
+Twitters sök-API kan bara användas för att hitta meddelanden som är “ungefär en vecka” gamla \hyperref[twitter]{(Twitter, 2012e)}. Dessutom fokuserar API:et på “relevans, inte fullständighet”, vilket innebär att vissa meddelanden inte är tillgängliga \hyperref[twitter]{(Twitter, 2012e)}. Den testning som gjordes under utvecklingen av systemet stötte inte på några av dessa problem, men de förtjänar att nämnas eftersom de skulle kunna påverka pålitligheten hos en färdig produkt baserad på systemet.\\
 
-Twitters sök-API kan inte heller användas för att ta emot meddelanden i realtid. Den tjänst som Twitter erbjuder för detta ändamål (Streaming API) används inte av systemet eftersom den kräver autentisering, vilket skulle göra implementationen och användargränssnittet mer komplicerat (Twitter, 2012f). Istället måste systemet regelbundet skicka förfrågningar till API:et. Twitter begränsar dessa förfrågningar till 150 per timme per IP-adress (Twitter, 2012g), vilket innebär att systemet kan skicka förfrågningar maximalt ungefär två gånger per minut. Detta är inget problem för systemet, som skickar en förfrågan per minut, men det skulle orsaka problem om frekvensen ökades.\\
+Twitters sök-API kan inte heller användas för att ta emot meddelanden i realtid. Den tjänst som Twitter erbjuder för detta ändamål (Streaming API) används inte av systemet eftersom den kräver autentisering, vilket skulle göra implementationen och användargränssnittet mer komplicerat \hyperref[twitter]{(Twitter, 2012f)}. Istället måste systemet regelbundet skicka förfrågningar till API:et. Twitter begränsar dessa förfrågningar till 150 per timme per IP-adress \hyperref[twitter]{(Twitter, 2012g)}, vilket innebär att systemet kan skicka förfrågningar maximalt ungefär två gånger per minut. Detta är inget problem för systemet, som skickar en förfrågan per minut, men det skulle orsaka problem om frekvensen ökades.\\
 
-En ytterligare detalj är att systemet i sin användning av Twitters sök-API förlitar sig på en operator som inte är dokumenterad: “+exclude:retweets”. Syftet med detta beskrivs i avsnittet TWITTERS API. Konsekvensen om operatorn skulle sluta fungera vore att även retweets, som kan vara längre än 140 tecken, skulle visas på skylten. Eftersom samtliga meddelanden trunkeras till 140 tecken påverkar detta dock inte systemets stabilitet utan kan i värsta fall leda till att slutet av en sådan retweet inte får plats på displayen.\\
+En ytterligare detalj är att systemet i sin användning av Twitters sök-API förlitar sig på en operator som inte är dokumenterad: {\it +exclude:retweets}. Syftet med detta beskrivs i avsnittet \hyperref[twitterapi]{Twitters API}. Konsekvensen om operatorn skulle sluta fungera vore att även retweets, som kan vara längre än 140 tecken, skulle visas på skylten. Eftersom samtliga meddelanden trunkeras till 140 tecken påverkar detta dock inte systemets stabilitet utan kan i värsta fall leda till att slutet av en sådan retweet inte får plats på displayen.\\
 
 \subsubsection{Energieffektivitet}
 För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3,7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
@@ -1322,7 +1312,7 @@ R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C
     The National
     \emph{Facebook and Twitter key to Arab uprisings: report},
     \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report},
-    2011. (8/5/2012)
+    2011. (2012-05-08)
 
 \label{rfc2277}
 \bibitem{rfc2277}
