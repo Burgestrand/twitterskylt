@@ -47,7 +47,7 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \centerline{\includegraphics[scale=0.75, angle=0]{ChaGUsvartHD.png}}
 \vspace{1.7cm}
-\centerline{\large Bild här}
+%\centerline{\large Bild här}
 
 \begin{flushleft}
 \null
@@ -106,7 +106,7 @@ The main focus points of the project have been to construct an energy efficient,
 {\noindent \bf Begreppslista}\\
 \end{center}
 
-\begin{table}[h]
+\begin{table}[h!]
 \centering
 	\begin{tabular}{|l|l|}
 A/D-Omvandlare & Omvandlar en analog signal till digital.\\
@@ -139,7 +139,7 @@ Systemet & Kombinationen av basstation och skylt, hela konstruktionen.\\
 TCP & Transmission Control Protocol. Förbindelseorienterat dataprotokoll.\\
 Tweet & Ett meddelande bestående av maximalt 140 tecken som skickats till Twitter.\\
 UDP & User Datagram Protocol. Förbindelselöst dataprotokoll.\\
-U.FL & Kompakt ytmonterad koaxialanslutning för antenner på mönsterkort.
+U.FL & Kompakt ytmonterad koaxialanslutning för antenner på mönsterkort.\\
 XBee-modul & Hårdvaran som ansvarar för sändning och mottagning av radiosignaler.\\
 ZigBee & Det nätverksprotokoll som XBee bygger på och använder.\\
 	\end{tabular}
@@ -497,7 +497,7 @@ Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan
 \label{fig:radio_skylt}
 \end{figure}
 
-Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas. Felläget beskrivs i figur~\reg{fig:radio_skylt} som Error, och systemet stannar i felläget tills användaren manuellt trycker på systemomstarts-knappen.
+Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas. 
 
 \subsection{Display}
 För att kunna visa upp meddelanden på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.
@@ -627,9 +627,7 @@ Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern ge
 
 I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo $2^{32}$ sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i programloopen, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
 
-Den slutliga lösningen blev alternativ 2, eftersom att programloopen ska köras ofta och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar vilka kan behövas i andra delar av programmet.\\
-
-Implementationen bryter mot DHCP specifikationen på några punkter:
+Den slutliga lösningen blev alternativ 2, eftersom att programloopen ska köras ofta och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar vilka kan behövas i andra delar av programmet.Implementationen bryter mot DHCP specifikationen på några punkter:
 
 	\begin{itemize}
 	\item Om lånetiden är mindre än åtta minuter blir det problem om förnyelse misslyckas eftersom en förfrågan kan ta upp till 60 sekunder. Under den tiden kan lånetiden redan passerat och     basstationen använder IP-adressen felaktigt.
@@ -1204,6 +1202,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     2011. (2012-01-17)
 
 \label{fielding}
+\label{rfc2616}
 \bibitem{fielding}
 R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C/MIT; L. Masinter; Xerox; P. Leach; Microsoft; T. Berners-Lee,
 \emph{Hypertext Transfer Protocol -- HTTP/1.1. RFC 2616},
@@ -1314,16 +1313,6 @@ R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C
     \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report},
     2011. (2012-05-08)
 
-\label{rfc2277}
-\bibitem{rfc2277}
-    RFC2277,
-    \url{http://tools.ietf.org/html/rfc2277}
-
-\label{rfc2616}
-\bibitem{rfc2616}
-    RFC2616,
-    \url{http://www.w3.org/Protocols/rfc2616/rfc2616.html}
-
 \label{twitter}
 \bibitem{twitter}
     Twitter,
@@ -1367,6 +1356,7 @@ xbee-arduino,
 2011. (2012-02-01)
 
 \label{yergeau}
+\label{rfc2277}
 \bibitem{yergeau}
 Yergeau, F.,
 \emph{UTF-8, a transformation format of ISO 10646. STD 63. RFC 3629.},
@@ -1490,7 +1480,7 @@ Yergeau, F.,
 
 \section{Arbetsfördelning}
 \label{sec:arbetsfordelning}
-Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika områdena under projektet. Till viss del överlappar områden, och gruppmedlemmar har varit inblandade i andra områden än de som står listade nedan.\\
+Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika områdena under projektet. Till viss del överlappar områden, och gruppmedlemmar har varit inblandade i andra områden än de som står listade nedan. Under rapportskrivningen har gruppmedlemmarna fokuserat på sina expertisområden, men även läst genom de andras text och utbytt synpunkter och förslag.\\
 
 {\bf Konstruktion}
 	\begin{enumerate}
@@ -1503,23 +1493,14 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
     	\item Display - {\it Lars, Anton}
     	\item Övrig elektronik och mekanik - {\it Fredrik}\\
     	\end{enumerate}
-{\bf Rapport}
-	\begin{enumerate}
-    	\item Inledning
-    	\item Bakomliggande tekniker och tjänster
-    	\item Arbetsmetod
-    	\item Systembeskrivning
-    	\item Resultat
-    	\item Diskussion och slutsatser
-    	\item Appendix
-	\end{enumerate}
 {\bf Presentation}
 	\begin{enumerate}
- 	\item Halvtidsredovisning - Kim, Andreas
-    	\item Slutpresentation
-    	\item Opponering
-    	\item Utställningsaffisch - Jakob\\
+ 	\item Halvtidsredovisning - {\it Kim, Andreas}
+    	\item Slutpresentation - {\it Jakob, Lars, Fredrik}
+    	\item Opponering - {\it Kim, Andreas, Anton}
+    	\item Utställningsaffisch - {\it Jakob}\\
 	\end{enumerate}
+\pagebreak
 
 \section{Användarmanual}
 
@@ -1553,9 +1534,51 @@ När skylten är ihopkopplad med basstationen kommer den automatiskt att var fem
 		
 \subsection{Statusindikatorer och knappar}
 
-\subsubsection{Basstation}
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|c|c|r|}
+    {\bf LED} & {\bf Fast ljus} & {\bf Blinkande} & {\bf Släckt} \\
+    Röd & Fel eller timeout & - & Inget fel \\
+    Grön & Ansluten till skylt & Söker efter skylt & Ej ansluten till skylt \\
+    \end{tabular}
+\caption{LEDs på basstation}
+\label{tab:ledtable_base}
+\end{table}
 
-\subsubsection{Skylt}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|r|}
+    {\bf Knapp} & {\bf Funktion} \\
+    A & Systemomstart \\
+    B & Ihopparning med skylt \\
+    \end{tabular}
+\caption{Knappar på basstation}
+\label{tab:btntable_base}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|c|c|r|}
+    {\bf LED} & {\bf Fast ljus} & {\bf Blinkande} & {\bf Släckt} \\
+    Röd & Fel eller timeout & - & Inget fel \\
+    Gul & Låg batterinivå & - & - \\
+    Grön & Ansluten till basstation & - & Ej ansluten till basstation\\
+    \end{tabular}
+\caption{LEDs på skylt}
+\label{tab:ledtable_skylt}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|r|}
+    {\bf Knapp} & {\bf Funktion} \\
+    A & Uppdatering \\
+    B & Ihopparning med basstation \\
+    \end{tabular}
+\caption{Knappar på skylt}
+\label{tab:btntable_skylt}
+\end{table}
 
 \subsection{Felsökning}
 
