@@ -232,9 +232,9 @@ void loop () {
       // The blocking write operation is safe here as the radio is sleeping.
       if (new_msg) {
           debug("PRINTING MESSAGE");
+          disp.write(message);
           // XXX For testing purposes.
-          //disp.write(message);
-          output_msg(message);
+          // output_msg(message);
           new_msg = false;
       }
       // Radio is sleeping and we have nothing to do; lets sleep!
