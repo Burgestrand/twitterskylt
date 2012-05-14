@@ -12,6 +12,7 @@
 \usepackage{float}
 \usepackage{listings}
 \usepackage[longnamesfirst]{natbib}
+\usepackage[titles]{tocloft}
 
 \makeatletter
 \renewcommand\@biblabel[1]{}
@@ -47,6 +48,9 @@ breaklines=true,                % sets automatic line breaking
 breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
 title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
+
+\setlength{\cftbeforechapskip}{2ex}
+\setlength{\cftbeforesecskip}{1ex}
 
 % Counter for custom lists
 \newcounter{qcounter}
@@ -588,13 +592,12 @@ Skyltens display matas med 3,3V och jord från arduinoplattformen. Mellan displa
 De knappar som används är enkla tryckknappar med pull-up-motstånd och små kondensatorer. Då en knapp trycks ned kopplas signalen ned till jord. Innan signalen skickas vidare som insignal till målarduinoplattformen skickas den genom en 7414 Schmitt-trigger med inverterarverkan, vilket gör insignalen från knappen aktiv hög. Vidare används LEDs som statusindikatorer, kopplade till digitala utgångar på arduinoplattformarna. Samma princip för tryckknappar och statusindikatorer används på både basstation och skyltmodul.
 
 \subsubsection{Batteri}
-Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3,7V och har inbyggt skydd mot överspänning ($>4,25V$), för stort strömuttag och skydd för minimumspänning ($<2,75V$).
+Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3,7V och har inbyggt skydd mot överspänning ($>4,25V$), för stort strömuttag och skydd för minimumspänning ($<2,75V$). \\
+
+Batteriet laddas via en kontakt på basstationen. Det kort som används för att ladda batteriet tar sin matningsspänning och jord från Arduinoplattformen (5V) och reglerar ner spänningen till lämplig nivå för att ladda Litium-Polymer-batteriet. Övriga komponenter på kortet är kondensatorer enligt rekommendationerna för spänningsregulatorn, samt resistanser som fungerar som strömbegränsande för lysdioder. Laddningsstatus visas på en LED.
 
 \subsubsection{Batterinivåavläsning}
 Batterinivån på skyltmodulen avläses genom att en analogingång på skyltens arduinoplattform kopplas till en spänningsdelare. Spänningsdelaren slås till och från via en NMOS-transistor, och microcontrollern läser av spänningen via en A/D-omvandlare.
-
-\subsubsection{Batteriladdning}
-Batteriet laddas via en kontakt på basstationen. Det kort som används för att ladda batteriet tar sin matningsspänning och jord från Arduinoplattformen (5V) och reglerar ner spänningen till lämplig nivå för att ladda Litium-Polymer-batteriet. Övriga komponenter på kortet är kondensatorer enligt rekommendationerna för spänningsregulatorn, samt resistanser som fungerar som strömbegränsande för lysdioder. Laddningsstatus visas på en LED.
 
 \subsubsection{Inbyggnadslådor och mekanik}
 Delsystemen (skylt och basstation) är inbygga i ABS-plastlådor där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
