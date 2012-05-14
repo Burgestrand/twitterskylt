@@ -1,24 +1,33 @@
 digraph G {
 
 	Start -> FormingNetwork
-	FormingNetwork -> Error [label="Network \n formation \n error"];
+
 	FormingNetwork -> JoiningSend
-	JoiningSend -> JoiningWait
-	JoiningWait -> JoiningWaitResponse
-	JoiningWaitResponse -> Error [label="No response \n from base station"];
-	JoiningWaitResponse -> Idle
-	Idle -> SleepWait
-	Idle -> RequestSend [label="Requesting \n data"];
-	SleepWait -> Sleeping
-	Sleeping -> ResetStart [label="Reset"];
-	Sleeping -> Idle
-	Error
+	FormingNetwork -> Error [label="Network \n formation \n error"];
+
+	JoiningSend -> JoiningStatus
+
+	JoiningStatus -> JoiningAwaitResponse
+	JoiningStatus -> Error [label="Failed \n to reach \n base station"];
+
+	JoiningAwaitResponse -> Idle
+	JoiningAwaitResponse -> Error [label="Timeout"];
+
+	Idle -> SleepStart
+	Idle -> RequestSend [label="Update \n requested"];
+
+	SleepStart -> Sleeping
+
+	Sleeping -> SleepWake [label="Wake-up \n requested"];
+
+	SleepWake -> Idle
+
 	RequestSend -> RequestStatus
-	RequestStatus -> Error [label="Error sending \n request"];
-	RequestStatus -> RequestWait
-	RequestWait -> Error [label="Timeout"];
-	RequestWait -> RequestSend [label="More packets \n in message"];
-	RequestWait -> Idle [label="Done"];
-	ResetStart -> ResetWait
-	ResetWait -> Start
+	
+	RequestStatus -> RequestAwait
+	RequestStatus -> Error [label="Failed to \n reach base \n station"];
+
+	RequestAwait -> RequestAwait [label="More packets \n in message"];
+	RequestAwait -> Idle [label="Complete \n message \n received"];
+	RequestAwait -> Error [label="Timeout"];
 }
