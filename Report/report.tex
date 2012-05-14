@@ -702,7 +702,7 @@ Av dessa datatyper är fält och objekt sammansatta: De innehåller andra värde
 En JSON-fil består av antingen ett objekt eller ett fält, som i sin tur kan innehålla ytterligare värden enligt reglerna för respektive datatyp. \\
 
 \subsubsection{Avläsning och intolkning}
-Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kilobyte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne. \\
+Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kByte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne. \\
 
 För att lösa detta problem används en {\it händelsebaserad strömparser}. Till skillnad från en konventionell parser lagrar en händelsebaserad strömparser inte JSON-datan i minnet. Istället signalerar parsern händelser varje gång den påträffar ett värde medan den läser av JSON-filen. Dessa händelser hanteras sedan av en uppsättning olika funktioner som anropas av parsern genom funktionspekare. Detta tillvägagångssätt innebär att minnesåtgången är minimal eftersom enbart det värde som precis har lästs av behöver sparas i minnet. \\
 
@@ -1014,7 +1014,7 @@ Systemet är försatt i strömsparläge den allra största delen av driftstiden.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.35, angle=0]{battery.png}
+\includegraphics[scale=0.30, angle=0]{battery.png}
 \end{center}
 \caption{Urladdningsförlopp för LiPo-batteri}
 \label{fig:batterygraph}
@@ -1029,7 +1029,7 @@ Denna lösning är dock inte implementerad i systemet, då det skulle innebära 
 \subsubsection{Radiolänk och nätverk}
 Radiolänken har testats i kontorsmiljö (Instutitionen för Data- och informationsteknik på Chalmers), och fungerar bra. Ihopparning av modulerna går relativt snabbt (ca 5 sekunder), och inga konflikter med närliggande nätverk märks av. Vid systemstart kan basstationen ta upp till en minut på sig att ansluta sig till nätverksuppkopplingen via DHCP, men oftast går det snabbare. \\
 
-Radiokommunikationen har testats även över längre avstånd inomhus, och verkar fungera bra upp till ungefär två våningar upp eller ned i ett vanligt kontorshus. Även cirka 40-50 meter i sidoled. Detta ger en radie runt basstationen som skylten kan operera inom. Operationsområdet för skylten begränsas av väggar, annan störande elektronisk utrustning och andra fysiska hinder. Sammantaget bedöms radiokommunikationen väl uppfylla de krav på räckvidd och samexistensförmåga med andra nätverk som finns i en vanlig kontorsmiljö, och därmed uppfyller radionätverket även den specifikation som ställdes upp i början av projektet. Test har inte utförts utomhus, då det är utanför skyltens tänkta användningsområde. \\
+Radiokommunikationen har testats även över längre avstånd inomhus, och verkar fungera bra upp till ungefär två våningar upp eller ned i ett vanligt kontorshus. Även cirka 40-50 meter i sidled. Detta ger en radie runt basstationen som skylten kan operera inom. Operationsområdet för skylten begränsas av väggar, annan störande elektronisk utrustning och andra fysiska hinder. Sammantaget bedöms radiokommunikationen väl uppfylla de krav på räckvidd och samexistensförmåga med andra nätverk som finns i en vanlig kontorsmiljö, och därmed uppfyller radionätverket även den specifikation som ställdes upp i början av projektet. Test har inte utförts utomhus, då det är utanför skyltens tänkta användningsområde. \\
 
 Robustheten i radiokommunikationen är relativt god. Vid längre avstånd gör systemet fler omsändningar av data över radiolänken, på grund av paketförluster. Dessa bidrar till längre uppdateringstider för skylten, men är acceptabla. Små avstånd (upp till 10 meter) ger mycket goda förhållanden mellan misslyckade och framgångsrika paketsändningar. Vid enstaka tillfällen händer det att många paket i följd tappas, vilket får som resultat att systemet går in i ett felhanteringsläge. Detta sker dock sällan, och endast vid långa avstånd med fysiska hinder för radiokommunikationen.
 
@@ -1098,7 +1098,7 @@ aJSON är ytterligare ett bibliotek från författaren till HTTPClient, som är 
 För de egengjorda biblioteken bestämde sig gruppen ändå för att försöka använda öppen källkod för att minimera det jobb som behövde göras, och därför valde gruppen att använda en något modifierad version av Yajl som JSON-parser \hyperref[github]{(GitHub 2012d)}. Modifieringarna innebar att definiera en del konstanter som finns i standard-C, men inte AVR-C.
 
 \subsubsection{Minnesbrist vid parsing}
-Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket Yajl och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standardvärde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standardvärdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
+Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket Yajl och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standardvärde som var inställt på 2 kByte, vilket kan jämföras med basstationens totala RAM-minne på 8 kByte. Standardvärdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
 
 \subsubsection{E-Paper}
 Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \hyperref[epapercentral]{(Epaper Central, 2012)}.
@@ -1107,7 +1107,7 @@ Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades f
 Under projektets slutfas slutade skyltens display att fungera. Styrelektroniken verkar fortfarande fungera och displayen ger rätt svar på kommandon. Även läsning och skrivning till minnet på displayen verkar fungera. Däremot uppdateras aldrig själva displayytan, av okänd anledning. Tänkbara fel kan vara konstruktionsfel eller ESD-skador, men båda dessa förefaller osannolika. ESD-skador borde ha skadat styrelektroniken på displayen, medan konstruktionsfel är mycket ovanliga enligt tillverkaren. Tillverkaren, Kent Displays, kontaktades via mail (kontaktperson: Tony Emanuele, 2012-05-10), men inte heller de kunde ge någon förklaring till problemet. En ersättnings-display fick beställas.
 
 \subsection{Jämförelser med liknande projekt}
-En enkel Google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
+En enkel Google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
 
 Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
 
@@ -1130,7 +1130,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 
 \label{atmel}
 \bibitem{atmel}
-   Atmel, \\
+   Atmel, 2008-2012,\\
    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
    \item \emph{ATMega328P}.
    \url{http://www.atmel.com/devices/ATMEGA328.aspx} (2012-01-24)
@@ -1138,12 +1138,11 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
    \url{http://www.atmel.com/devices/ATMEGA2560.aspx} (2012-01-24)
    \item \emph{ATMega328P Datablad}.
    \url{http://www.atmel.com/Images/doc8271.pdf} (2012-02-15)
-   \end{list}
-   2008-2012.
+   \end{list}.
 
 \label{arduino}
 \bibitem{arduino}
-   Arduino,\\
+   Arduino, 2009-2012,\\
    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
    \item{\emph{Arduino}. \url{http://www.arduino.cc/} (2012-01-19)}
    \item{\emph{Arduino Pro}. \url{http://arduino.cc/it/Main/ArduinoBoardPro} (2012-01-19)}
@@ -1151,202 +1150,197 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
    \item{\emph{XBee Shield} \url{http://arduino.cc/it/Main/ArduinoXbeeShield} (2012-01-24)}
    \item{\emph{Ethernet Shield} \url{http://arduino.cc/en/Main/ArduinoEthernetShield} (2012-01-19)}
    \item{\emph{Arduino SD} \url{http://arduino.cc/en/Reference/SD} (2012-04-14)}
-   \end{list}
-   2009-2012.
+   \end{list}.
 
 \label{cisco}
 \bibitem{cisco}
-    Cisco Systems,
+    Cisco Systems, 2003,
     \emph{CCNA 3 and 4 Companion Guide (Cisco Networking Academy Program), ss. 14, 391-392.}.
     Cisco Press, Indianapolis, USA,
-    Upplaga 3,
-    2003.
+    Upplaga 3.
 
 \label{dell}
 \bibitem{dell}
-    Dell,
+    Dell, 2012,
     \emph{Wireless vs. Wired},
-    \url{http://www.dell.com/content/topics/topic.aspx/global/learn/network/plan_vs?c=us&l=en&cs=19},
-    2012. (2012-04-27)
+    \url{http://www.dell.com/content/topics/topic.aspx/global/learn/network/plan_vs?c=us&l=en&cs=19}. (2012-04-27)
 
 \label{digi}
 \bibitem{digi}
-    Digi,\\
+    Digi, 2012,\\
     \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
     \item\emph{XBee Series 1},
     \url{http://ftp1.digi.com/support/documentation/90000976_J.pdf} (2012-01-24)
     \item \emph{XCTU},
     \url{http://www.digi.com/support/productdetail?pid=3352&osvid=57&type=cabling} (2012-02-23)
     \item \emph{Choosing an XBee Antenna},
-    \url{Choosing an XBee Antenna http://www.digi.com/technology/rf-tips/2007/08} (2012-01-27),
-    \end{list}
-    2012
+    \url{Choosing an XBee Antenna http://www.digi.com/technology/rf-tips/2007/08} (2012-01-27)
+    \end{list}.
 
 \label{dimension}
 \bibitem{dimension}
-    Dimension Engineering,
+    Dimension Engineering, 2012,
     \emph{A beginner’s guide to switching regulators},
-    \url{http://www.dimensionengineering.com/info/switching-regulators},
-    2012. (2012-04-29)
+    \url{http://www.dimensionengineering.com/info/switching-regulators}
+    . (2012-04-29)
 
 \label{lcdalfa}
 \bibitem{lcdalfa}
-    DISPLAY Elektronik GmbH.,
+    DISPLAY Elektronik GmbH., 2009,
     \emph{LCD MODULE DEM 240128D FGH-PW. DISPLAY Elektronik GmbH.},
-    \url{http://www.display-elektronik.de/DEM240128D_FGH-PW.pdf},
-    2009. (2012-05-07).
+    \url{http://www.display-elektronik.de/DEM240128D_FGH-PW.pdf}
+    . (2012-05-07).
 
 \label{lcdgraph}
 \bibitem{lcdgraph}
-    DISPLAY Elektronik GmbH.,
+    DISPLAY Elektronik GmbH., 2011,
     \emph{LCD MODULE DEM 40491 SYH-LY. DISPLAY Elektronik GmbH.},
-    \url{http://www.display-elektronik.de/DEM40491SYH-LY.PDF},
-    2011. (2012-05-07).
+    \url{http://www.display-elektronik.de/DEM40491SYH-LY.PDF}
+    . (2012-05-07).
 
 \label{eetimes}
 \bibitem{eetimes}
-    Drew Gislason, 
-    EE Times,
+    Drew Gislason,
+    EE Times, 2011,
     \emph{ZigBee Applications},
-    \url{ http://www.eetimes.com/design/embedded-internet-design/4201087/ZigBee-applications--Part-1-Sending-and-receiving-data/},
-    2010. (2012-02-25)
+    \url{ http://www.eetimes.com/design/embedded-internet-design/4201087/ZigBee-applications--Part-1-Sending-and-receiving-data/}
+    . (2012-02-25)
 
 \label{embedded}
 \bibitem{embedded}
-    Embedded Computing,
+    Embedded Computing, 2011,
     \emph{Smart energy apps making the move to ZigBee: Q\&A with Oyvind Strom, PhD, Senior Director of Wireless Microcontrollers, Atmel Corporation},
-    \url{http://embedded-computing.com/smart-microcontrollers-atmel-corporation-2#ixzz1Xs7COh4m},
-    2011. (2012-02-05)
+    \url{http://embedded-computing.com/smart-microcontrollers-atmel-corporation-2#ixzz1Xs7COh4m}
+    . (2012-02-05)
 
 \label{epapercentral}
 \bibitem{epapercentral}
-    Epaper Central,
-    \url{http://www.epapercentral.com/},
-    2012. (2012-03-29)
+    Epaper Central, 2012,
+    \url{http://www.epapercentral.com/}
+    . (2012-03-29)
 
 \label{spectrum}
 \bibitem{spectrum}
     Erico Guizzo, 
-    IEEE Spectrum,
+    IEEE Spectrum, 2011,
     \emph{Send a tweet to your office door},
-    \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door},
-    2011. (2012-01-17)
+    \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door}. (2012-01-17)
 
 \label{fielding}
 \label{rfc2616}
 \bibitem{fielding}
-R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C/MIT; L. Masinter; Xerox; P. Leach; Microsoft; T. Berners-Lee,
+R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C/MIT; L. Masinter; Xerox; P. Leach; Microsoft; T. Berners-Lee, 1999,
 \emph{Hypertext Transfer Protocol -- HTTP/1.1. RFC 2616},
-\url{http://www.w3.org/Protocols/rfc2616/rfc2616.html },
-1999. (2012-05-10)
+\url{http://www.w3.org/Protocols/rfc2616/rfc2616.html}
+. (2012-05-10)
 
 \label{instructables}
 \bibitem{instructables}
-    Instructables,
+    Instructables, 2011,
     \emph{Arduino LCD Twitter Display},
-    \url{http://www.instructables.com/id/Arduino-LCD-Twitter-display/},
-    2011. (2012-01-17)
+    \url{http://www.instructables.com/id/Arduino-LCD-Twitter-display/}
+    . (2012-01-17)
 
 \label{droms}
 \bibitem{droms}
-    Droms, R.,
+    Droms, R., 1997,
     \emph{Dynamic Host Configuration Protocol. The Internet Engineering Task Force.},
-    \url{http://www.ietf.org/rfc/rfc2131.txt},
-    1997. (2012-04-05)
+    \url{http://www.ietf.org/rfc/rfc2131.txt}
+    . (2012-04-05)
 
 \label{git}
 \bibitem{git}
-    Git, 
+    Git, 2012,
     \emph{Git - Small and fast},
-    \url{http://git-scm.com/about/small-and-fast},
-    2012.
+    \url{http://git-scm.com/about/small-and-fast}
+    .
 
 \label{github}
 \bibitem{github}
-    GitHub,
+    GitHub, 2012,
     \emph{Data at GitHub},
-    \url{https://github.com/blog/1112-data-at-github},
-    2012.
+    \url{https://github.com/blog/1112-data-at-github}
+    .
 
 \label{hilaiel}
 \bibitem{hilaiel}
-    Hilaiel, L.,
+    Hilaiel, L., 2012, 
     \emph{Yajl},
     \url{http://lloyd.github.com/yajl/},
-    2012. (2012-05-10)
+    . (2012-05-10)
 
 \label{kent}
 \bibitem{kent}
-    Kent Displays Inc,
+    Kent Displays Inc, 2012,
     \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
     \item \emph{Kent Displays},
-    \url{http://www.kentdisplays.com/},
-    2012. (2012-04-05) \\
-    \item \emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.},
-    \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf},
+    \url{http://www.kentdisplays.com/}
+    . (2012-04-05) \\
+    \item \emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.}, 2012,
+    \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf}
     \end{list}
-     2012. (2012-03-31)
+     . (2012-03-31)
 
 \label{microsoft}
 \bibitem{microsoft}
-    Microsoft,
+    Microsoft, 2012,
     \emph{Naming, Files, Paths, and Namespace},
-    \url{http://msdn.microsoft.com/en-us/library/aa365247.aspx},
-    2012. (2012-04-03)
+    \url{http://msdn.microsoft.com/en-us/library/aa365247.aspx}
+    . (2012-04-03)
 
 \label{mingu}
 \bibitem{mingu}
-    M. Gu.,
+    M. Gu., 2006,
     \emph{The World of Liquid Crystal Displays - Cholesteric Liquid Crystal},
-    \url{http://www.personal.kent.edu/~mgu/LCD/chlc.htm},
-    2006. (2012-04-19)
+    \url{http://www.personal.kent.edu/~mgu/LCD/chlc.htm}
+    . (2012-04-19)
 
 \label{paulson}
 \bibitem{paulson}
-    Nurseitov N. et al.,
+    Nurseitov N. et al., 2009,
     \emph{Comparison of JSON and XML Data Interchange Formats: A Case Study},
-    \url{http://www.cs.montana.edu/izurieta/pubs/caine2009.pdf},
-    2009. (2012-02-08)
+    \url{http://www.cs.montana.edu/izurieta/pubs/caine2009.pdf}
+    . (2012-02-08)
 
 \label{lavrentovich}
 \bibitem{lavrentovich}
-    O.D. Lavrentovich, M.Gu, et al.,
+    O.D. Lavrentovich, M.Gu, et al., 2008,
     \emph{Electro-Optical Effects in Liquid Crystals with Dielectric Dispersion},
     Proc. SPIE, 
-    Vol. 7050, 70500S,
-    2008.
+    Vol. 7050, 70500S
+    .
 
 \label{processing}
 \bibitem{processing}
-    Processing,
+    Processing, 2012,
     \emph{Processing},
-    \url{http://www.processing.org/},
-    2012. (2012-03-30)
+    \url{http://www.processing.org/}
+    . (2012-03-30)
 
 \label{sensornetworks}
 \bibitem{sensornetworks}
-    Sensor Networks,
+    Sensor Networks, 2010,
     \emph{Triple Security in ZigBee: Link, Network and Application layer Encryptions},
-    \url{http://sensor-networks.org/index.php?page=1010510536},
-    2010. (2012-02-05)
+    \url{http://sensor-networks.org/index.php?page=1010510536}
+    . (2012-02-05)
 
 \label{techon}
 \bibitem{techon}
-    TechOn,
+    TechOn, 2009,
     \emph{Entire Surface of Handset Becomes LCD Display},
-    \url{http://techon.nikkeibp.co.jp/english/NEWS_EN/20090609/171529/},
-    2009. (2012-03-30)
+    \url{http://techon.nikkeibp.co.jp/english/NEWS_EN/20090609/171529/}
+    . (2012-03-30)
 
 \label{national}
 \bibitem{national}
-    The National
+    The National, 2011
     \emph{Facebook and Twitter key to Arab uprisings: report},
-    \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report},
-    2011. (2012-05-08)
+    \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report}
+    . (2012-05-08)
 
 \label{twitter}
 \bibitem{twitter}
-    Twitter,
+    Twitter, 2012,
     \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
     \item \emph{How to Use Advanced Twitter Search}, \url{https://support.twitter.com/articles/71577}, (2012-02-06)
     \item \emph{Twitter turns six}, \url{http://blog.twitter.com/2012/03/twitter-turns-six.html}, (2012-02-06)
@@ -1355,51 +1349,46 @@ R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C
     \item \emph{Streaming API}, \url{https://dev.twitter.com/docs/streaming-api}, (2012-02-06)
     \item \emph{Rate Limiting}, \url{https://dev.twitter.com/docs/rate-limiting}, (2012-02-06)
     \end{list}
-    2012
 
 \label{wen}
 \bibitem{wen}
-    Windows Enterprise Networking,
+    Windows Enterprise Networking, 2007.
     \emph{Configuring lease time.},
     Microsoft Windows DHCP Team Blog,
-    \url{http://blogs.technet.com/b/teamdhcp/archive/2007/02/07/configuring-lease-time.aspx},
-    2007. (2012-0X-XX)
+    \url{http://blogs.technet.com/b/teamdhcp/archive/2007/02/07/configuring-lease-time.aspx}. (2012-04-03)
 
 \label{wiring}
 \bibitem{wiring}
-    Wiring,
+    Wiring, 2012,
     \emph{Wiring},
-    \url{http://wiring.org.co/},
-    2012. (2012-03-30)
+    \url{http://wiring.org.co/}
+    . (2012-03-30)
 
 \label{wiznet}
 \bibitem{wiznet}
-    WIZnet Co., Ltd.,
+    WIZnet Co., Ltd., 2012,
     \emph{W5100.  WIZnet.},
-    \url{http://www.wiznet.co.kr/Sub_Modules/en/product/Product_Detail.asp?cate1=5&cate2=7&cate3=26&pid=1011},
-    2012. (2012-04-04)
+    \url{http://www.wiznet.co.kr/Sub_Modules/en/product/Product_Detail.asp?cate1=5&cate2=7&cate3=26&pid=1011}
+    . (2012-04-04)
 
 \label{xbeearduino}
 \bibitem{xbeearduino}
-xbee-arduino,
+xbee-arduino, 2011,
 \emph{xbee-arduino},
-\url{http://code.google.com/p/xbee-arduino/},
-2011. (2012-02-01)
+\url{http://code.google.com/p/xbee-arduino/}. (2012-02-01)
 
 \label{yergeau}
 \label{rfc2277}
 \bibitem{yergeau}
-Yergeau, F.,
+Yergeau, F., 2003,
 \emph{UTF-8, a transformation format of ISO 10646. STD 63. RFC 3629.},
-\url{http://tools.ietf.org/rfc/rfc3629.txt},
-2003. (2012-05-10)
+\url{http://tools.ietf.org/rfc/rfc3629.txt}. (2012-05-10)
 
 \label{zigbee}
 \bibitem{zigbee}
-    ZigBee Alliance,
+    ZigBee Alliance, 2012,
     \emph{ZigBee},
-    \url{http://www.zigbee.org/Specifications/ZigBee/Overview.aspx},
-    2012. (2012-01-24)
+    \url{http://www.zigbee.org/Specifications/ZigBee/Overview.aspx}. (2012-01-24)
 
 \end{thebibliography}
 
@@ -1453,11 +1442,11 @@ Yergeau, F.,
 	\begin{tabular}{|l|c|r|}
 	{\bf Namn} & {\bf Värde} & {\bf Typ} \\
 	C1-C3			& 1$\mu$	& Kapacitans \\
-	C4			& 6.8n		& Kapacitans \\		
+	C4			& 6,8n		& Kapacitans \\		
 	C5-C7			& 1$\mu$	& Kapacitans \\
-	C8			& 8.2n		& Kapaictans \\
+	C8			& 8,2n		& Kapaictans \\
 	C9-C10			& 1$\mu$	& Kapacitans \\
-	C11			& 6.8n		& Kapacitans \\
+	C11			& 6,8n		& Kapacitans \\
 	C12-C13			& 10$\mu$	& Kapacitans \\
 	C14			& 470$\mu$	& Kapacitans \\
 	IC1			& -		& 7414-Schmitt \\
