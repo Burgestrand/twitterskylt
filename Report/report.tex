@@ -52,6 +52,13 @@ title=\lstname,                 % show the filename of files included with \lsti
 \centerline{\includegraphics[scale=0.75, angle=0]{ChaGUsvartHD.png}}
 \vspace{1.7cm}
 %\centerline{\large Bild här}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.22, angle=0]{titleIcon.png}
+\end{center}
+\label{fig:title_icon}
+\end{figure}
+
 
 \begin{flushleft}
 \null
@@ -1421,7 +1428,7 @@ Yergeau, F.,
 
 \begin{figure}[H]
 \includegraphics[scale=1.0, angle=0]{sch_bas.png}
-\label{fig:block_skylt}
+\label{fig:base_schematic}
 \caption{Kopplingsschema, bas}
 \end{figure}
 \pagebreak
@@ -1430,7 +1437,7 @@ Yergeau, F.,
 
 \begin{figure}[H]
 \includegraphics[scale=1.0, angle=0]{sch_skylt.png}
-\label{fig:block_skylt}
+\label{fig:skylt_schematic}
 \caption{Kopplingsschema, skylt}
 \end{figure}
 \pagebreak
@@ -1570,8 +1577,8 @@ När skylten är ihopkopplad med basstationen kommer den automatiskt att var fem
 \centering
     \begin{tabular}{|l|r|}
     {\bf Knapp} & {\bf Funktion} \\
-    A & Systemomstart \\
-    B & Ihopparning med skylt \\
+    A & Ihopparning med skylt \\
+    B & Systemomstart \\
     \end{tabular}
 \caption{Knappar på basstation}
 \label{tab:btntable_base}
@@ -1611,5 +1618,55 @@ Om felet uppstår igen, följ anvisningarna nedan:
 \item Säkerställ tillräcklig matningsspänning: För basstationen behövs en matningsspänning på 5V via USB eller 12V via medföljande transformator, som skall anslutas till nätspänning. För skylten skall medföljande batteri användas (en-cells LiPo).
 \item Säkerställ att du har en giltig konfigurationsfil: Anslut basstationens SD-kort till en dator och säkerställ att det innehåller en fil med namnet config.txt där den första raden innehåller ett giltigt Twitter-användarnamn och där den andra raden antingen är tom eller innehåller en giltig Twitter-söksträng. Syntaxen för söksträngar dokumenteras på Twitters hemsida.
 \end{itemize}
+
+\pagebreak
+
+\section{3D-Modell av basstation}
+
+\begin{figure}[H]
+\includegraphics[scale=0.2, angle=0]{drawing_base.png}
+\label{fig:drawing_base}
+\caption{Basstation, sidovy}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=0.2, angle=0]{drawing_base_side.png}
+\label{fig:drawing_base}
+\caption{Basstation, andra sidan}
+\end{figure}
+
+\begin{enumerate}
+\item Knapp A: Ihopparning
+\item Knapp B: Systemomstart
+\item Antenn
+\item Associate-LED (grön)
+\item Error-LED (röd)
+\item Batteriladdnings-LED (röd)
+\item Batteriladdningsanslutning för LiPo-batteri
+\item Ethernet-port
+\item USB-port
+\item 12V-matning
+\end{enumerate}
+
+\pagebreak
+
+\section{3D-Modell av skylt}
+
+\begin{figure}[H]
+\includegraphics[scale=0.2, angle=0]{drawing_skylt.png}
+\label{fig:drawing_skylt}
+\caption{Skyltmodul, ovanifrån}
+\end{figure}
+
+\begin{enumerate}
+\item Error-LED (röd)
+\item Batteri-LED (gul)
+\item Associate-LED (grön)
+\item Antenn
+\item Knapp A: Uppdatering
+\item Knapp B: Ihopparning
+\item Display
+\end{enumerate}
+\pagebreak
 
 \end{document}
