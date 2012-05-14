@@ -172,7 +172,8 @@ void loop () {
   // Pair button
   if (joinPressed) {
     joinPressed = false;
-    digitalWrite(ERROR_LED, false);
+    digitalWrite(ERROR_LED, LOW);
+    digitalWrite(ASSOC_LED, LOW);
     debug("JOINBTN NOTICED");
     disp.write("Trying to join\nnetwork");
     invalidate_data();
