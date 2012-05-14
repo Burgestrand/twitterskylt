@@ -11,6 +11,7 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{listings}
+\usepackage[round, sort&compress, authoryear]{natbib}
 
 % Harvard style references
 %\usepackage{harvard}
@@ -20,6 +21,9 @@
 
 % Table of contents depth 3 levels: A.B.C
 \setcounter{tocdepth}{3}
+ 
+% No indent on new paragraph
+\setlength{\parindent}{0pt}
 
 \lstset{ %
 language=C,                  	% the language of the code
@@ -47,7 +51,7 @@ title=\lstname,                 % show the filename of files included with \lsti
 
 \centerline{\includegraphics[scale=0.75, angle=0]{ChaGUsvartHD.png}}
 \vspace{1.7cm}
-\centerline{\large Bild här}
+%\centerline{\large Bild här}
 
 \begin{flushleft}
 \null
@@ -77,11 +81,11 @@ title=\lstname,                 % show the filename of files included with \lsti
 {\noindent \bf Sammanfattning}\\
 \end{center}
 
-Den här rapporten beskriver utvecklingen av ett system, Hummingbird, som låter användaren uppdatera en trådlös dörrskylt varifrån som helst, via mikrobloggtjänsten Twitter. Systemet har utvecklats som ett kandidatarbete vid Data- och IT-institutionen vid Chalmers Tekniska Högskola, Göteborg. Projektgruppen har bestått av sex teknikstuderande från Chalmers och Göteborgs Universitet. \\
+Den här rapporten beskriver utvecklingen av en prototyp till ett system, Hummingbird, som låter användaren uppdatera en trådlös dörrskylt varifrån som helst, via mikrobloggtjänsten Twitter. Systemet har utvecklats som ett kandidatarbete vid Data- och IT-institutionen vid Chalmers Tekniska Högskola, Göteborg. Projektgruppen har bestått av sex teknikstuderande från Chalmers och Göteborgs Universitet.\\
 
-Resultatet är ett fungerande system bestående av två delar: en dörrskylt med display samt en basstation som användaren ansluter till nätspänning och en nätverksanslutning. \\
+Resultatet är ett fungerande system bestående av två delar: en dörrskylt med display samt en basstation som hämtar meddelanden från Twitter. Skylten och basstationen kommunicerar via en radiolänk.\\
 
-Fokuspunkterna i projektet har varit att bygga ett energieffektivt, smidigt och robust system. Som en del i projektets fokus på energieffektivtet har tekniker för strömsnåla displayer, radiokommunikationsmoduler och microcontrollerplattformar undersökts och använts. Smidigheten ligger i skyltens trådlöshet, samt dess fysiska dimensioner som möjliggör enkel montering på en dörr eller vägg. Slutligen ges systemet robusthet av pålitliga kommunikationsprotokoll för nätverk och radiolänk mellan basstation och skylt, samt ett väl utbyggt felhanteringssystem.
+Projektets huvudsakliga fokus ligger på energieffektivitet hos skylten. Även användarvänlighet och robusta kommunikationsprotokoll har prioriterats. Som en del i projektets fokus på energieffektivitet har tekniker för strömsnåla displayer, radiokommunikationsmoduler och microcontrollerplattformar undersökts och använts. Användarvänligheten ligger i skyltens trådlöshet, enkla konfigurering, samt dess fysiska dimensioner som möjliggör enkel montering på en dörr eller vägg. Slutligen ges systemet robusthet av pålitliga kommunikationsprotokoll för nätverk och radiolänk mellan basstation och skylt.
 	
 
 \thispagestyle{empty}
@@ -92,11 +96,11 @@ Fokuspunkterna i projektet har varit att bygga ett energieffektivt, smidigt och 
 {\noindent \bf Abstract}\\
 \end{center}
 
-This report aims to describe the development process of a system, Hummingbird, designed to allow its user to update a wireless door sign from anywhere, using the popular microblogging service Twitter. The system has been developed as a Bachelor’s Thesis project at Chalmers University of Technology. Behind the project are six technology students from Chalmers and Göteborgs Universitet. \\
+This report aims to describe the prototype development process of a system, Hummingbird, designed to allow its user to update a wireless door sign from anywhere, using the popular microblogging service Twitter. The system has been developed as a Bachelor’s Thesis project at Chalmers University of Technology. Behind the project are six technology students from Chalmers and Göteborgs Universitet.\\
 
-The result of the project is a well functioning system, composed of two units: an electronic door sign with a display for displaying messages, and a base station, which the user connects to a power supply and a network connection. \\
+The result of the project is a well functioning system, composed of two units: an electronic door sign with a display for displaying messages, and a base station tasked with fetching messages from Twitter. A radio link provides wireless communication between the two units.\\
 
-The main focus points of the project have been to construct an energy efficient, simple-to-use and robust system. As a part of the project’s energy efficiency goal, technologies for low power displays, radio communication devices and embedded computing platforms have been studied and used. The simplicity of the system is in the wireless design of the door sign unit, as well as its physical dimensions, which allow for easy wall or door mounting. Finally, robustness is implemented by the use of reliable communication protocols for network and radio communication between the base station 
+The main focus points of the project have been to construct an energy efficient, simple-to-use and robust system. As a part of the project’s energy efficiency goal, technologies for low power displays, radio communication devices and embedded computing platforms have been studied and used. The simplicity of the system is in the wireless design of the door sign unit, as well as its physical dimensions, which allow for easy wall or door mounting. Finally, robustness is implemented by the use of reliable communication protocols for network and radio communication between the base station and door sign unit. 
 
 \thispagestyle{empty}
 \pagebreak
@@ -106,26 +110,26 @@ The main focus points of the project have been to construct an energy efficient,
 {\noindent \bf Begreppslista}\\
 \end{center}
 
-\begin{table}[h]
+\begin{table}[h!]
 \centering
 	\begin{tabular}{|l|l|}
 A/D-Omvandlare & Omvandlar en analog signal till digital.\\
-API & Application Programming Interface, avancerat operationsläge för XBee.\\
-Arduino & Datorplattformsprojekt bestående av utvecklingsmiljö och hårdvara.\\
-AT & Application Transparent, simpelt point-to-point-läge för XBee.\\	
-AVR & Microprocessorarkitektur som används av Arduinoplattformen-\\
+API & Application Programming Interface\\
+Arduino & Datorplattformsprojekt bestående av utvecklingsmiljö och hårdvara.\\	
+AVR & Microprocessorarkitektur som används av Arduinoplattformen.\\
 Basstation & Sändare med internetåtkomst som skickar data trådlöst till skylten.\\
-Coordinator & Basenheten i ett ZigBee-nätverk, koordinerar av andra enheter.\\
+Coordinator & Basenheten i ett ZigBee-nätverk, koordinerar andra enheter.\\
 DHCP & Protokoll för att automatiskt ge datorer deras nätverksinställningar.\\
-Displaysträng & Den textsträng som skickas från basstationen till skylten \\
+Displaysträng & Den textsträng som skickas från basstationen till skylten.\\
 End Device & Ändenhet i nätverket, förmedlar data uppåt i nätverkshierarkin.\\
 Escape-tecken & Tecken som gör att efterföljande tecken tolkas annorlunda.\\
-Ethernet & En samling metoder för nätverkskommunikation\\
+Ethernet & En samling metoder för nätverkskommunikation.\\
 Hashtag & Etikett en användare kan sätta på tweets för att markera och organisera\\
 I/O & Input/Output, in- eller utgångsanslutning på microcontroller.\\
 IP & Internet Protocol. Protokoll för routing och addressering.\\
 Kontrollsumma & Kontrolldata för överförda paket i syfte att upptäcka fel.\\
 Lånetid & Tid som en dator fått låna en IP-address från en DHCP server.\\
+MCU & Förkortning för microcontroller. \\
 PAN & Personal Area Network, ett ZigBee-nätverk.\\
 PAN-ID & Ett (helst unikt) Identifikationsnummer för ett PAN.\\
 Radio-modul & XBee och den gränssnittskod som interagerar med XBee.\\
@@ -133,10 +137,14 @@ Radiolänken & Den trådlösa kommunikationslänken mellan basstation och skyltm
 SD & Secure Digital. Ett digitalt minneskortsformat.\\
 Sekvensnumrering & Numrering av paket som skickas över nätverket.\\
 Skylt & Display med trådlös mottagare som visar data skickad från basstationen.\\
+SPI & Hårdvarugränssnitt för att kommunicera mellan MCU och periferienheter.\\
 Systemet & Kombinationen av basstation och skylt, hela konstruktionen.\\
 TCP & Transmission Control Protocol. Förbindelseorienterat dataprotokoll.\\
-Tweet & Ett meddelande bestående av maximalt 140 tecken som skickats till Twitter.\\
+Tweet & Ett meddelande bestående av maximalt 140 tecken som skickats via Twitter.\\
 UDP & User Datagram Protocol. Förbindelselöst dataprotokoll.\\
+U.FL & Kompakt ytmonterad koaxialanslutning för antenner på mönsterkort.\\
+XBee-AT & Application Transparent, simpelt point-to-point-läge för XBee.\\
+XBee-API & avancerat operationsläge för XBee.\\
 XBee-modul & Hårdvaran som ansvarar för sändning och mottagning av radiosignaler.\\
 ZigBee & Det nätverksprotokoll som XBee bygger på och använder.\\
 	\end{tabular}
@@ -158,20 +166,20 @@ ZigBee & Det nätverksprotokoll som XBee bygger på och använder.\\
 \subsection{Bakgrund och sammanhang}
 Den ursprungliga idén till projektet kommer från en artikel i IEEE Spectrum av Erico Guizzo \hyperref[spectrum]{(Guizzo, 2011)}, där författaren beskriver en elektronisk dörrskylt som visar upp meddelanden från hans Twitter-konto. Målet med projektet är att vidareutveckla samma idé, bland annat genom att göra den mindre otymplig och mer energieffektiv. \\
 
-Syftet med dörrskylten i den ursprungliga artikeln var att kunna lämna meddelanden på sin kontorsdörr även om man inte är på plats, exempelvis för att man har valt att arbeta hemifrån. Den möjliggör även en centralisering av statusmeddelanden som man vill sprida till folk i sitt arbete: de visas både på webben och på dörrskylten. \\
+Syftet med dörrskylten i den ursprungliga artikeln var att kunna lämna meddelanden på sin kontorsdörr även om man inte är på plats, exempelvis för att man har valt att arbeta hemifrån. Den möjliggör även en centralisering av statusmeddelanden som användaren vill sprida till kollegor och andra i sitt arbete: de visas både på webben och på dörrskylten.\\
 
-Dörrskylten är relevant för de som har ett väldigt rörligt arbete, oberäkneligt arbetsschema eller behov av att centralisera sin kommunikation genom att lägga ut den på nätet. Den har även ett egenvärde för teknikfantaster som vill ha de senaste intressanta prylarna. \\
+Dörrskylten är relevant för de som har ett väldigt rörligt arbete, oberäkneligt arbetsschema eller behov av att centralisera sin kommunikation genom att lägga ut den på nätet. Den har även ett egenvärde för teknikfantaster som vill ha de senaste intressanta prylarna.\\
 
-Projektet skulle kunna relateras till den större diskussionen om sammanflätandet av verklighet med sociala medier, och om ett ökat beroende av dem är önskvärt. Det ligger även nära diskussioner om det papperslösa samhället, där all skriftlig kommunikation sker digitalt (även om man i detta fall vanligtvis inte ersätter papper utan whiteboard). Slutligen kan det skapa en rent teknisk diskussion kring hur ett sådant system kan skalas upp för att kostnadseffektivt kunna användas på en hel arbetsplats eller i andra sammanhang.
+Projektet skulle kunna relateras till den större diskussionen om sammanflätandet av verklighet med sociala medier, och om ett ökat beroende av dem är önskvärt. Det ligger även nära diskussioner om det papperslösa samhället, där all skriftlig kommunikation sker digitalt (även om man i detta fall vanligtvis inte ersätter papper utan whiteboard). Slutligen kan det skapa en rent teknisk diskussion kring hur ett sådant system kan skalas upp för att kostnadseffektivt kunna produceras för användning på en hel arbetsplats eller i andra sammanhang.
 
 \subsection{Problembeskrivning och syfte}
-Projektet syftar till att utveckla en prototyp av en elektronisk dörrskylt för uppvisning av Twitter-meddelanden, så kallade tweets. Användaren ska enkelt kunna koppla skylten till sitt Twitter-konto. Användaren ska också kunna välja att enbart visa upp vissa av sina tweets på dörrskylten, genom att märka tweets med så kallade hashtags. Skylten ska vara helt sladd- och trådlös, samt strömsnål så att dess batteri sällan behöver laddas. \\
+Projektet syftar till att utveckla en prototyp av en elektronisk dörrskylt för uppvisning av meddelanden från Twitter, så kallade tweets (härefter meddelanden). Användaren ska enkelt kunna koppla skylten till sitt Twitter-konto. Användaren ska också kunna ange kriterier för hämtningen av meddelanden så att enbart vissa meddelanden visas på dörrskylten. Skylten ska vara helt sladd- och trådlös, samt strömsnål så att dess batteri sällan behöver laddas.\\
 
-En viktig del av projektet är energieffektiviteten och strömsnålheten hos systemet. Detta undersöks i projektet både ur ett tekniskt och ingenjörsmässigt perspektiv, men också från en miljö- och samhällssynpunkt. Projektet syftar även till att undersöka vilka olika tekniska lösningar som finns för displayer, samt hur modern, energieffektiv displayteknik kan användas för att konstruera energieffektiva informationsvisningssystem. \\
+En viktig del av projektet är energieffektiviteten och strömsnålheten hos systemet. Detta undersöks i projektet ur ett tekniskt och ingenjörsmässigt perspektiv, men skulle också kunna diskuteras från en miljö- och samhällssynpunkt. Projektet syftar även till att undersöka vilka olika tekniska lösningar som finns för displayer, samt hur modern, energieffektiv displayteknik kan användas för att konstruera energieffektiva system för informationsvisning.\\
 
-Ett ytterligare projektmål är att systemet skall vara användarvänligt och lättanvänt, för att kunna användas i kontorsmiljö med minimal ansträngning från användaren. \\
+Ett ytterligare projektmål är att systemet skall vara användarvänligt och lättanvänt, för att kunna användas i kontorsmiljö med minimal ansträngning från användaren.\\
 
-Systemet ska bestå av två delar: en skylt och en basstation. Skylten ska trådlöst hämta sina meddelanden från basstationen och visa upp dem på sin display. Basstationen ska i sin tur kontinuerligt hämta meddelanden genom användarens vanliga internetuppkoppling. Skylten ska vara helt fristående från basstationen så att monteringen blir så enkel som möjlig och inte kräver några sladdar. Fokuspunkten i energieffektivitetsdiskussionen ligger på skylten, då den till skillnad från basstationen är batteridriven. \\
+Systemet ska bestå av två delar: en skylt och en basstation. Skylten ska trådlöst hämta sina meddelanden från basstationen och visa upp dem på sin display. Basstationen ska i sin tur kontinuerligt hämta meddelanden genom användarens vanliga internetuppkoppling. Skylten ska vara helt fristående från basstationen så att monteringen av den blir så enkel som möjlig och inte kräver några sladdar. Tyngdpunkten i energieffektivitetsmålet ligger på skylten, då den till skillnad från basstationen är batteridriven.\\
 
 Systemet ska erbjuda användaren följande funktionalitet:
 	\begin{itemize}
@@ -179,24 +187,25 @@ Systemet ska erbjuda användaren följande funktionalitet:
     	\item Välja vilka tweets från det valda kontot som ska visas på skylten.
     	\item Automatisk konfigurering av basstationens internetuppkoppling.
     	\item Enkel ihoplänkning av basstation och skylt.
-    	\item Visning av felmeddelande i händelse av misslyckad kommunikation mellan skylt-basstation, basstation-Twitter, eller andra felscenarion.
+    	\item Felindikation till användare i händelse av misslyckad kommunikation mellan skylt-basstation, basstation-Twitter, eller andra felscenarion.
     	\item Statusindikatorer som visar systemets hälsa och eventuella fel.
     	\item Monteringsmöjlighet för skylten på vägg eller dörr.
     	\item Uppladdningsbart batteri för skylten.
     	\end{itemize}
     	
-Den hårdvara som utgör skylt och basstation ska baseras på en lämplig microcontrollerplattform. På skylten ska också finnas en fysisk knapp som gör att mottagaren direkt aktiveras och hämtar in den senaste tweeten. Denna behövs för de gånger då det är viktigt att skylten uppdateras omedelbart. \\
+Den hårdvara som utgör skylt och basstation ska baseras på en lämplig microcontrollerplattform. På skylten ska också finnas en fysisk knapp som gör att mottagaren direkt aktiveras och hämtar in det senaste meddelandet. Denna behövs för de gånger då det är viktigt att skylten uppdateras omedelbart.\\
 
-Konfigureringen av systemet ska bestå av att ange namnet på det offentliga Twitter-konto vars tweets man vill visa upp. Om man så önskar ska man även kunna ange att endast tweets med en specifik hashtag ska visas på skylten, men detta är valfritt. Användaren ska sköta konfigureringen genom att med sin dator redigera en enkel textfil på ett SD-kort som följer med skylten.
+Konfigureringen av systemet ska bestå av att ange namnet på det offentliga Twitter-konto vars meddelanden man vill visa upp, samt eventuellt de kriterier som meddelanden ska hämtas utifrån. Användaren ska sköta konfigureringen genom att med sin dator redigera en enkel textfil på ett micro-SD-kort, som sedan läses genom basstationens SD-kortsläsare.
 
 \subsection{Användare och användningsmiljö}
-Den användargrupp som projektets slutprodukt främst är tänkt för är kontorsanställda med ett behov av att kunna informera kollegor om eventuella möten, sjukdagar, schemaändringar eller liknande via en dörrskylt på kontorsdörren. Ett användarexempel är en stressad Chalmersstudent som letar efter sin något impulsive kandidatarbeteshandledare. Denne har tydligen bestämt sig för att jobba hemifrån för dagen, men som tur är informeras studenten via twitterskylten på handledarens kontorsdörr. Situationen är räddad. \\
-Den miljö som twitterskylten kommer att verka i är typiskt en modern kontorsmiljö med flera olika typer av trådlösa nätverk i luften, vilket är en faktor att ta hänsyn till under utvecklingen av produkten. Vidare anses det rimligt att anta att skylten endast kommer att användas inomhus, med vanlig kontorsbelysning, samt endast under vanlig arbetstid.
+Den användargrupp som projektets slutprodukt främst är tänkt för är kontorsanställda med ett behov av att kunna informera kollegor om eventuella möten, sjukdagar, schemaändringar eller liknande via en dörrskylt på kontorsdörren. Ett användarexempel är en stressad Chalmersstudent som letar efter sin (något impulsive) kandidatarbeteshandledare. Denne har tydligen bestämt sig för att jobba hemifrån för dagen, men som tur är informeras studenten via den twitteruppkopplade elektroniska dörrskylten på handledarens kontorsdörr. Situationen är räddad.\\
+
+Den miljö som systemet är utformat för att verka i är den typiska moderna kontorsmiljön med flera olika typer av trådlösa nätverk i luften, vilket är en faktor att ta hänsyn till under utvecklingen av produkten. Vidare anses det rimligt att anta att skylten endast kommer att användas inomhus, med vanlig kontorsbelysning, samt endast under vanlig arbetstid. Detta är relevant då det tillåter eliminering av bakgrundsbelysning på skyltens display.
 
 \subsection{Begränsningar}
-Ett antal tekniska och produktionsrelaterade begränsningar har pålagts projeket. Syftet är att bättre rama in och förtydliga uppgiften, samt att målen ska vara realistiska givet projektets resurser och tidstillgång. De huvudsakliga begränsningarna som är relevanta för utvecklingen är:
+Ett antal tekniska och produktionsrelaterade begränsningar har pålagts projeket. Syftet är att rama in och förtydliga uppgiften, samt att ställa upp realistiska mål, givet projektets resurser och tidstillgång. De huvudsakliga begränsningarna som är relevanta för utvecklingen är:
 	\begin{itemize}
-    	\item Systemet behöver inte vara kostnadseffektivt sett till produktion (dock sett till energikonsumtion). Istället kan systemet ses som en prototyp som testar ett nytt koncept. Den färdiga produkten kan sedan anpassas för serieproduktion genom specialanpassade kretsar och mekanik, men detta ges ingen särskild uppmärksamhet under projektets gång.
+    	\item Systemet är en prototyp, och behöver inte vara kostnadseffektivt för massproduktion. Istället kan systemet ses som ett test av ett nytt koncept. Resultatet, den färdiga prototypen, kan sedan anpassas för serieproduktion genom specialutformade mönsterkort och mekaniska komponenter (inbyggnadslådor och monteringsdetaljer), men detta ges ingen särskild uppmärksamhet under projektets gång.
     	\item Systemet behöver inte ha stöd för att styra flera skyltar från en och samma basstation.
     	\item Skylten behöver enbart ha stöd för ASCII-tecken samt de svenska bokstäverna Å, Ä och Ö.
 	\end{itemize}
@@ -204,7 +213,7 @@ Ett antal tekniska och produktionsrelaterade begränsningar har pålagts projeke
 \section{Metod}
 
 \subsection{Konstruktionsmoment}	
-Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomenten, samt gruppmedlemmarnas olika intresseområden. Eftersom projektidén och de olika momenten var ganska klart definierade från början, kunde en uppdelning göras redan under första projektveckan.
+Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomenten, samt gruppmedlemmarnas olika intresseområden. Eftersom projektidén och de olika momenten var ganska klart definierade tidigt i projektet, kunde en uppdelning göras redan under första projektveckan.
 
 	\begin{itemize}
 	\item Konstruktion av hårdvara, stödkretsar och mekanik:
@@ -214,15 +223,18 @@ Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomen
         	\item Batteriladdning och batteristatusavläsning
         	\item Temperaturövervakning
         	\item Tryckknappar och statusindikatorer
-        	\item Mellankopplingar och konverteringar
+        	\item Mellankopplingar och konverteringar, kablage
+            \item Avkoppling och kondensatorbanker
         	\item Inbyggnadslådor, mekaniska detaljer
         	\end{itemize}	
     	\item Hårdvarugränssnitt, mjukvara som kommunicerar med och styr hårdvaran:
     		\begin{itemize}
-        	\item Radiolänk och radiomodem
-        	\item SD-kort
-        	\item Ethernethårdvara
+        	\item Radiolänk
+        	\item Läsning av SD-kort
+        	\item Ethernet
         	\item Display
+            \item Hantering av fysiskt interface
+            \item Batteriavläsning
         	\end{itemize}
     	\item Programlogik
     		\begin{itemize}
@@ -235,88 +247,92 @@ Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomen
     	\item Systemintegration
     		\begin{itemize}
         	\item Kommunikation mellan mjukvarumoduler
-        	\item Övergripande programstruktur och konventioner
+        	\item Övergripande programstruktur
         	\end{itemize}
 	\end{itemize}	
 
 \subsection{Arbetsuppdelning}
-Projektgruppen består av fyra datateknologer och två datavetare. En naturlig uppdelning, som även passar bra med gruppmedlemmarnas egna intresseområden, är att datavetarna är huvudansvariga för den webbprogrammeringsrelaterade delen av arbetet, dvs. hämtning, parsing och formattering av Tweets. Mer hårdvarunära programmering har delats upp på datateknologern, som även skött konstruktionsmoment relaterade till hårdvara och elektronikkonstruktion. En mer detaljerad beskrivning av arbetsuppdelningen inom gruppen ges i Appendix.
+Projektgruppen bestod av fyra datateknologer och två datavetare. En naturlig uppdelning, som även passade bra med gruppmedlemmarnas egna intresseområden, var att datavetarna blev huvudansvariga för den webbprogrammeringsrelaterade delen av arbetet, dvs. hämtning, parsing och formattering av meddelanden. Mer hårdvarunära programmering delades upp på datateknologerna, som även skötte konstruktionsmoment relaterade till hårdvara och elektronikkonstruktion. En mer detaljerad beskrivning av arbetsuppdelningen inom gruppen ges i Appendix~\ref{sec:arbetsfordelning}.
 
 \subsection{Utvecklingsmetod}
-Det mesta arbetet har utförts i grupper om två, dock flexibelt och anpassat efter de uppsatta konstruktionsmomenten. Vissa uppgifter har utförts av enskilda gruppmedlemmar, där det ansetts lämpligt. \\
+Det mesta arbetet utfördes i grupper om två, dock flexibelt och anpassat efter de uppsatta konstruktionsmomenten samt efter rådande projektstatus. Vissa uppgifter utfördes av enskilda gruppmedlemmar, där det ansågs lämpligt.\\
 
-En viktig strategi som togs fram redan i början av projektplaneringen var att etablera en gemensam bild av systemet inom gruppen och definiera tydligt avgränsade konstruktionsmoment, samt att formulera en tidsplanering. Vidare har mycket fokus lagts på kommunikation mellan (de vid tidpunkten aktuella) arbetsparen, och på kontinuerlig utvärdering av utfört arbete, relaterat till de gemensamt uppsatta målen och tidsplaneringen. \\
+En viktig strategi som togs fram redan i början av projektplaneringen var att etablera en gemensam bild av systemet inom gruppen och definiera tydligt avgränsade konstruktionsmoment, samt att formulera en tidsplanering. Vidare lades mycket fokus på kommunikation mellan och inom (de vid tidpunkten aktuella) arbetsparen, och på kontinuerlig utvärdering av utfört arbete. Utvärderingarna relaterades till de gemensamt uppsatta målen och till tidsplaneringen.\\
 
-Kommunikationen har skett genom ett antal olika kanaler; de viktigaste har varit Google groups, Git (versionshanteringssystemet) och gruppmöten. Gruppmöten har hållts varje vecka för att kunna samordna gruppen och ta större gemensamma beslut gällande t. ex. komponentval och projektets riktning. Handledaren har kunnat följa arbetet via den loggbok som förts under arbetets gång, men har även kunnat medverka vid varannat gruppmöte för kontinuerlig kontakt. Gruppens loggbok fungerar även som ett stöd under rapportskrivningen.
+Kommunikationen skedde genom ett antal olika kanaler; de viktigaste var Google Groups, Git (versionshanteringssystemet) och gruppmöten. Gruppmöten hölls varje vecka för att kunna samordna gruppen och ta större gemensamma beslut gällande till exempel komponentval och projektets övergripande riktning. Handledaren kunde följa arbetet via den loggbok som fördes under arbetets gång, men medverkade också vid varannat gruppmöte för kontinuerlig kontakt. Gruppens loggbok fungerade även som ett stöd under rapportskrivningen.
 
 \subsection{Versionshantering}
-Versionshantering av projektets programkod togs upp tidigt. Hantering av kod när det finns flera personer som jobbar på samma kodbas är komplex, inte minst när det sker ändringar i samma stycke kod samtidigt, som sedan behöver kombineras till det slutgiltiga resultatet. Situationer där kod fungerar som den ska den ena dagen men inte längre några veckor därefter är inte ovanliga. Den klart svåraste delen med att lösa generella buggar i programkod är att hitta felet, och då underlättar möjligheten att spåra just vilken ändring som införde buggen. Detta är något som ett bra versionshanteringssystem underlättar. \\
+Versionshantering av projektets programkod togs upp tidigt. Hantering av kod när det finns flera personer som jobbar på samma kodbas är komplex, inte minst när det sker ändringar i samma stycke kod samtidigt, som sedan behöver kombineras till det slutgiltiga resultatet. Situationer där kod fungerar som den ska den ena dagen men inte längre några veckor därefter är inte ovanliga. Den klart svåraste delen med att lösa generella buggar i programkod är att hitta felet, och då underlättar möjligheten att spåra just vilken ändring som införde buggen. Detta är något som ett bra versionshanteringssystem underlättar.\\
 
-Versionshantering innebär ofta en central plats att lagra sin kod. För att underlätta sammanflätningen av jobb som utförts parallelt så spårar ett versionshanteringssystem alla ändringar i koden, och kan intelligent föreslå strategier för att slå samman det arbetet som utförts. Som programmerare är det också användbart att kunna se vilka ändringar som har gjorts under tidens gång av sina medarbetare, utan att själv behöva leta upp förändringarna och jämföra den existerande koden med sin egen. \\
+Versionshantering innebär ofta en central plats att lagra sin kod. För att underlätta sammanflätningen av jobb som utförts parallelt så spårar ett versionshanteringssystem alla ändringar i koden, och kan intelligent föreslå strategier för att slå samman det arbetet som utförts. Som programmerare är det också användbart att kunna se vilka ändringar som har gjorts under tidens gång av sina medarbetare, utan att själv behöva leta upp förändringarna och jämföra den existerande koden med sin egen.\\
 
-Av ovan nämnda anledningar har gruppen därför valt att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (ca. 10 år), och hör till de decentraliserade versionshanteringsystemen. Jämförs båda grupperna av versionshanteringssystem så är de centraliserade versionshanteringssystemen långsamma, tar mer utrymme, har ett sämre arbetsflöde och är mindre förlåtande misstag om systemet behöver användas på ett annat sätt än vad som annars är vanligt. Av bland annat dessa anledningar valde gruppen att använda Git.
+Av ovan nämnda anledningar valde gruppen därför att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (~10 år), och hör till de decentraliserade versionshanteringsystemen. Då några i gruppen sedan tidigare har erfarenhet med SVN, och några i gruppen föredrar Git, stod valet mellan dem.\\
+
+Jämfört SVN med Git så är SVN långsammare överlag, då alla operationer på projektbasen kräver att de kommunicerar via nätverk med den server där projektbasen ligger. I Git utförs dock majoriteten av alla kommandon enbart lokalt, vilket ger Git en stor hastighetsfördel över SVN \hyperref[git]{(Git, 2012a)}. Att Git arbetar lokalt innebär också att alla i gruppen kan arbeta på kodbasen och versionshantera sin kod utan att ha tillgång till internet eller någon central server. Av bland annat ovan nämnda anledningar valdes Git som versionshanteringssystem för projektet.
 
 \subsubsection{Git och GitHub}
-Git är som tidigare nämnt ett decentraliserat versionshanteringssystem. Git används genom att först göra det arbete som är tänkt, och därefter spara dem lokalt i sitt projekts kodbas tillsammans med ett meddelande som beskriver varför ändringen gjordes och vad den gör. Efter en viss tid så ska ens egna arbete delas med sina medarbetare, och det görs genom att pusha sin kod till en plats där alla medarbetare kan nå koden. Om någon inte har hunnit pusha upp sin kod är det sedan varje individuell persons uppgift att slå ihop ändringarna och bestämma vad som ska finnas i slutresultatet. \\
+Git är som tidigare nämnt ett decentraliserat versionshanteringssystem. Git används genom att först göra det arbete som är tänkt, och därefter spara det lokalt i sitt projekts kodbas tillsammans med ett meddelande som beskriver varför ändringen gjordes och vad den gör. Efter en viss tid ska ens egna arbete delas med sina medarbetare, och det görs genom att {\it pusha}, ladda upp, sin kod till en plats som alla medarbetare kan nå. Om någon inte har hunnit ladda upp upp sin kod är det sedan varje individuell persons uppgift att slå ihop ändringarna och bestämma vad som ska finnas i slutresultatet.\\
 
-Som plats att spara koden på har vi använt GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan sin start, och har sedan September 2011 över en miljon användare och över två miljoner publika projekt. \\
+Som plats att spara koden på användes GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan dess lansering, och har sedan Maj 2012 över en och en halv miljon användare och över två och en halv miljoner publika projekt \hyperref[github]{(GitHub, 2012a)}.\\
 
-Under arbetets gång har alltså varje medlem i projektet kunnat publicera sina ändringar på gruppens projekt som finns tillgängligt på GitHub, där de andra medlemmarna i projektet sedan har kunnat inspektera ändringarna, kommentera på enstaka rader, rapportera buggar och även kunnat göra mindre ändringar i koden från webben i de fall man inte har kunnat klona projektet till sin dator och jobba lokalt.
+Under arbetets gång kunde alltså varje medlem i projektet publicera sina ändringar på gruppens projekt som finns tillgängligt på GitHub, där de andra medlemmarna i projektet sedan kunde inspektera ändringarna, kommentera på enstaka rader, rapportera buggar och även göra mindre ändringar i koden från webben i de fall man inte kunde klona projektet till sin dator och jobba lokalt.
 
 \section{Bakomliggande tekniker och tjänster}
 
 \subsection{Twitter}
-Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över (Twitter, 2012).\\
+Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över \hyperref[twitter]{(Twitter, 2012c)}.\\
 
-Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren (The National, 2011).
+Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den {\it Arabiska våren} \hyperref[national]{(The National, 2011)}.\\
 
 \subsubsection{Terminologi}
 Twitter utgörs av ett stort antal användare. En användare identifieras av ett användarnamn som är högst 15 tecken långt. \\
 
-En tweet (härefter meddelande) är ett inlägg på Twitter. Det tillhör en användare och består av upp till 140 Unicode-tecken. Detta meddelande kan innehålla hashtags (se nedan), som ingår i meddelandets metadata. En användares samling av meddelanden kallas för tidslinje. \\
+En tweet (härefter {\it meddelande}) är ett inlägg på Twitter. Det tillhör en användare och består av upp till 140 Unicode-tecken. Detta meddelande kan innehålla så kallade hashtags, som ingår i meddelandets metadata. En användares samling av meddelanden kallas för tidslinje. \\
 
-En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({\#}, hash). En hashtag används förs att kategorisera meddelandet, som sedan kan hittas genom en sökning på denna hashtag. En hashtag kan vara upp till 139 tecken lång och ett meddelande kan innehålla så många hashtags som ryms i dess 140 tecken. \\
+En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({\#}, hash). En hashtag används för att kategorisera meddelandet, som sedan kan hittas genom en sökning på denna hashtag. En hashtag kan vara upp till 139 tecken lång och ett meddelande kan innehålla så många hashtags som ryms i dess 140 tecken. \\
 
-En retweet är en kopia av ett existerande meddelande, återpublicerat av en annan användare. En retweet tillhör den andra användarens tidslinje. Den innehåller en kopia av det fullständiga originalmeddelandet och inleds med strängen {\it RT @user: }, där user är den ursprungliga författarens användarnamn. Detta innebär att en retweet kan innehålla upp till 161 tecken: 140 för det ursprungliga meddelandet, 15 för ett användarnamn av maximal längd och 6 för formateringen runt användarnamnet.
+En {\it retweet} är en kopia av ett existerande meddelande, återpublicerat av en annan användare. En retweet tillhör den andra användarens tidslinje. Den innehåller en kopia av det fullständiga originalmeddelandet och inleds med strängen {\it RT @user: }, där user är den ursprungliga författarens användarnamn. Detta innebär att en retweet kan innehålla upp till 161 tecken: 140 för det ursprungliga meddelandet, 15 för ett användarnamn av maximal längd och 6 för formateringen runt användarnamnet.
 
 \subsubsection{API}
 \label{twitterapi}
 Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012a)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
 
-Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se sida~\pageref{json}.
+Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se avsnitt~\ref{sec:json}.
 
 \subsection{Arduino}
-Arduino är en microcontroller-plattform vars design och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012a)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och -varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet. \\
+Arduino är en microcontroller-plattform vars mönsterkortsdesign och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012a)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet.\\
 
-På grund av sin enkelhet och flexibilitet är Arduino en populär plattform för prototyper och hobbyprojekt, men den erbjuder också relativt avancerad funktionalitet. En utvecklare kan med hjälp av utbyggnadskort \hyperref[arduino]{(Arduino, 2012a)} och kreativ programmering utnyttja Arduinons fulla potential. Dessa egenskaper är stora bidragande faktorer till att Arduino valdes som plattform för systemet, men även att det finns ett stort community på internet, och även många färdiga mjukvarubibliotek. Andra alternativ som övervägdes i projektets planeringsfas var STM32 från ARM och Cerebot II från Digilent. STM32 erbjuder bättre prestanda än övriga alternativ, men är sämre lämpad i övrigt för projektet, med avseende på kostnad, smidighet och tiden det tar att komma igång med utvecklingen. Cerebot II har liknande specifikationer som Arduino, men det finns färre färdiga tillbehör av den typ som behövs för projektet, och skulle bli otympligare fysiskt. Utöver detta saknas till stora delar det community och de färdiga bibliotek som finns till Arduino. \\
+På grund av sin enkelhet och flexibilitet är Arduino en populär plattform för små prototyper och hobbyprojekt, men den erbjuder också relativt avancerad funktionalitet. Då Arduino är utformad för att kunna användas av nybörjare inom microcontrollersystem är basfunktionaliteten relativt simpel, men en utvecklare kan med hjälp av utbyggnadskort \hyperref[arduino]{(Arduino, 2012a)} och kreativ programmering få ut tillräcklig prestanda för många icke-triviala tillämpningar. Dessa egenskaper är stora bidragande faktorer till att Arduino valdes som plattform för systemet, men även att det finns ett stort community på internet och många färdiga mjukvarubibliotek.\\
+
+ Andra alternativ som övervägdes i projektets planeringsfas var STM32-baserade utvecklingskort från ARM och Cerebot II från Digilent. STM32 erbjuder bättre prestanda än övriga alternativ, men är sämre lämpad i övrigt för projektet, med avseende på kostnad, smidighet och tiden det tar att komma igång med utvecklingen. Cerebot II har liknande specifikationer som Arduino, men det finns färre färdiga tillbehör av den typ som behövs för projektet, och skulle bli otympligare fysiskt. Utöver detta saknas till stora delar det community och de färdiga bibliotek som finns till Arduino.\\
 
 \subsubsection{Historia}
-Initiativet till Arduino togs vid den italienska högskolan Interaction Design Institute Ivrea. Det föddes ur det liknande projektet Wiring från samma högskola. Wiring bygger i sin tur på projektet Processing från Massachusetts Institute of Technology \hyperref[wiring]{(Wiring, 2012)}. \\
+Initiativet till Arduino togs vid den italienska högskolan {\it Interaction Design Institute Ivrea}. Det föddes ur det liknande projektet {\it Wiring} från samma högskola. Wiring bygger i sin tur på projektet {\it Processing} från Massachusetts Institute of Technology \hyperref[wiring]{(Wiring, 2012)}. \\
 
-Samtliga projekt har haft som utgångspunkt att bygga på källkod och hårdvara publicerad under öppen licens. Skillnader som kan nämnas är att Processing från början inte var kopplat till en specifik hårdvaruplattform, utan var mer fokuserat på programmeringsspråk och utvecklingsmiljö. Dess programmeringsspråk byggde på Java, snarare än på C/C++ som Wiringprojektet och senare Arduino \hyperref[processing]{(Processing, 2012)}.
+Samtliga projekt har haft som utgångspunkt att bygga på källkod och hårdvara publicerad under öppen licens. Öppenheten hos hårdvaran gäller dock endast de mönsterkort och små stödkretsar som utformats inom projektet, och inte de övriga kommersiella kretsar som ingår, såsom microcontrollern från Atmel. Skillnader  som kan nämnas mellan projekten är att Processing från början inte var kopplat till en specifik hårdvaruplattform, utan var mer fokuserat på programmeringsspråk och utvecklingsmiljö. Processing byggde på Java, snarare än på C/C++ som Wiringprojektet och senare Arduino \hyperref[processing]{(Processing, 2012)}.
 
 \subsubsection{Hårdvara}
-Arduino bygger på Atmels AVR-microcontrollers (de flesta varianterna av Arduino använder ATMega-serien). I sin grundform erbjuder Arduino en relativt omodifierad AVR-microcontroller och grundläggande kringelektronik för att stödja och programmera denna. Dessa kringkretsar består bland annat av en spänningsregulator, en oscillator och i vissa fall externt minne för att komplettera AVR:ens on-chip-minne  \hyperref[arduino]{(Arduino, 2012a)}. Dessutom finns grundläggande in- och utgångar på microcontrollern utdragna till anslutningar för att förenkla för användaren vid inkoppling av tillbehör eller övrig elektronik som ska användas i projektet. \\
+Arduino bygger på microcontrollers ur Atmels AVR-familj (de flesta varianterna av Arduino använder ATMega-serien). I sin grundform erbjuder Arduino en relativt omodifierad AVR-microcontroller och grundläggande kringelektronik för att stödja och programmera denna. Dessa kringkretsar består bland annat av en spänningsregulator, en oscillator och i vissa fall externt minne för att komplettera AVR:ens on-chip-minne \hyperref[arduino]{(Arduino, 2012a)}. Dessutom finns grundläggande in- och utgångar på microcontrollern utdragna till fysiska anslutningar för att förenkla för användaren vid inkoppling av tillbehör eller övrig elektronik som ska användas i projektet. \\
 
-De flesta Arduino-implementationer följer samma standard för de fysiska anslutningarna, för att vara kompatibla med varandra och tillåta smidig anslutning av utbyggnadskort. Dessa utbyggnadskort kallas i Arduino-sammanhang för Shields. Plattformen har även en USB- och Seriell-port för programmering och kommunikation med en PC. Nedan är en beskrivning av de Arduino-varianter och viktiga utbyggnadskort som används i det system som beskrivs i den här rapporten.
+De flesta Arduino-implementationer följer samma standard för de fysiska anslutningarna, för att vara kompatibla med varandra och tillåta smidig anslutning av utbyggnadskort. Dessa utbyggnadskort kallas i Arduino-sammanhang för {\it Shields}. Många Arduino-varianter har även en USB-port för programmering och kommunikation med en PC. 
 
 \subsubsection{Community}
-Eftersom Arduino anses användarvänlig och är en öppet licensierad plattform har den ett stort community av hobbyister och även mer avancerade användare på internet. Många bloggar och forum är dedikerade till elektronikprojekt genomförda med Arduino som utgångspunkt. Vidare finns ett stort antal mjukvarubibliotek tillgängliga, i många fall skrivna av community-medlemmar, och det finns goda möjligheter att få hjälp. Detta var ett av skälen till att Arduino valdes som plattform för arbetet. \\
+Eftersom Arduino anses användarvänlig och är en öppen plattform har den ett stort community av hobbyister och även mer avancerade användare på internet. Många bloggar och forum är dedikerade till elektronikprojekt genomförda med Arduino som utgångspunkt. Vidare finns ett stort antal mjukvarubibliotek tillgängliga, i många fall skrivna av community-medlemmar, och det finns goda möjligheter att få hjälp. Detta var ett av skälen till att Arduino valdes som plattform för arbetet. \\
 
 \subsubsection{Programmering}	
-Arduino inkluderar en utvecklingsmiljö för den mjukvara som ska köras på hårdvaruplattformen. Programmeringsspråket som används är C/C++. Det finns vissa mindre modfikationer, främst i form av tillägg för att underlätta hårdvarunära eller elektronikrelaterade operationer, exempelvis att skriva till en digital utgång. Detta sker genom färdiga funktioner och basbibliotek, samt viss modifiering av koden innan kompilering. Utvecklingsmiljön använder kompilatorn avr-gcc för att kompilera kod som ska köras på Arduinons AVR-microcontroller, och programmeraren kan utan problem använda sig av AVR-anpassad kod skriven i ANSI-C \hyperref[arduino]{(Arduino, 2012a)}.
+Arduino inkluderar en utvecklingsmiljö för den mjukvara som ska köras på hårdvaruplattformen. Programmeringsspråket som används är C/C++. Det finns vissa mindre modfikationer, främst i form av tillägg för att underlätta hårdvarunära eller elektronikrelaterade operationer, exempelvis att skriva till en digital utgång. Detta sker genom färdiga funktioner och basbibliotek, samt viss modifiering av koden innan kompilering. Utvecklingsmiljön använder kompilatorn {\it avr-gcc} för att kompilera kod som ska köras på Arduinons AVR-microcontroller, och programmeraren kan utan problem använda sig av AVR-anpassad kod skriven i {\it ANSI-C} \hyperref[arduino]{(Arduino, 2012a)}.
 
 \subsection{Energieffektiva Displaytekniker}
 
 \subsubsection{E-Paper}
-E-Paper är en typ av displayteknologi som är utvecklad för att vara energieffektiv, och för att efterlikna en tryckt boktext. Tekniken använder ingen bakgrundsbelysning, utan fungerar, precis som en tryckt text, genom att reflektera snarare än att sända ut ljus \hyperref[epapercentral]{(Epaper Central, 2012)}. Detta gör att E-Paper inte kan användas i mörker. Den egenskap som gör E-Paper attraktivt är i först hand att tekniken inte använder någon energi för att visa en statisk bild, utan endast för att byta tillstånd. Detta gör att E-paper kan behålla och visa en bild utan matningsspänning ansluten, vilket gör tekniken användbar i en del applikationsområden där energieffektivitet är högt prioriterat. Exempel som kan nämnas är busskurer, smarta kreditkort, E-boksläsare och elektroniska prisskyltar i affärer. I fallet med E-boksläsare är dessutom likheten med boktext en eftertraktad egenskap. Displayer som tillverkas med E-paper-teknik kan även göras böjbara och ytterst tunna. \\
+E-Paper är en typ av displayteknologi som är utvecklad för att vara energieffektiv, och för att efterlikna en tryckt boktext. Tekniken använder ingen bakgrundsbelysning, utan fungerar genom att reflektera snarare än att sända ut ljus \hyperref[epapercentral]{(Epaper Central, 2012)}. Detta gör att E-Paper inte kan läsas i mörker. Den egenskap som gör E-Paper attraktivt är i först hand att tekniken inte använder någon energi för att visa en statisk bild, utan endast för att byta tillstånd. Detta gör att E-paper kan behålla och visa en bild utan matningsspänning ansluten, vilket gör tekniken användbar i en del applikationsområden där energieffektivitet är högt prioriterat. Exempel som kan nämnas är busskurer, smarta kreditkort, E-boksläsare och elektroniska prisskyltar i affärer. I fallet med E-boksläsare är dessutom likheten med boktext en eftertraktad egenskap. Displayer som tillverkas med E-paper-teknik kan även göras böjbara och ytterst tunna. \\
 
 De uppenbara fördelarna med E-paper är att energiförbrukningen för textuppvisningen minskar dramatiskt och att behovet av bakgrundsbelysning frångås. Utöver detta finns det andra, mer subjektiva, fördelar, såsom att läsupplevelsen kan uppfattas som mer naturlig och bekväm då E-paper liknar en tryckt bok utseendemässigt, och inte behöver uppdateras kontinuerligt. \\
 
 En stor nackdel som vanligen nämns i samband med E-paper är att tekniken inte klarar av snabba uppdateringar, vilket omöjliggör mer avancerade menysystem och användargränssnitt. Dessutom är E-paper relativt dyrt i dagsläget, och de flesta kommersiellt tillgängliga displayerna med tekniken stödjer endast svart-vitt eller motsvarande. Färgdisplayer är dock på väg ut på marknaden (TechOn, 2009).
 
-\subsubsection{Bistabila LCD}
-Tekniken för bistabila LCD har utvecklats under de senaste åren, och ett antal olika lösningar har tagits fram. Bistabila LCD är baserade, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att inkommande ljus kan släppas genom eller reflekteras genom att positionera de olika lagren av flytande kristall i förhållande till varandra \hyperref[mingu]{(M. Gu, 2006)}. Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan. \\
+\subsubsection{Bistabil LCD}
+Bistabil LCD är baserad, som vanlig LCD-teknik, på flytande kristaller. Kristallerna organiseras i lager ovanpå varandra, och deras riktning kan styras, vilket gör att man kan släppa genom eller reflektera inkommande ljus genom att positionera de olika lagren av flytande kristall i förhållande till varandra \hyperref[mingu]{(Gu, 2006)}. Tekniken möjliggör att en display kan behålla en bild även utan matningsspänning och kräver ingen bakgrundsbelysning, även om många tillverkare av bistabila LCD valt att bygga in energieffektiv sådan.\\
 
 Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som båda teknikerna har är den relativt, jämfört med konventionell displayteknik, långsamma uppdateringshastigheten. Det rör sig dock om två nya tekniker som fortfarande utvecklas.
 
@@ -328,19 +344,21 @@ Systemet är konstruerat med moduläritet i åtanke, både för mjuk- och hårdv
 Basstationen och skylten är båda baserade runt microcontrollerplattformar. Till dessa plattformar finns anslutna kringmoduler och kringkretsar som ger de önskade I/O-funktionerna. De båda systemdelarna kommunicerar trådlöst via en radiolänk och är utrustade med varsin radiotranceiver.
 
 \subsubsection{Skylt}
-Skylten är baserad runt en Arduino Pro, som beskrivs i rapportens inledning. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med in- och ut-datapinnar, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
+Skylten är baserad runt en Arduino Pro. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med I/O, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
 	
 	\begin{itemize}
-    	\item Display för uppvisning av Tweets och systeminformation
+    	\item Display för uppvisning av meddelanden och systeminformation
     	\item XBee-modem för radiokommunikation med basstationen
     	\item Interfacekort med tryckknappar och statusindikatorer
     	\item Batteri och batteriavläsningskrets
 	\end{itemize}
 	
-Skylten utför inget avancerat logikarbete; tyngdpunkten för skyltens design ligger istället på att så enkelt och strömsnålt som möjligt ta emot tweets och visa upp dem. För att göra systemet så energieffektivt som möjligt befinner sig skylten i ett strömspar- eller sovläge större delen av tiden. Skylten aktiveras periodiskt med ett bestämt tidsintervall och skickar en förfrågan till basstationen om ny data. Skyltens display har plats för minst 160 tecken: 140 tecken från själva tweeten och 20 tecken ytterligare information i form av tid och datum.
+Skylten utför inget avancerat logikarbete. Tyngdpunkten för skyltens design ligger istället på att så enkelt och strömsnålt som möjligt ta emot meddelanden och visa upp dem. För att göra systemet så energieffektivt som möjligt befinner sig skylten i ett strömspar- eller sovläge större delen av tiden. Skylten aktiveras var femte minut och skickar en förfrågan till basstationen om ny data. Intervallet fem minuter valdes som en bra kompromiss mellan energieffektivitet och snabba uppdateringar för användaren. En ny förfrågan kan också skickas genom att användaren trycker på en knapp på skylten.\\
+
+Skyltens display har plats för 160 tecken: 140 tecken från själva meddelandet och 20 tecken ytterligare information i form av tid och datum. Tecknen fördelas över 8 rader med plats för 20 tecken vardera.
 
 \subsubsection{Basstation}
-Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av tweets. Basstationen är ansvarig för att hämta och formattera tweets. Efter att texten för en tweet har hämtats återstår följande justeringar:
+Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av tweets. Basstationen är ansvarig för att hämta och formattera meddelanden. Efter att texten för ett meddelande har hämtats återstår följande justeringar:
 	
 	\begin{itemize}
     	\item Tecken som inte stöds av skyltens display rensas bort eller ersätts.
@@ -357,33 +375,33 @@ Arduino bygger på microcontrollers ur Atmels AVR-serie. AVR är relativt enkla 
 Som exempel på moduläriteten och energieffektiviteten hos AVR kan nämnas att systemutvecklaren har frihet att stänga ner oanvända delar av microcontrollern, såsom inbyggda A/D-omvandlare eller extraklockor \hyperref[atmel]{(Atmel, 2012c)}.
 
 \subsubsection{Skylt}
-\label{sec:skylt}
-Arduino Pro är en nedskalad variant av Arduino, och har endast grundläggande funktionalitet och fysiska kontakter. Varianten är byggd för att klara batteridrift och för att ta liten plats i konstruktionen, egenskaper som passar bra in på den produkt arbetet syftar till att framställa. Som namnet antyder är Arduino Pro något mindre lättanvänd då den saknar USB-anslutning och kräver att användaren klarar av att bygga egna anslutningar. Den Arduino Pro som valts för arbetet bygger på en ATMega328, baserad på 8-bit-arkitekturen AVR, klockad till 8MHz och använder 3.3V \hyperref[arduino]{(Arduino, 2012b)}. En Arduino Pro utgör grunden i skylten. ATMega328 är utrustad med 32 KByte flashminne och kan maximalt stödja 23 I/O-pinnar \hyperref[atmel]{(Atmel, 2012a)}.
+\label{skylt}
+Arduino Pro är en nedskalad variant av Arduino, och har endast grundläggande funktionalitet och fysiska kontakter. Varianten är byggd för att klara batteridrift och för att ta liten plats i konstruktionen, egenskaper som passar bra in på den produkt arbetet syftar till att framställa. Som namnet antyder är Arduino Pro något mindre lättanvänd då den saknar USB-anslutning och kräver att användaren klarar av att bygga egna anslutningar. Den Arduino Pro som valts för arbetet bygger på en ATMega328, baserad på 8-bit-arkitekturen AVR, är klockad till 8MHz och använder 3,3V \hyperref[arduino]{(Arduino, 2012b)}. ATMega328 är utrustad med 32 kByte flashminne och kan maximalt stödja 23 I/O-pinnar \hyperref[atmel]{(Atmel, 2012a)}.
 
 \subsubsection{Basstation}
-Arduino Mega är en större variant av Arduino, baserad på ATMega2560 som har mer on-chip-minne och fler anslutningspinnar än exempelvis ATMega328 som många andra Arduino-varianter bygger på \hyperref[arduino]{(Arduino, 2012c)}. Vidare erbjuder Arduino Mega fler inbyggda hårdvaruserieportar och smidigare utdragningar av matningsspänning och jord till färdiga anslutningar. Plattformens dimensioner, minnesstorlek och många anslutningar gjorde den till ett bra val för arbetet. Basstationen är baserad på en Arduino Mega. Arduino Mega har 256 KByte flashminne, betydligt mer än de mindre kretsarna i samma familj, och stödjer upp till 86 I/O-pinnar \hyperref[atmel]{(Atmel, 2012b)}. \\
+Arduino Mega är en större variant av Arduino, baserad på ATMega2560 som har mer on-chip-minne och fler I/O-pinnar än exempelvis ATMega328 som många andra Arduino-varianter bygger på \hyperref[arduino]{(Arduino, 2012c)}. Vidare erbjuder Arduino Mega fler inbyggda hårdvaruserieportar och smidigare utdragningar av matningsspänning och jord till färdiga anslutningar. Plattformens dimensioner, minnesstorlek och många anslutningar gjorde den till ett bra val för arbetet. Basstationen är baserad på en Arduino Mega. Arduino Mega har 256 kByte flashminne, betydligt mer än de mindre kretsarna i samma familj, och stödjer upp till 86 I/O-pinnar \hyperref[atmel]{(Atmel, 2012b)}. \\
 
-Basstationen använder en Ethernet Shield för att ansluta till internet. Ethernet Shield är ett utbyggnadskort till Arduino som utökar dess funktionalitet genom att lägga till möjlighet till nätverksuppkoppling via 10/100Mb Ethernet med en vanlig RJ45-anslutning. Kortet drar matningsspänning från sitt värdkort. Kommunikationen med värdplattformen sker via SPI. På Ethernet Shield sitter en krets, WIZnet W5100 \hyperref[arduino]{(Arduino, 2012e)}. Kretsen implementerar en TCP/IP-stack vilket innebär att detta inte behöver skötas i mjukvara \hyperref[wiznet]{(WIZnet Co. Ltd., 2012)}. Utöver RJ45-anslutning har Ethernet Shield även plats för ett micro SD-kort som Arduino kan läsa och skriva till. \\
+Basstationen använder en Ethernet Shield för att ansluta till internet. Ethernet Shield är ett utbyggnadskort till Arduino som utökar dess funktionalitet genom att lägga till möjlighet till nätverksuppkoppling via 10/100 Mbit/s Ethernet med en vanlig RJ45-anslutning. Kortet drar matningsspänning från sitt värdkort. Kommunikationen med värdplattformen sker via SPI. På Ethernet Shield sitter en krets, WIZnet W5100 \hyperref[arduino]{(Arduino, 2012e)}. Kretsen implementerar en TCP/IP-stack vilket innebär att detta inte behöver skötas i mjukvara \hyperref[wiznet]{(WIZnet Co. Ltd., 2012)}. Utöver RJ45-anslutning har Ethernet Shield även plats för ett micro-SD-kort som Arduino kan läsa och skriva till. \\
 
 XBee Shield är ett utbyggnadskort för att lägga till funktionalitet för XBee-modem för användning tillsammans med Arduino. Utbyggnadskortet är relativt okomplicerat, och dess största bidrag är spänningsreglering och fysiskt smidig anslutning till resten av systemet. Basstationen använder en XBee-shield, medan skylten använder en mindre, nedskalad variant \hyperref[arduino]{(Arduino, 2012d)}.
 
 \subsection{Radiolänk}
-En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Ett vidare problem som behandlas i projektet är energieffektivitet, särskilt för skyltmodulen. Detta kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukare i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
+En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Energieffektiviten i systemet kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukare i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
 	
 	\begin{itemize}
-	\item Radiohårdvara och -sändare: Trådlösa nätverksmoduler som kan kommunicera med microcontrollerplattformarna samt erbjuda sändning och mottagning av radiosignaler.
-    	\item Nätverket: Den mjukvara och det protokoll som bygger upp nätverket som använder hårdvaran.
+	\item {\it Radiohårdvara och -sändare}: Trådlösa nätverksmoduler som kan kommunicera med microcontrollerplattformarna samt erbjuda sändning och mottagning av radiosignaler.
+    	\item {\it Nätverket}: Den mjukvara och det protokoll som bygger upp nätverket som använder hårdvaran.
 	\end{itemize}
 	
 \subsubsection{Uppgift}
 Huvuduppgiften för det trådlösa nätverket är att överföra textdata över en radiolänk. Datan hämtas från Twitter och behandlas av basstationen, som sedan skickar den vidare trådlöst via radiolänken till skylten, som slutligen visar upp datan på displaymodulen. \\
 
-Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt mångar liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både robust för att garantera tillförlitlig dataöverföring, och dynamisk för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
+Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt många liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både {\it robust} för att garantera tillförlitlig dataöverföring, och {\it dynamisk} för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
 
 Kravet på robusthet innebär att radiolänken måste implementera ett protokoll som stödjer felkontroll för skickade paket, såsom i form av sekvensnumrering, kontrollsummor och omsändning.
 
 \subsubsection{Nätverk}
-Dynamisk ihopkoppling och nätverksuppsättning är ett mål med radiolänken. Detta innebär praktiskt att basstationen söker genom tillgängliga sändningskanaler för att hitta en lämplig kanal, det vill säga med låg energinivå. Basstationen skapar ett nätverk genom att välja ett ledigt nätverksidentifikationsnummer (PAN-ID), och sänder ut information om det nyformerade nätverket till skyltmoduler i närheten, samt öppnar nätverket för nya enheter att ansluta sig. Skyltmodulen behöver kunna söka efter basstationer i närheten, för att sedan gå med i en basstations nätverk om ett sådant finns tillgängligt och öppet. \\
+Dynamisk ihopkoppling och nätverksuppsättning är ett mål med radiolänken. Detta innebär praktiskt att basstationen söker genom tillgängliga sändningskanaler för att hitta en lämplig kanal, det vill säga med låg energinivå. Basstationen skapar ett nätverk genom att sätta ett nätverksidentifikationsnummer (PAN-ID), och sänder ut information om det nyformerade nätverket till skyltmoduler i närheten, samt öppnar nätverket för nya enheter att ansluta sig. Skyltmodulen behöver kunna söka efter basstationer i närheten, för att sedan gå med i en basstations nätverk om ett sådant finns tillgängligt, är öppet och matchar skyltens PAN-ID. \\
 
 För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
 	
@@ -391,22 +409,22 @@ För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
     	\item Är en välkänd standard (bygger på IEEE 802.15.4), god dokumentation.
     	\item Är billig och relativt enkel att implementera, vilket är lämpligt för mindre projekt. Den används av hobbyelektronikentusiaster, vilket ger värdefulla kunskapskällor i form av bloggar och tidningsartiklar, där liknande problem som projektet behandlar tas upp.
     	\item Stödjer en nätverksstruktur som passar projektet, där det finns en basstation som koordinerar nätverket (Coordinator i ZigBee-terminologi) och en eller flera slutenheter (End Devices).
-    	\item Är utvecklad för att vara energieffektiv.
-    	\item Stödjer tillförlitlig överföring av data.
+    	\item Är utvecklad för att vara {\it energieffektiv}.
+    	\item Stödjer {\it tillförlitlig} överföring av data.
     	\item Kan konfigureras så att radiomodulerna ger respons på mottagna kommandon.
     	\end{itemize}
 \hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}\\
     	
-ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2.4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16,000 unika PAN-ID. \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
+ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2,4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16000 unika PAN-ID:n. \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
 
-ZigBee-nätverk kan innehålla tre olika typer av enheter: coordinator, router och end-device. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[zigbee]{(ZigBee Alliance, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
+ZigBee-nätverk kan innehålla tre olika typer av enheter: {\it coordinator}, {\it router} och {\it end-device}. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[zigbee]{(ZigBee Alliance, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
 
 En router fungerar som en länk mellan coordinator (eller en annan router) och en eller flera end-devices eller andra routers. Dessa är inte aktuella för användning i det här projektet, då det inte finns något behov för en sådan trädstruktur på nätverket. \\
 
 End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden \hyperref[digi]{(Digi, 2012a)}. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
 
 \subsubsection{Hårdvara}
-ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (bland andra Atmel och Freescale), men efter undersökning av utbudet av hårdvara som stödjer standarden valdes XBee från tillverkaren Digi, eftersom XBee-modulerna jämfört med andra radiotransceivers i samma storlek:
+ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (bland andra Atmel och Freescale), men efter undersökning av utbudet av hårdvara som stödjer standarden valdes XBee från tillverkaren {\it Digi}, eftersom XBee-modulerna jämfört med andra radiotransceivers i samma storlek:
 	
 	\begin{itemize}
 	\item Är kompatibla med Arduinoplattformen och relativt billiga.
@@ -417,8 +435,7 @@ ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (b
 	\end{itemize}
 \hyperref[digi]{(Digi, 2012a,b)}\\
 	
-Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små U.FL-anslutningar för extern antenn.
-Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via U.FL-anslutningarna \hyperref[digi]{(Digi, 2012c)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
+Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små koaxial-anslutningar (U.FL) för extern antenn. Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via koaxial-anslutningarna \hyperref[digi]{(Digi, 2012c)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
 
 XBee-modulerna har två operationslägen \hyperref[xbeearduino]{(xbee-arduino, 2011)}. AT-läget (Application Transparent) är ett enkelt läge för punkt-till-punkt-kommunikation, och kan ses som en trådlös ersättning för en seriellkabel \hyperref[digi]{(Digi, 2012a)}. AT-läget har fördelen att det är mycket enkelt att konfigurera och erbjuder en simpel och snabb lösning för grundläggande radioöverföring. Nackdelarna med AT-läget är att mycket av den mer avancerade funktionaliteten går förlorad. Som nämnt ovan behövs robusthet i överföringen, och ihopparningen som den beskrivs ovan är över nivån för vad som är det tänkta användningsområdet för AT-läget. \\
 
@@ -446,20 +463,20 @@ All data skickas över radiolänken som datapaket, snarare än som en enkel byte
 Paketen är märkta med vilken typ av data det rör sig om. De olika pakettyperna är:
 
 	\begin{itemize}
-    	\item Data: Inkommande eller utgående data till annan ZigBee-nod
-    	\item Kommandosvar: Svar eller bekräftelse på kommando till lokal radiomodul
-    	\item Leveransstatus: Bekräftelse på att ett utgående paket har skickats (eller inte)
-    	\item Modemstatus: Statussignal från lokal radiomodul
+    	\item Data: Inkommande eller utgående data till annan ZigBee-nod.
+    	\item Kommandosvar: Svar eller bekräftelse på kommando till lokal radiomodul.
+    	\item Leveransstatus: Bekräftelse på att ett utgående paket har skickats (eller inte).
+    	\item Modemstatus: Statussignal från lokal radiomodul.
     	\end{itemize}
 \hyperref[digi]{(Digi, 2012b)}
 
-Nyttodatan är den data som ska överföras, exempelvis i det aktuella projektet textdata från basstation till skylt eller statuskoder från modemen för att signallera nätverksstatus. \\
+Nyttodatan är den data som ska överföras, exempelvis i det aktuella projektet textdata från basstation till skylt eller statuskoder från modemen för att signalera nätverksstatus. \\
 
-Ett paket kan maximalt innehålla 72 bytes av nyttodata \hyperref[digi]{(Digi, 2012a)}, som motsvarar maximalt 72 tecken, vilket är mindre än antalet tecken en Tweet kan innehålla. Detta gör det nödvändigt att dela upp längre meddelanden i flera olika paket, som sedan skickas numrerade över radiolänken. Om överföringen av ett uppdelat meddelande bryts mitt i ett meddelande (exempelvis tredje paketet förloras vid överföring), begär skylten omsändning. Om detta också misslyckas, väntar skylten en längre period och försöker sedan igen. För att möjliggöra smidig paketuppdelning används på basstationsidan en databuffert, som även underlättar för programlogiklagret och minimerar risken för felaktiga överföringar. \\
+Ett paket kan maximalt innehålla 72 bytes av nyttodata \hyperref[digi]{(Digi, 2012a)}, som motsvarar maximalt 72 tecken, vilket är mindre än antalet tecken ett meddelande kan innehålla. Detta gör det nödvändigt att dela upp längre meddelanden i flera olika paket, som sedan skickas numrerade över radiolänken. Ett meddelande kan maximalt delas upp i tre paket. För att möjliggöra smidig paketuppdelning används på basstationsidan en databuffert, som även underlättar för programlogiklagret och minimerar risken för felaktiga överföringar. \\
 
 Ihopparningen av moduler sker genom att basstationen sätter upp ett nätverk, och sedan signalerar att den är redo för att end-devices ansluter sig till nätverket. Basstationen är ansvarig för att sätta upp reglerna för enheter som ansluter sig, och nya enheter tillåts endast ansluta under en begränsad tidsperiod. Skyltmodulen söker efter nätverk i närheten, och ansluter sig. Detta koordineras genom att användaren trycker på fysiska knappar på basstation och skylt för att starta ihopparningen. \\
 
-När skyltmodulen har anslutit sig till ett nätverk skickar den ett meddelande till nätverkets coordinator-enhet för att säkerställa att det rör sig om rätt typ av nätverk. Basstationen lyssnar under anslutningsperioden efter sådana meddelanden och skickar tillbaka ett svarsmeddelande. Om skyltmodulen inte får något svar på sin förfrågan är det fel typ av nätverk och sökningen efter basstationen fortsätter. När basstationen har verifierat skyltens anslutning sparas dess adress för framtida kommunikation. \\
+Skyltmodulen ansluter sig till basstationen genom att skicka en simpel förfrågan. Basstationen svarar med ett svarsmeddelande. När basstationen har verifierat skyltens anslutning sparas dess adress för framtida kommunikation. \\
 
 Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överföring av kommandon och XBee-modulernas svar på dessa kommandon. Överföringen sker på ett liknande sätt som dataöverföringen via radiolänken, men på ett mer uppstrukturerat och väldefinierat sätt, då det endast finns en begränsad uppsättning kommandon och svar. Då de ges vissa kommandon svarar XBee-modemen med data, och på vissa andra endast med OK-meddelanden. Dessa kommandosvar ger arduinoplattformarna bättre kontroll över XBee-modemens exakta status, och hjälper även vid felsökning under utvecklingen. \\
 
@@ -483,19 +500,19 @@ Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan
 \label{fig:radio_skylt}
 \end{figure}
 
-Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas.
+Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas. 
 
 \subsection{Display}
-För att kunna visa upp meddelanden på skyltmodulen krävs det att den har en display. Till detta har vi valt en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm . Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.
+För att kunna visa upp meddelanden på skyltmodulen krävs det att den har en display. Till detta har en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays valts. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm. Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.\\
 
-Displayen skall kunna visa upp 160 tecken som beskrivits i avsnittet \hyperref[skylt]{(Moduluppdelning - skylt)}, vilket ger utrymme att använda 240 pixlar per tecken. Med exempelvis tecken som är 12 pixlar breda och 20 pixlar höga kan man utnyttja hela displayen och det finns gott om pixlar till att visa upp tydliga tecken. Notera att tomt utrymme mellan tecken ingår i de 240 pixlarna.
+Displayen skall kunna visa upp 160 tecken som beskrivits i avsnittet \hyperref[skylt]{(Moduluppdelning - skylt)}, vilket ger utrymme att använda 240 pixlar per tecken. Med exempelvis tecken som är 12 pixlar breda och 20 pixlar höga kan man utnyttja hela displayen och det finns gott om pixlar till att visa upp tydliga tecken. Notera att tomt utrymme mellan tecken ingår i de 240 pixlarna.\\
 
 Det är viktigt att tecknen är lätta att läsa även på avstånd eftersom typisk användning innebär att man kan vilja se om meddelandet uppdateras genom att kasta en snabb blick när man går förbi skyltmodulen, och den fasta monteringen innebär att det är omöjligt att få skyltmodulen i ögonhöjd för alla som kan tänkas vilja läsa från den.
 
 \subsubsection{Displayens energieffektivitet}
-För att maximera skyltens batteritid är viktigt att displayen är energisnål. Eftersom den valda displayen endast kräver ström då den uppdateras passar den bra med resten av skyltmodulen som spenderar större delen av tiden i ett lågenergiläge och inte kräver uppdateringar av displayen.
+För att maximera skyltens batteritid är viktigt att displayen är energisnål. Eftersom den valda displayen endast kräver ström då den uppdateras passar den bra med resten av skyltmodulen som spenderar större delen av tiden i ett lågenergiläge och inte kräver uppdateringar av displayen.\\
 
-För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell~\ref{tab:kenttable}. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.
+För att avgöra hur energisnål displayen är jämförs den med LCD-displayer av konventionell typ. Se tabell~\ref{tab:kenttable}. Den alfanumeriska displayen är av en enklare typ som dock klarar av att visa lika många tecken. Den grafiska displayen är av liknande storlek och upplösning som Kent-displayen.\\
 
 \begin{table}[h]
 \centering
@@ -509,34 +526,34 @@ För att avgöra hur energisnål displayen är jämförs den med LCD-displayer a
 \label{tab:kenttable}
 \end{table}
 
-Strömförbrukningsvärdena har hämtats från respektive displays datablad \hyperref[lcdalfa]{(DISPLAY Elektronik, 2009)}, \hyperref[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \hyperref[kent]{(Kent Displays Inc., 2010)}. Vi räknar med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten.
+Strömförbrukningsvärdena har hämtats från respektive displays datablad \hyperref[lcdalfa]{(DISPLAY Elektronik, 2009)}, \hyperref[lcdgraph]{(DISPLAY Elektronik, 2011)}. Kent-displayens genomsnittsförbrukning togs fram med antagandet att en uppdatering tar 1,27 sekunder, vilket anges som en typisk uppdateringstid vid rumstemperatur i displayens datablad \hyperref[kent]{(Kent Displays Inc., 2010)}. I exemplet räknas med att uppdatering utförs var 5:e minut, den högsta uppdateringsfrekvensen som uppnås vid normalt användande av skylten.\\
 
-Trots att den alfanumeriska displayen är av en enklare modell och vi har antagit att displayen uppdateras så ofta som möjligt så kräver Kent-displayen en fjärdedel så mycket energi. Vid normalt användande med färre uppdateringar skulle Kent-displayen kräva ännu mindre energi medan de andra skulle ligga kvar på samma nivå.
+Trots att den alfanumeriska displayen är av en enklare modell och under antagandet att displayen uppdateras så ofta som möjligt så kräver Kent-displayen en fjärdedel så mycket energi. Vid normalt användande med färre uppdateringar skulle Kent-displayen kräva ännu mindre energi medan de andra skulle ligga kvar på samma nivå.\\
 
-Andra displayer baserade på bistabila tekniker var i åtanke under projektet, framförallt de av E-paper typ. Deras långa ledtider och dåliga tillgänglighet ledde dock till att de fick räknas bort.
+Andra displayer baserade på bistabila tekniker var i åtanke under projektet, framförallt de av typen E-paper. Deras långa ledtider och dåliga tillgänglighet ledde dock till att de fick räknas bort.
 
 \subsubsection{Displayens uppbyggnad och användningssätt}
-Kent-displayen består utav en ChLCD-panel och en styrenhet. Styrenheten sköter uppdateringen av panelen och innehåller ett 32 kByte stort minne för att lagra data som kan visas på panelen. Displayen styrs genom att kommandon skickas till styrenheten via ett SPI gränssnitt. Ett flertal olika kommandon finns, men till de viktigaste hör att skriva till och läsa från minnet, uppdatera hela eller delar av displayen med data från minnet och att försätta displayen i ett lågenergiläge.
+Kent-displayen består utav en ChLCD-panel och en styrenhet. Styrenheten sköter uppdateringen av panelen och innehåller ett 32 kByte stort minne för att lagra data som kan visas på panelen. Displayen styrs genom att kommandon skickas till styrenheten via ett SPI gränssnitt. Ett flertal olika kommandon finns, men till de viktigaste hör att skriva till och läsa från minnet, uppdatera hela eller delar av displayen med data från minnet och att försätta displayen i ett lågenergiläge.\\
 
-För att visa data på displayen måste först ett kommando utföras som överför datan till minnet, sedan ytterligare ett kommando som faktiskt visar datan på displayen. Datan överförs som minst en byte i taget till minnet i displayen. Då datan skall visas upp på panelen kan man välja att uppdatera 1 till 80 pixelrader eller hela panelen på en gång.
+För att visa data på displayen måste först ett kommando utföras som överför datan till minnet, sedan ytterligare ett kommando som faktiskt visar datan på displayen. Datan överförs som minst en byte i taget till minnet i displayen. Då datan skall visas upp på panelen kan man välja att uppdatera 1 till 80 pixelrader eller hela panelen på en gång.\\
 
 Med uppdateringskommandot anges vilken adress i minnet datan skall börja läsas ifrån. Den mest signifikanta biten på den byte som adressen pekar på utgör den första pixeln på den första raden som skall uppdateras. Nästa bit representerar nästa pixel, nästa byte representerar således 9:e till 16:e pixeln. De första 30 byten utgör hela den första raden. Om fler rader skall uppdateras utgör de följande 30 byten raden under. Detta mönster följs för alla rader som skall uppdateras.
 
 \subsubsection{Hantering av tecken och teckensnitt}
 
-Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Därför lagras ett typsnitt i programminett på skyltmodulsarduinon där den ska slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av linuxsystemfonten, som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.
+Displayen har inga inbyggda funktioner för att visa upp text, utan Arduinon i skyltmodulen måste översätta texten som skall visas upp på displayen till pixelrepresentation utav texten. Därför lagras ett typsnitt i programminnet på skyltmodulsarduinon där den ska slå upp tecken och få ut en pixelrepresentation av tecknet. Typsnittet som valdes består av tecken med samma storlek som i exemplet i början av detta delkapitel, 12x20 pixlar. Alla tecken har således samma storlek vilket gör dem lätta att hantera. Det är en modifierad version av ett 10x18 pixlars typsnitt från Linux-kärnan, som innehåller alla tecken som skall kunna visas upp på displayen enligt begränsningarna för projektet. För att anpassa typsnittet från 10x18 pixlar till 12x20 pixlar lades tomt utrymme höger och nedanför tecknet till.\\
 
-Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.
+Med den första anpassningen av typsnittet hade vissa tecken färgade pixlar ända ut till kanten på utrymmet avsett för tecknet. Om dessa tecken skrevs nära kanten på displayen överlappade tecknet de större rampixlarna och gav ett oönskat utseende. Se figur~\ref{fig:fontA}. Därför gjordes anpassningen om där tecken centrerades på deras teckenområde, vilket gör att de yttersta pixlarna på varje teckens teckenområde aldrig är aktiva. Således undviks problemet med att vissa tecken skrivs på ramen.\\
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.5, angle=0]{fontA.png}
 \end{center}
-\caption{Del av ett A från tidig version av typsnittet, notera rampixlarna i vänstra sidan av figuren}
+\caption{Del av ett A från tidig version av typsnittet: notera rampixlarna i vänstra sidan av figuren}
 \label{fig:fontA}
 \end{figure}
 
-Ett exempel från det slutgiltiga typsnittet kan ses i figur~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela oranga området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.
+Ett exempel från det slutgiltiga typsnittet kan ses i figur~\ref{fig:fontAA}. Varje normalstor pixel på displayen är 0,26 mm bred och hög vilket ger ett teckenområde (hela orangea området) på 3,4 x 5,5 mm. För att sätta detta i perspektiv är tecknen på displayen ungefär lika stora som de i typsnittet {\it Times New Roman} i storleken 16 punkter.\\
 
 \begin{figure}[H]
 \begin{center}
@@ -546,21 +563,23 @@ Ett exempel från det slutgiltiga typsnittet kan ses i figur~\ref{fig:fontAA}. V
 \label{fig:fontAA}
 \end{figure}
 
-Översättningen från tecken till pixlar görs genom att varje rad i texten behandlas var för sig. Pixelrepresentationen av en textrad består av 20 pixelrader, eftersom alla tecken är 20 pixlar höga. Pixelraderna skapas och överförs en och en till displayens minne. En pixelrad byggs upp genom att textraden gås igenom och för varje tecken slås motsvarande pixelrad i tecknet upp för att sedan konkatineras med resterande teckens pixelrader. Om till exempel en textrad består av tecknen AB så kommer första pixelraden att innehålla första raden i tecknet A följt av första raden av teckent B. Nästa pixelrad består av andra pixelraden i A och andra pixelraden i B. Då samtliga 20 pixelrader har skickats iväg till displayens minne påbörjas arbetet med eventuella efterföljande textrader.
+Översättningen från tecken till pixlar görs genom att varje rad i texten behandlas var för sig. Pixelrepresentationen av en textrad består av 20 pixelrader, eftersom alla tecken är 20 pixlar höga. Pixelraderna skapas och överförs en och en till displayens minne. En pixelrad byggs upp genom att textraden gås igenom och för varje tecken slås motsvarande pixelrad i tecknet upp för att sedan konkateneras med resterande teckens pixelrader.\\
+
+ Om till exempel en textrad består av tecknen {\it AB} så kommer första pixelraden att innehålla första raden i tecknet {\it A} följt av första raden av tecknet {\it B}. Nästa pixelrad består av andra pixelraden i {\it A} och andra pixelraden i {\it B}. Då samtliga 20 pixelrader har skickats iväg till displayens minne påbörjas arbetet med eventuella efterföljande textrader.
 
 \subsection{Övriga uppkopplingar}
 Systemet använder en uppsättning handbyggda kretsar för små uppgifter såsom användargränssnitt. Dessa kretsar är relativt simpla och befinner sig i konstruktionens utkant. Detta kapitel beskriver de stödkretsar som byggts inom ramarna för projektet.
 
 \subsubsection{Avkoppling och kondensatorbank}
-XBee-modulerna på basstationen och skylten matas med 5V och 3.3V, från sina respektive arduinoplattformar. För att buffra mot eventuella störningar på matningsspänningen används avkopplingskondensatorer av olika storlek, som rekommenderat i databladet för XBee-modulerna. \\
+XBee-modulerna på basstationen och skylten matas med 5V och 3,3V, från sina respektive arduinoplattformar. För att buffra mot eventuella störningar på matningsspänningen används avkopplingskondensatorer av olika storlek, som rekommenderat i databladet för XBee-modulerna. \\
 
-Skyltens display matas med 3.3V och jord från arduinoplattformen. Mellan display och arduino finns en kondensatorbank inkopplad, med en i sammanhanget stor elektrolytkondensator på 470$\mu$F, och två mindre, snabbare 10$\mu$F-kondensatorer. 
+Skyltens display matas med 3,3V och jord från arduinoplattformen. Mellan display och arduino finns en kondensatorbank inkopplad, med en i sammanhanget stor elektrolytkondensator på 470$\mu$F, och två mindre, snabbare 10$\mu$F-kondensatorer. 
 
 \subsubsection{Knappar och Statusindikatorer}
 De knappar som används är enkla tryckknappar med pull-up-motstånd och små kondensatorer. Då en knapp trycks ned kopplas signalen ned till jord. Innan signalen skickas vidare som insignal till målarduinoplattformen skickas den genom en 7414 Schmitt-trigger med inverterarverkan, vilket gör insignalen från knappen aktiv hög. Vidare används LEDs som statusindikatorer, kopplade till digitala utgångar på arduinoplattformarna. Samma princip för tryckknappar och statusindikatorer används på både basstation och skyltmodul.
 
 \subsubsection{Batteri}
-Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3.7V och har inbyggt skydd mot överspänning ($>4.25V$), för stort strömuttag och skydd för minimumspänning ($<2.75V$).
+Batteriet som driver skylten är ett en-cells Litium-Polymerbatteri på 2000mAh, ger 3,7V och har inbyggt skydd mot överspänning ($>4,25V$), för stort strömuttag och skydd för minimumspänning ($<2,75V$).
 
 \subsubsection{Batterinivåavläsning}
 Batterinivån på skyltmodulen avläses genom att en analogingång på skyltens arduinoplattform kopplas till en spänningsdelare. Spänningsdelaren slås till och från via en NMOS-transistor, och microcontrollern läser av spänningen via en A/D-omvandlare.
@@ -572,21 +591,25 @@ Batteriet laddas via en kontakt på basstationen. Det kort som används för att
 Delsystemen (skylt och basstation) är inbygga i ABS-plastlådor där hål borrats ut för kontakter, knappar och statusindikatorer. Alla mekaniska delar är byggda för att kunna plockas isär och sättas ihop igen smidigt. M3-skruv har använts genomgående. En kylfläns har lagts till för att kyla spänningsregulatorn på basstationens microcontrollerplattform, då det upptäcktes att den blev varm vid systemdrift med nätadapter.
 
 \section{Systembeskrivning, programlogik}
+\label{programlogik}
 Med begreppet programlogik avses den del av systemets kod som behandlar problemdomänen. Problemdomänen är en modell av de uppgifter som systemet ska utföra, fri från hänsyn till implementationsdetaljer.\\
 
 Vid uppstart av skylten går den in i en evig loop och skickar var femte minut en förfrågan till basstationen om vilket meddelande som ska visas upp. När ett svar har tagits emot visas meddelandet och dess metadata upp på displayen.\\
 
-Vid uppstart av basstationen läses en konfiguration in för att ställa in vilka meddelanden som ska hämtas in från Twitter och vilken tidszon som datum ska visas i. Om någon av inställningarna är ogiltiga meddelas ett fel.\\
+Vid uppstart av basstationen läses en konfiguration in för att ställa in vilka meddelanden som ska hämtas in från Twitter och vilken tidszon som datum ska visas i.\\
 
-Efter att inställningarna har lästs in går basstationen in i en evig loop och väntar på förfrågningar om meddelanden från skylten. När en förfrågan tas emot så hämtar basstationen in det senaste meddelandet från Twitters API som går igenom användarens filter. Om ett svar tas emot formateras meddelandet och skickas till skylten för att visas upp.
+Efter att inställningarna har lästs in går basstationen in i en evig loop som utför två uppgifter. Dels hämtar den varje minut in, formaterar och lagrar det senaste meddelandet från Twitters API som går igenom användarens filter, och dels svarar den på förfrågningar om meddelanden från skylten genom att skicka det lagrade meddelandet till skylten.\\
+
+Om något i programmet går fel så meddelas detta på två olika sätt, beroende på var felet uppstår. Om felet uppstår i basstationen så lyser en diod upp på basstationen. Om felet uppstår i skylten så lyser en diod upp på skylten och felmeddelande visas på displayen.
 
 \subsection{Konfigurering av systemet}
-En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta tweets ifrån, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden eftersom det blir onödigt omständigt samt en risk för kompileringsfel. Lösningen blev en konfigurationsfil lagrat på ett SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en söksträng.
-Systemet konfigureras vid uppstart av basstationen genom att läsa av det SD-kort som sitter i basstationens Ethernet Shield. SD-kortet förväntas innehålla en textfil med namnet config.txt. Den första strängen i filen ska innehålla namnet på den Twitter-användare vars tidszon datumet ska visas i. Därefter följer en söksträng med vilken användaren kan specificera vilka tweets som skall visas på skylten med hjälp av bland annat hashtags. Saknas söksträngen hämtas samtliga tweets skrivna från användarens konto. Användandet av söksträngar beskrivs i avdelningen \hyperref[twitterapi]{Twitters API}.
+En viktig funktion är att kunna konfigurera basstationen med vilket Twitter-konto den ska hämta meddelanden från, då det inte är speciellt användarvänligt att hårdkoda detta. Användaren av den elektroniska Twitter-skylten ska inte behöva editera i källkoden eftersom det blir onödigt omständigt samt en risk för kompileringsfel. Lösningen är en konfigurationsfil lagrat på ett micro-SD-kort där användaren kan ange vilket Twitter-konto som skall användas samt en söksträng.\\
+
+Systemet konfigureras vid uppstart av basstationen genom att läsa av det micro-SD-kort som sitter i basstationens Ethernet Shield. Minneskortet förväntas innehålla en textfil med namnet config.txt. Den första strängen i filen ska innehålla namnet på den Twitter-användare vars tidszon datumet ska visas i. Därefter följer en söksträng med vilken användaren kan specificera vilken meddelanden som ska visas på skylten. Om söksträngen saknas används istället en standardsöksträng. Användandet av söksträngar beskrivs i avdelningen \hyperref[twitterapi]{Twitters API}.
 
 
 \subsubsection{Inläsning}
-För att läsa från SD-kortet användes Arduinos standardbibliotek för SD-kort som i sin tur använder biblioteket sdfatlib \hyperref[arduino]{(Arduino, 2012f)}. Konfigurationsfilens namn måste följa 8.3 konventionen eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012f)}. Detta innebär att filnamnet får högst ha ett åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.\\
+För att läsa från SD-kortet användes Arduinos standardbibliotek för SD-kort som i sin tur använder biblioteket {\it sdfatlib} \hyperref[arduino]{(Arduino, 2012f)}. Konfigurationsfilens namn måste följa {\it 8.3-konventionen} eftersom sdfatlib begränsas av det \hyperref[arduino]{(Arduino, 2012f)}. Detta innebär att filnamnet får ha ett högst åtta tecken långt namn följt av en filändelse på maximalt tre tecken \hyperref[microsoft]{(Microsoft, 2012)}.\\
 
 I konfigurationsfilen ska varje inställning separeras med mellanslag, tab eller nyradstecken. Först kommer användarnamnet därefter söksträngen. När filen har öppnats allokeras ett minnesutrymme som är lika många bytes som filen är stor. Sedan läses hela filen in i minnet med undantag av blanktecken före och efter användarnamnet. När inläsningen är klar är det känt hur många signifikanta tecken som är inlästa. Om det är färre inlästa tecken än antalet i filen så allokeras ett nytt minnesutrymme som endast har plats för adekvata tecken. Minnesutrymme som tidigare bestod av vittecken kan på så vis frigöras. Slutligen exponeras inställningarna för systemet genom metoder som returnerar dessa.
 
@@ -602,28 +625,26 @@ Hantering av lånetidsuppdatering kan implementeras med:
 
 	\begin{enumerate}
 	\item Timer som ger avbrott
-    	\item En funktion som anropas för tidavläsning
+    \item En funktion som anropas för tidavläsning
 	\end{enumerate}
 	
 Fördelen med alternativ 1 är att uppdateringen sker automatiskt när timern genererar ett avbrott. Nackdelarna är att timern i basstationens mikrocontroller slår över alltför ofta relativt till hur långa lånetider på IP-adresser det oftast är, vilket kräver en räknare för att utöka tidsrymden. Dessutom skulle det behövas totalt tre timerar för $T1$, $T2$ och lånetiden.\\
 
-I alternativ 2 används millis, en funktion som finns i Arduinomiljön, den räknar antalet millisekunder modulo $2^{32}$ sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i programloopen, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
+I alternativ 2 används {\it millis}, en funktion som finns i Arduinomiljön och som räknar antalet millisekunder modulo $2^{32}$ sedan enheten startades och kan läsas av samtidigt som tiden fortskrider. Anrop till millis används för att jämföra aktuell tid med tiden då IP-adressen blev lånad för att avgöra om lånetiden behöver uppdateras. Funktionaliteten implementeras i en funktion som ska anropas med jämna mellanrum. Fördelen med alternativ 2 är att med enkla jämförelser kan det avgöras när förnyelse ska ske. Nackdelen är att tiden måste läsas av varje varv i programloopen, att det inte kan styras exakt när kontrollen av lånetiden görs och det kan hända att IP-adressen används efter lånetiden löpt ut.\\
 
-Den slutliga lösningen blev alternativ 2, eftersom att programloopen ska köras ofta och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom att ATmega2560 endast har fyra 16-bitars timerar vilka kan behövas i andra delar av programmet.\\
-
-Implementationen bryter mot DHCP specifikationen på några punkter:
+Den slutliga lösningen blev alternativ 2, eftersom programloopen ska köras ofta och att millis redan är implementerad. Vidare valdes alternativ 1 bort eftersom ATmega2560 endast har fyra 16-bitars timers vilka kan behövas i andra delar av programmet. Implementationen bryter mot DHCP specifikationen på några punkter:
 
 	\begin{itemize}
-	\item Om lånetiden är mindre än åtta minuter blir det problem om förnyelse misslyckas eftersom en förfrågan kan ta upp till 60 sekunder. Under den tiden kan lånetiden redan passerat och     basstationen använder IP-adressen felaktigt.
+	\item Om lånetiden är mindre än åtta minuter blir det problem om förnyelse misslyckas eftersom den efterföljande förfrågan kan ta upp till 60 sekunder. Under den tiden kan lånetiden redan passerat och basstationen använder IP-adressen felaktigt.
     	\item Då millis slår över går det inte att kontrollera om lånetiden är slut. I det fallet görs ett försök att låna om IP-adressen omedelbart även om inte T1 har passerats.
 	\end{itemize}	
 
-Eftersom att basstationen kommer vara ansluten till ett trådbundet nätverk kommer första punkten inte vara något problem, eftersom att den minsta låntiden i praktiken är 15 minuter \hyperref[wen]{(Windows Enterprise Networking, 2007)}. Andra punkten är endast en rekommendation som bryts och då det blev alltför besvärligt att hantera millis överslag, som sker en gång ungefär vart 50:e dygn. Den effektivaste lösningen är således att begära förnyelse av IP-adressen vid överslag på millis.
+Eftersom basstationen kommer vara ansluten till ett trådbundet nätverk kommer första punkten inte vara något problem, eftersom den minsta lånetiden i praktiken är 15 minuter \hyperref[wen]{(Windows Enterprise Networking, 2007)}. Andra punkten är endast en rekommendation som bryts. Detta görs eftersom det blev alltför besvärligt att hantera millis överslag, som sker en gång ungefär vart 50:e dygn. Den effektivaste lösningen är således att begära förnyelse av IP-adressen vid överslag på millis.
 	
 \subsection{HTTP}
 För att hämta information från Twitter använder sig systemet av HTTP, som är det kommunikationsprotokoll som ligger till grund för webben. HTTP används för att skicka och ta emot resurser utifrån klient/server-modellen: En klient skickar en förfrågan till en server, som skickar tillbaka ett svar. En resurs är ett abstrakt begrepp som i IETF:s specifikation definieras som något med en identitet. De resurser som systemet efterfrågar från Twitter är användaruppgifter samt meddelanden och deras metadata. \\
 
-HTTP är textbaserat och kommunicerar över TCP. Både klienter och servrar använder sig av valfria portnummer, men för servrar är det vanligtvis port 80.
+HTTP är textbaserat och kommunicerar över TCP. Både klienter och servrar använder sig av valfria portnummer, men för servrar är det vanligtvis port 80 \hyperref[rfc2616]{(Fielding et al., 1999)}.
 
 \subsubsection{Förfrågan}
 
@@ -652,8 +673,10 @@ Ett HTTP-svar liknar en HTTP-förfrågan och består av fyra delar:
 
 \subsection{JSON}
 \label{sec:json}
-JSON är ett textbaserat format för överföring av data. Det är ett av två format som används i svaren på förfrågningar till Twitters API; det andra är XML. Eftersom JSON har en enklare datamodell och mindre verbos syntax är den att föredra i sammanhang där minnesutrymmet och processorkraften är begränsad. Av denna anledning tar systemet emot data från Twitters API i JSON-format.
+JSON är ett textbaserat format för överföring av data. Det är ett av två format som används i svaren på förfrågningar till Twitters API; det andra är XML. Behandling av JSON kräver generellt mindre processorkraft och mindre minnesutrymme än behandling av XML \hyperref[paulson]{(Nurseitov et al., 2009)}. Av denna anledning tar systemet emot data från Twitters API i JSON-format.
 
+\subsubsection{Syntax och datatyper}
+JSON tillåter värden av följande datatyper:
 	\begin{itemize}
 	\item Nummer
     	\item Sträng
@@ -666,8 +689,6 @@ JSON är ett textbaserat format för överföring av data. Det är ett av två f
 Av dessa datatyper är fält och objekt sammansatta: De innehåller andra värden av valfri typ. I fält är dessa värden indexerade med heltal i stigande ordning från noll. I objekt är dessa värden indexerade med strängar som är unika inom det objektet (nycklar). \\
 
 En JSON-fil består av antingen ett objekt eller ett fält, som i sin tur kan innehålla ytterligare värden enligt reglerna för respektive datatyp. \\
-
-Den förväntade statusen i svaret på en GET-förfrågan är {\it 200 OK}, som innebär att resursen har bifogats i svarets meddelandekropp som avsett. \\
 
 \subsubsection{Avläsning och intolkning}
 Vanligtvis tolkas JSON genom att läsa av hela filen och lagra den i en datastruktur i minnet som tillåter godtycklig navigering. Problemet med parsingen när den ska utföras på en Arduinoplattform är att mängden RAM-minne är begränsad till 8 kilobyte. Risken är således stor att ett fullständigt inläst JSON-svar från Twitters API tillsammans med övrig programdata tar slut på systemets minne. \\
@@ -694,14 +715,14 @@ Dessa motsvarar en händelse för varje datatyp med följande undantag:
 
 	\begin{itemize}
 	\item Händelsen för nummervärden anropas för både heltal och decimaltal.
-    	\item Ett värde av en komposit datatyp ger upphov till flera händelser: en för dess början, en för dess slut samt en för varje nyckel som ingår i det (om det är ett objekt). Varje värde som ingår i objektet eller fältet ger dessutom upphov till händelser som vanligt utifrån dess datatyp.
+    	\item Ett värde av en sammansatt datatyp ger upphov till flera händelser: en för dess början, en för dess slut samt en för varje nyckel som ingår i det (om det är ett objekt). Varje värde som ingår i objektet eller fältet ger dessutom upphov till händelser som vanligt utifrån dess datatyp.
     	\end{itemize}
     	
 Ett av problemen med en händelsebaserad parser som Yajl är att dess sekventiella inläsning gör det svårare att deklarativt hämta in data från JSON-filen genom att exempelvis ange en sökväg. Yajl har visserligen inbyggt stöd för att hämta in data genom att ange en sökväg ({\it simplified tree interface}), men detta kräver att hela JSON-filen läses in i minnet på samma gång och fungerar enbart med värden inuti objekt, inte värden inuti fält. Av denna anledning behöver inhämtningen av data implementeras på imperativ väg genom de funktionspekare som anropas vid olika händelser.
 
 \subsubsection{Algoritm}
 
-Den inhämtning av data som används i vårt system är baserad på en väldigt enkel princip: En lista med objektnycklar matas in och för varje objektnyckel sparas det första värde som förknippas med den objektnyckeln, oavsett var i JSON-filen objektnyckeln befinner sig.
+Den inhämtning av data som används i systemet är baserad på en väldigt enkel princip: En lista med objektnycklar matas in och för varje objektnyckel sparas det första värde som förknippas med den objektnyckeln, oavsett var i JSON-filen objektnyckeln befinner sig.\\
 
 Avläsningen av JSON-filen inleds med följande algoritm:
 
@@ -717,7 +738,7 @@ Så fort en händelse signaleras utförs denna algoritm:
     	\item Den nyligen inlästa objektnyckeln och variabeln som den är förknippad med tas bort från tabellen.
 	\end{enumerate}
 
-Algoritmen skulle kunna implementeras så generellt som den är beskriven ovan, men eftersom systemet hämtar in så pass få olika värden (tre stycken) är den istället implementerad genom individuell hantering av varje enskilt fall; slutresultatet är samma.
+Algoritmen skulle kunna implementeras så generellt som den är beskriven ovan, men eftersom systemet hämtar in så pass få olika värden (tre stycken) är den istället implementerad genom individuell hantering av varje enskilt fall; slutresultatet är samma.\\
 
 Denna metod har två begränsningar:
 
@@ -729,13 +750,13 @@ Denna metod har två begränsningar:
 Dessa begränsningar är dock inga problem i systemet eftersom inga av de objektnycklar som behöver läsas in förekommer mer än en gång i något av de svar som tas emot från Twitters API. Eftersom Twitters API dessutom är versionsangivet bör risken vara minimal att beteendet förändras i framtiden, och om en godtycklig förändring mot förmodan sker så skulle också alla andra algoritmer för avläsning potentiellt kunna misslyckas.
 
 \subsection{Twitters API}
-Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att komma åt stora delar av Twitters innehåll. Systemet använder sig av detta API för att komma åt två olika delar av Twitters innehåll: användaruppgifter och meddelanden. \\
+Twitters API består av ett antal URL:er som kan efterfrågas med HTTP för att komma åt stora delar av Twitters innehåll. Systemet använder sig av detta API för att komma åt två olika delar av Twitters innehåll: användaruppgifter och meddelanden.
 
 \subsubsection{Användaruppgifter}
 
-Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}. Användarnamnet erhålls av systemet genom konfigurationsfilen.
+Varje meddelande ska visas på skylten tillsammans med datum och tid, men samtliga meddelanden som skickas från Twitters API har datum och tid angivet i UTC (GMT-tidszonen). För att visa rätt datum och tid måste systemet komma åt användarens tidszon. Denna finns tillgänglig i form av en UTC-offset i användarens offentliga uppgifter. Dessa uppgifter skickas som svar på förfrågningar till följande URL, där namn är namnet på den användare vars meddelanden ska visas: \url{api.twitter.com/1/users/show.json?screen_name=namn}. Användarnamnet erhålls av systemet genom konfigurationsfilen.\\
 
-Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln {\it utc\textunderscore offset} och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.
+Svaret innehåller ett objekt med flera olika värden. Användarens UTC-offset har nyckeln {\it utc\textunderscore offset} och representeras som ett heltal med tecken där värdet anger skillnaden i sekunder mellan användarens tidszon och UTC. Denna offset hämtas in en enda gång när systemet startar och lagras i programmets minne för att senare användas vid infogandet av metadata i användarens meddelanden.\\
 
 Värt att notera är att denna UTC-offset inte inkluderar eventuell tidsskillnad på grund av sommartid. Eftersom basstationen inte själv innehåller någon klocka så hanterar systemet inte heller denna tidsskillnad, utan det krävs att användaren själv ändrar inställningarna på sitt Twitter-konto för att rätt tid ska visas på skylten. En möjlig lösning på problemet är att låta användaren själv ange sin tidszon i konfigurationsfilen, men detta valdes bort då det skulle leda till en mer komplicerad implementation och ett mer komplicerat användargränssnitt.
 
@@ -749,30 +770,23 @@ Den söksträng som användaren har angivit i konfigurationsfilen används för 
 
 Söksträngar som ingår i förfrågningar till Twitters sök-API använder samma syntax som den vanliga sökfunktionen på Twitters hemsida. Denna syntax finns dokumenterad på Twitters hemsida \hyperref[twitter]{(Twitter, 2012a)}.
 
-\subsubsection{Begränsningar}
-Twitters API och systemets användning av det lyder under följande begränsningar:
-	
-	\begin{itemize}
-     	\item Meddelanden som är äldre än en vecka kan inte hämtas in (Twitter, 2012). Twitters sök-API kan bara användas för att hitta meddelanden som är {\it ungefär en vecka} gamla ({\it omkring 6-9 dagar} i en annan del av dokumentationen). Detta är inget problem så länge basstationen är aktiverad, men så fort den stängs av och sätts på igen kommer den enbart att ha tillgång till meddelanden från den senaste veckan. Om det senaste meddelandet är äldre kommer den felaktigt att rapportera till skylten att inga meddelanden finns tillgängliga. Om skylten sedan stängs av (exempelvis för att laddas) kommer den vid uppstart inte att ha tillgång till det meddelande som den visade upp före avstängning.
-    	\item Vissa meddelanden kan saknas helt i sökresultaten. Eftersom Twitters sök-API {\it fokuserar på relevans, inte fullständighet} (Twitter, 2012). Vilka meddelanden som saknas är inte tydligt dokumenterat, och det är också ytterst svårt att testa. I värsta fall kan denna begränsning leda till utelämnade meddelanden vid godtyckliga tillfällen.
-    	\item Systemet förlitar sig på en sökoperator som inte är dokumenterad. För att utelämna retweets från API-svaren använder sig systemet av sökoperatorn {\it +exclude:retweets}. I samtliga tester har den fungerat som avsett men i värsta fall kan dess beteende ändras i framtiden. Om operatorn helt skulle försvinna skulle det innebära att systemet också tar emot retweets, som kan innehålla fler än 140 tecken. För att säkerställa att detta scenario aldrig leder till några problem läses endast de 140 första tecknen av samtliga meddelanden in. Detta leder till att retweets som visas på skylten kan få viss text utelämnad men aldrig krascha systemet.
-    	\item Meddelanden kan inte hämtas in i realtid. Eftersom Twitters REST-baserade API som svar på varje förfrågan enbart skickar den data som är aktuell vid samma tidpunkt måste klienten regelbundet skicka förfrågningar för att få den senaste datan. Twitter erbjuder också ett strömbaserat API som kontinuerligt skickar data i realtid (Twitter, 2012), men detta kräver autentisering vilket gör klientens implementation och användargränssnitt mer komplicerat.
-    	\item Meddelanden kan hämtas in högst 150 gånger per timme (Twitter, 2012). Twitters API begränsar antalet förfrågningar per IP-adress till 150 per timme. Detta innebär att systemet maximalt kan skicka förfrågningar ungefär två gånger per minut. Eftersom systemet frågar efter nya meddelanden mindre ofta än detta är denna begränsning inget problem.
-    	\end{itemize}
+När en söksträng saknas i konfigurationsfilen används istället söksträngen {\it from:namn +exclude:retweets}, där namn är det användarnamn som har angivits i konfigurationsfilen. {\it from:namn} matchar enbart de meddelanden som har skrivits av användaren med det angivna användarnamnet. {\it +exclude:retweets} filtrerar bort de meddelanden som är retweets. Anledningen till detta är att retweets på grund av ett särskilt prefix kan bli längre än 140 tecken och därför inte garanterat kan visas på displayen.
     	
 \subsection{Formatering}
 Efter att ett meddelande har tagits emot från Twitters API men innan det visas upp på skylten behöver det formateras. Formateringen innefattar fyra områden:
 	\begin{enumerate}
-    	\item Omkodning: Att hantera tecken som displayen inte kan hantera genom att ersätta dem mot andra.
+    	\item Omkodning: Att hantera tecken som inte stöds av skyltmodulens font genom att ersätta dem mot andra.
     	\item Normalisering: Att radera överflödiga blanksteg i början av, i slutet av och inuti meddelandet.
     	\item Justering: Att fördela orden i meddelandet över bildskärmens rader så att så få ord som möjligt behöver brytas upp över två rader.
     	\item Metadata: Att lägga till metadata till meddelandet i form av ett numeriskt publiceringsdatum.
 	\end{enumerate}
 
-Resultatet av formateringen är en displaysträng som kan skickas från basstationen till skylten för att visa upp meddelandet och dess metadata.
+Resultatet av formateringen är en displaysträng som kan skickas från basstationen till skylten för att visa upp meddelandet och dess metadata.\\
+
+Innan någon formatering görs trunkeras meddelandet till 140 tecken eftersom det i vissa fall kan vara längre än 140 tecken. Som tidigare har beskrivits gäller detta bland annat för retweets. När denna trunkering har gjorts finns det ingen risk att meddelandet överfyller någon av de buffertar som har allokerats för ändamålet, eller att det blir för långt för att visa på displayen.
 
 \subsubsection{Omkodning}
-De meddelanden som tas emot från Twitters API innehåller Unicode-tecken kodade i UTF-8. Eftersom displayen inte har stöd för UTF-8 behöver tecknen kodas om till den uppsättning som stöds. Displayen har stöd för ASCII-tecken samt bokstäverna Å, Ä och Ö, och är således lämplig för både engelska och svenska meddelanden.\\
+De meddelanden som tas emot från Twitters API innehåller Unicode-tecken kodade i UTF-8. Eftersom displayen bara har stöd för 255 olika tecken, som alla skulle kunna representeras annorlunda på skylten än i UTF-8, behöver tecknen kodas om innan de visas. Då både engelska och svenska meddelanden ska kunna visas lades stöd in för ASCII-tecken samt bokstäverna Å, Ä och Ö.\\
 
 Eftersom Arduino inte har inbyggt stöd för konvertering till och från UTF-8 så omkodar basstationen meddelandena från Twitters API enligt följande regler:
 	\begin{itemize}
@@ -782,9 +796,9 @@ Eftersom Arduino inte har inbyggt stöd för konvertering till och från UTF-8 s
 	\end{itemize}
 
 \subsubsection{Algoritm, omkodning}
-UTF-8 är en teckenkodning som tillåter varierande antal bytes för att representera enstaka tecken. En fördel med UTF-8 gentemot många andra teckenkodningar är att UTF-8 även är ASCII-kompatibel, vilket innebär att alla tecken som är giltiga ASCII-tecken också är giltiga UTF-8-tecken. Det är dessutom något som gör algoritmen för att koda om UTF-8-meddelanden till skyltens teckenkodning markant enklare. \\
+UTF-8 är en teckenkodning som tillåter varierande antal bytes för att representera enstaka tecken. En fördel med UTF-8 gentemot många andra teckenkodningar är att UTF-8 även är ASCII-kompatibel, vilket innebär att alla tecken som är giltiga ASCII-tecken också är giltiga UTF-8-tecken. Det är dessutom något som gör algoritmen för att koda om UTF-8-meddelanden till skyltens teckenkodning markant enklare (Yergeau, 2003).\\
 
-Konverteringen består av två huvudkomponenter: gruppering av bytes till tecken, och uppslagning av tecken i en teckentabell för att representera ett tecken på skylten i passande kodning. Denna tabell tillåter uppslagning av ett godtyckligt antal tecken, och de tecken som inte har en översättning får således översättas med ett ersättningstecken. \\
+Konverteringen består av två huvudkomponenter: gruppering av bytes till tecken, och uppslagning av tecken i en teckentabell för att representera ett tecken på skylten i passande kodning. Denna tabell tillåter uppslagning av ett godtyckligt antal tecken, och de tecken som inte har en översättning får således översättas med ett ersättningstecken.\\
 
 Givet en början med textmarkören i strängens början konverteras strängen till önskad teckenkodning på följande sätt.
 	
@@ -799,7 +813,7 @@ Givet en början med textmarkören i strängens början konverteras strängen ti
 	\end{enumerate}
 	
 \subsubsection{Normalisering}
-För att kunna formatera meddelandet så enkelt och konsekvent som möjligt är det önskvärt att normalisera det så att det har samma struktur som alla andra meddelanden. I detta fall innebär det behandling av meddelandets blanksteg. När meddelandet ska justeras och visas upp blir logiken enklare om vi kan utgå från att varje ord skiljs åt med ett och endast ett mellanslag. På en abstrakt nivå vill vi kunna behandla varje meddelande som en lista av ord där blanktecken (whitespace) inte behöver tas i åtanke. \\
+För att kunna formatera meddelandet så enkelt och konsekvent som möjligt är det önskvärt att normalisera det så att det har samma struktur som alla andra meddelanden. I detta fall innebär det behandling av meddelandets blanksteg. När meddelandet ska justeras och visas upp blir logiken enklare om vi kan utgå från att varje ord skiljs åt med ett och endast ett mellanslag. På en abstrakt nivå vill vi kunna behandla varje meddelande som en lista av ord där blanktecken ({\it whitespace}) inte behöver tas i åtanke. \\
 
 En sådan radering av blanktecken innebär att en användare inte själv kan formatera sina meddelanden genom att infoga extra utrymme i form av blanktecken. Detta är dock konsekvent med Twitters beteende i webbläsaren, där upprepade blanktecken alltid slås samman (collapse) till ett enda blanksteg. \\
 
@@ -834,16 +848,17 @@ Systemet använder sig av två olika sätt att justera ett ord som överskrider 
 
 	\begin{enumerate}
     	\item Nedflyttning: Att flytta ned hela ordet till början av nästa rad.
-    	\item Avstavning: Att infoga ett bindestreck i ordet och låta första halvan stanna på samma rad medan andra halvan flyttas ned till nästa rad.
+    	\item Avstavning: Att låta första halvan stanna på samma rad medan andra halvan flyttas ned till nästa rad.
 	\end{enumerate}
 
 Nedflyttning leder i allmänhet till bra läslighet men kräver mer utrymme än avstavning, i synnerhet när väldigt långa ord flyttas ned. \\
 
 Avstavning leder till ett bättre utnyttjande av displayen men är svårare att implementera, inte minst för att avstavningsregler är olika beroende på vilket språk som meddelandet är skrivet på. Olika approximationer kan göras men ett bra resultat kan endast uppnås med hjälp av bibliotek för språkbehandling. Eftersom sådana kräver betydande utrymme för diverse språkdatabaser kan de inte användas i detta sammanhang. \\
-    
-Även utan algoritmer för korrekt avstavning kvarstår möjligheten att låta ett ord gå ut till kanten av en rad, infoga ett bindestreck och flytta ned resten av ordet till nästa rad. Systemet avstavar ord på detta sätt. \\
 
-Bedömningen gjordes dock att en sådan {\it naiv} avstavning inte är nämnvärt bättre än att låta ordet brytas upp över två rader utan något bindestreck. Den avstavning som används i systemet utelämnar bindestreck på detta sätt.
+Även utan algoritmer för korrekt avstavning kvarstår möjligheten att låta ett ord gå 
+ut till kanten av en rad och flytta ned resten av ordet till nästa rad. Systemet avstavar ord på detta sätt. \\
+    
+Avstavning kan även göras med att infoga ett bindestreck i slutet av ordets första halva. Bedömningen gjordes dock att en sådan {\it naiv} avstavning inte är nämnvärt bättre än att låta ordet brytas upp över två rader utan något bindestreck.
 
 \subsubsection{Algoritm, justering}
 Den algoritm som vi tog fram för justering är en relativt simpel girig algoritm: Den flyttar ned ord så långt det går och bryter ord över två rader (utan bindestreck) så fort en nedflyttning skulle orsaka platsbrist. Algoritmen tar som argument en lista med ord. \\
@@ -872,18 +887,6 @@ För att snabbare kunna testa olika lösningar implementerades algoritmen först
                 	\end{enumerate}
     		\end{enumerate}
     	\end{enumerate}
-
-\subsubsection{Resultat}
-Efter att vi hade färdigställt vår första algoritm så övervägde vi att ta fram en mer avancerad algoritm som testar flera olika sätt att justera texten och väljer det bästa, enligt någon definition. Den definition som vi kom fram till var att låta så få korta ord som möjligt brytas över två rader, eftersom korta ord generellt är svårare att läsa än långa ord när de bryts över två rader. Vi beslöt oss dock först för att testa vår första algoritm på faktiska meddelanden från Twitter, för att se hur den fungerar i praktiken.\\
-
-För att genomföra testet hämtade vi in 100 huvudsakligen svenska meddelanden från Twitters API, körde algoritmen på dem och granskade resultatet för hand. Vi kom fram till att vår första algoritm fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Vi tror att detta beror på två anledningar:
-
-	\begin{enumerate}
-    	\item Eftersom teckengränsen på ett meddelande är 140 tecken så kommer de flesta meddelanden att hamna under det. I och med att ett genomsnittligt ord på Twitter är omkring 6 tecken långt (inklusive föregående mellanslag) så räcker det med att ett eller två ord ska utelämnas av platsbrist för att ett avsevärt utrymme ska sparas in till justering.
-    	\item Eftersom vår display har plats för 160 tecken så finns det plats för 20 tecken utöver meddelandets text. 14 av dessa är reserverade åt den datumstämpel som visas efter meddelandet, men de 6 ytterligare tecknen ger extra utrymme för justering.
-    \end{enumerate}
-
-Faktum är att praktiskt taget de enda ord i vårt test som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. I och med detta positiva resultat bestämde vi oss för att använda vår första algoritm i det färdiga systemet.
 
 \subsection{Metadata}
 Eftersom displayen har rum för 160 tecken finns det möjlighet att visa mer text än enbart ett meddelande, som högst är 140 tecken långt. Under projektets planeringsfas diskuterades vilken eventuell metadata som skulle visas. Främst diskuterades publiceringsdatum och användarnamn. \\
@@ -929,9 +932,9 @@ Den platshållarsträng som används är {\it 0123456789abc}. Vilken sträng som
 Datumet läggs till på meddelandet efter att det har justerats. Eftersom det alltid ska visas det nedre högra hörnet av displayen kräver detta viss logik för att implementera, då längden på meddelandet och antalet nyrader i det är okänt.
 	\begin{enumerate}
     	\item Räkna antalet nyrader i strängen.
-    	\item Infoga nyrader tills det finns tre nyrader i strängen.
+    	\item Infoga nyrader tills det finns sju nyrader i strängen.
     	\item Räkna antalet tecken som föregår platshållaren på den sista raden.
-    	\item Infoga blanksteg före platshållaren tills den sista raden är 40 tecken lång.	
+    	\item Infoga blanksteg före platshållaren tills den sista raden är fylld med tecken.
     	\item Ersätt platshållaren med metadatan.
     	\end{enumerate}
     	
@@ -941,16 +944,30 @@ Datumet läggs till på meddelandet efter att det har justerats. Eftersom det al
 
 \subsubsection{Funktionalitet}
 
-{\large \it \colorbox{yellow}{TODO: skriva kort om det slutgiltiga systemets funktioner}}
+Systemet i sin helhet är idag fullbordat, enligt planeringen. Basstationen hämtar nya meddelanden från Twitter via HTTP, där den därefter läser ut svaret ur Twitters respons genom en egenskriven HTTP-parser. Under tiden som meddelandet hämtas strömmas det igenom en JSON-parser baserad på Yajl, som i sin tur signalerar att parsningen är färdig först när önskad data har hittats och extraherats ur i texten.\\
+
+De meddelanden som hämtas går igenom en process där icke-önskade tecken städas bort, och där alla andra tecken ersätts med sina respektive representationer som krävs för visning på systemets display. Därefter städas meddelandet ytterligare genom att dela upp texten i ord, som sedan justeras efter bästa förmåga i syfte att kunna visa texten på optimalt vis, uppdelat i det antal rader som displayen kräver.\\
+
+Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier.
+
+\subsubsection{Begränsningar i Twitters API}
+
+Systemets användning av Twitters API lyder under vissa begränsningar från Twitters sida som systemet inte kan påverka. Dessa begränsningar påverkar dels hur pålitliga API-svaren är och dels hur snabbt systemet kan hämta in användarens senaste meddelande.\\
+
+Twitters sök-API kan bara användas för att hitta meddelanden som är {\it ungefär en vecka} gamla \hyperref[twitter]{(Twitter, 2012e)}. Dessutom fokuserar API:et på {\it relevans, inte fullständighet}, vilket innebär att vissa meddelanden inte är tillgängliga \hyperref[twitter]{(Twitter, 2012e)}. Den testning som gjordes under utvecklingen av systemet stötte inte på några av dessa problem, men de förtjänar att nämnas eftersom de skulle kunna påverka pålitligheten hos en färdig produkt baserad på systemet.\\
+
+Twitters sök-API kan inte heller användas för att ta emot meddelanden i realtid. Den tjänst som Twitter erbjuder för detta ändamål (Streaming API) används inte av systemet eftersom den kräver autentisering, vilket skulle göra implementationen och användargränssnittet mer komplicerat \hyperref[twitter]{(Twitter, 2012f)}. Istället måste systemet regelbundet skicka förfrågningar till API:et. Twitter begränsar dessa förfrågningar till 150 per timme per IP-adress \hyperref[twitter]{(Twitter, 2012g)}, vilket innebär att systemet kan skicka förfrågningar maximalt ungefär två gånger per minut. Detta är inget problem för systemet, som skickar en förfrågan per minut, men det skulle orsaka problem om frekvensen ökades.\\
+
+En ytterligare detalj är att systemet i sin användning av Twitters sök-API förlitar sig på en operator som inte är dokumenterad: {\it +exclude:retweets}. Syftet med detta beskrivs i avsnittet \hyperref[twitterapi]{Twitters API}. Konsekvensen om operatorn skulle sluta fungera vore att även retweets, som kan vara längre än 140 tecken, skulle visas på skylten. Eftersom samtliga meddelanden trunkeras till 140 tecken påverkar detta dock inte systemets stabilitet utan kan i värsta fall leda till att slutet av en sådan retweet inte får plats på displayen.\\
 
 \subsubsection{Energieffektivitet}
-För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3.3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
+För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts dels i isolation och dels som en del av det kompletta systemet. Syftet med metoden är att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3,7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.\\
 
 \begin{table}[h]
 \centering
 	\begin{tabular}{|l|r|}
-	Arduino Pro 3.3V (aktivt läge) & {$11.4 mA$}\\
-	Arduino Pro 3.3V (strömsparläge) & {$16 {\mu}A$}\\
+	Arduino Pro 3,3V (aktivt läge) & {$11,4 mA$}\\
+	Arduino Pro 3,3V (strömsparläge) & {$16 {\mu}A$}\\
 	Spänningsregulator (idle) & {$1 mA$}\\
 	{\it Då Arduinoplattformen är aktiv, gäller även:} & { }\\	
 	Radiotransceiver (avlyssning/mottagning) & {$51 mA$}\\
@@ -966,11 +983,11 @@ För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, be
 \label{tab:currentdrawtable}
 \end{table}
 
-Den slutsats som direkt kan dras är att spänningsregulatorn är den största källan till energiförlust, utslaget över en längre period. Detta beror på att resistiva förluster (i form av värme) fås i regulatorn då spänningen regleras ned till $3.3V$ för systemet. Resultatet blir även att regulatorn blir varm. Lite efterforskning ger dock resultatet att den regulator som används är väl anpassad för systemet och batteriet. Det finns dyrare regulatorer som skulle kunna ge bättre energieffektivitet. \\
+Den slutsats som direkt kan dras är att spänningsregulatorn är den största källan till energiförlust, utslaget över en längre period. Detta beror på att resistiva förluster (i form av värme) fås i regulatorn då spänningen regleras ned till $3,3V$ för systemet. Resultatet blir även att regulatorn blir varm. Lite efterforskning ger dock resultatet att den regulator som används är väl anpassad för systemet och batteriet. Det finns dyrare regulatorer som skulle kunna ge bättre energieffektivitet \hyperref[dimension]{(Dimension Engineering, 2012)}.\\
 
 Med uppdateringsintervall på $5$ minuter och uppdateringstid på $10$ sekunder för en komplett uppdatering av skylten (med display och radiokommunikation) ger detta en batteritid på strax över $690$ timmar $(\approx 29 dagar)$ pessimistiskt räknat. I denna beräkning har antagits att radion är aktiv hela tiden och maximalt antal omsändningar görs. Beräkningen tar dock inte hänsyn till förluster i ledningar, regulatorn för XBee-modulen eller temperaturförändringar. Av dessa uppskattas dock endast XBee-modulens spänningsregulator ha en mätbar inverkan, och även den bör vara mycket liten. \\
 
-Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(\approx 32-36 dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppmot $100$ dagar. \\
+Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(32-36 dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppemot $2400$ timmar. \\
 
 Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare \hyperref[dimension]{(Dimension Engineering, 2012)}. \\
 
@@ -996,7 +1013,7 @@ Batteriet som valdes visade sig vara ett mycket bra val, då det ger en lång ba
 
 Batteriavläsningen tar för närvarande endast hänsyn till den spänning som fås ut från batteriet, vilket inte fungerar som en bra indikator för laddningsstatus. Figur~\ref{fig:batterygraph} visar att spänningen som fås från batteriet hålls relativt konstant under urladdningscykeln, fram till en skarp nedåtsväng mot slutet. En alternativ lösning för batteristatusavläsning togs fram, där systemet konstant håller reda på strömmen som dras från batteriet, och utför en integration av strömmen. Med kompletterande information om batteriets initiala laddning kan med denna metod därefter kvarvarande laddning räknas ut. Vidare fås detaljerad information om hur batteriet används, som kan användas till att räkna fram en uppskattning av återstående batteritid. \\
 
-Denna lösning är dock inte implementerad i systemet, då det skulle innebära mycket extra beräkningskraft som går åt till att beräkna batteritid, samt en del extra hårdvara. Bland annat skulle en avläsningsbar strömprob behöva kopplas till microcontrollern, samt att externa minneskretsar skulle behöva läggas till för att spara datan relaterat till batterihanteringen. Inom projektet togs snabbt beslutet att detta skulle vara mycket onödigt, på grund av extra kostnader och platsbrist, både fysiskt i enheten och i form av I/O-pinnar på microcontrollern. Vidare skulle det bidra relativt lite till användarupplevelsen. Med nuvarande lösning ger systemet en varning om att batterinivån är låg då spänningen från batteriet börjar sjunka, genom att en LED på skyltmodueln tänds. Då vet samtidigt användaren om att det verkligen är dags att ladda batteriet, då batterinivåvarningen kommer relativt sent i urladdningscykeln. Användaren informeras om den låga batterinivån via en status-LED på skylten. \\
+Denna lösning är dock inte implementerad i systemet, då det skulle innebära mycket extra beräkningskraft som går åt till att beräkna batteritid, samt en del extra hårdvara. Bland annat skulle en avläsningsbar strömprob behöva kopplas till microcontrollern, samt att externa minneskretsar skulle behöva läggas till för att spara datan relaterat till batterihanteringen. Inom projektet togs snabbt beslutet att detta skulle vara mycket onödigt, på grund av extra kostnader och platsbrist, både fysiskt i enheten och i form av I/O-pinnar på microcontrollern. Vidare skulle det bidra relativt lite till användarupplevelsen. Med nuvarande lösning ger systemet en varning om att batterinivån är låg då spänningen från batteriet börjar sjunka, genom att en LED på skyltmodulen tänds. Då vet samtidigt användaren om att det verkligen är dags att ladda batteriet, då batterinivåvarningen kommer relativt sent i urladdningscykeln. \\
 
 \subsubsection{Radiolänk och nätverk}
 Radiolänken har testats i kontorsmiljö (Instutitionen för Data- och informationsteknik på Chalmers), och fungerar bra. Ihopparning av modulerna går relativt snabbt (ca 5 sekunder), och inga konflikter med närliggande nätverk märks av. Vid systemstart kan basstationen ta upp till en minut på sig att ansluta sig till nätverksuppkopplingen via DHCP, men oftast går det snabbare. \\
@@ -1009,30 +1026,30 @@ Robustheten i radiokommunikationen är relativt god. Vid längre avstånd gör s
 \begin{table}[h]
 \centering
 	\begin{tabular}{|l|c|c|c|}
+    {\bf Modul} & {\bf Längd} & {\bf Djup} & {\bf Höjd} \\
 	Basstation & 150 & 80 & 50 \\
 	Skylt & 150 & 80 & 20 \\
 	\end{tabular}
-\caption{Fysiska dimensioner}
+\caption{Fysiska dimensioner [mm]}
 \label{tab:dimensiontable}
 \end{table}
 
-Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnadslådorna och elektroniken är hanterad för hand och med vanliga labb- och hemverkstadsverktyg. Skylten är smidig nog att hänga upp på en dörr, och basstationen är relativt lätt att ställa undan obemärkt på ett vanligt kontor. Ingen av enheterna gör ljud eller har någon nämnvärd värmeutveckling som begränsar placeringsmöjligheterna. Även vikten hos enheterna är låg. På detta sätt kan de fysiska dimensionerna anses uppfylla kravspecifikationen, men vid serieproduktion skulle inbyggnadslådorna och elektroniken behöva göras mindre och smidigare.
+Systemets något stora och klumpiga fysiska dimensioner beror på att inbyggnadslådorna och elektroniken är konstruerad för hand och med vanlig labbutrustning och vanliga hem-verkstadsverktyg. Skylten är smidig nog att hänga upp på en dörr, och basstationen är relativt lätt att ställa undan obemärkt på ett vanligt kontor. Ingen av enheterna gör ljud eller har någon nämnvärd värmeutveckling som begränsar placeringsmöjligheterna. Även vikten hos enheterna är låg. På detta sätt kan de fysiska dimensionerna anses uppfylla kravspecifikationen, men vid serieproduktion skulle inbyggnadslådorna och elektroniken behöva göras mindre och smidigare.
 
 \section{Diskussion och slutsatser}
 
 \subsection{Utvärdering av projektupplägg}
 
 \subsubsection{Kommunikation och beslutsfattande}
-Genom kontinuerlig kommunikation via Google Groups, mail och veckomöten har samtliga gruppmedlemmar hållts involverade och uppdaterade. Kommunikationen bedöms ha fungerat utmärkt, med endast mindre missförstånd, såsom någon dubbelbokning av grupprum för möte. Arbetet har flutit på mycket bra, och inga konflikter inom gruppen eller större problem har uppkommit. De problem som faktiskt stötts på under projektet har varit rent konstruktionsmässiga eller elektronikmässiga, och har kunnat lösas. Vid de möten som hållts varje vecka har gruppen disktuerat projektets status och vad som har behövs göras. Beslut har tagits gemensamt i gruppen. Vid några tillfällen, såsom val av microcontrollerplattform och val av display, har det funnits olika alternativ som diskuterats inom gruppen. Vid dessa tillfällen har alternativen jämförts och beslut tagits med hela gruppens samtycke.\\
+Kommunikation skedde kontinuerligt genom e-post och veckomöten och bedöms ha ha fungerat utmärkt, med endast mindre missförstånd. Veckomötena ägnades åt beslutsfattande, diskussion kring projektets status och planering inför de kommande veckornas arbete. Beslut togs genom omröstningar, men i praktiken ledde diskussionerna inför varje beslut alltid till konsensus inom gruppen. De problem som stöttes på under projektet hade främst att göra med konstruktion, elektronik och mjukvarubibliotek, och samtliga kunde lösas.\\
 
-Kommunikationen med handledaren har fungerat bra, denne har medverkat vid ungefär varannat gruppmöte. Vidare har handledaren kontaktats via mail då det behövts, samt kunnat följa projektets gång via loggboken. Handledaren har bidragit med värdefullt stöd och bra feedback under hårdvaruinköp samt under rapportskrivningen.
+Gruppens handledare medverkade vid ungefär varannat gruppmöte och kommunikationen med honom fungerade bra. Vidare kunde handledaren kontaktas via mail då det behövdes, och kunde följa projektets gång via loggboken. Handledaren bidrog med värdefullt stöd och bra feedback under hårdvaruinköp samt under rapportskrivande.
 
 \subsubsection{Arbetsfördelning}
-I efterhand kan sägas att upplägget med att fördela konstruktionsmoment till par av två gruppmedlemmar har varit lyckat. På detta sätt har medlemmarna inom ett arbetspar kunnat stödja varandra på ett bra sätt, samtidigt som man kunnat arbeta på tre parallella konstruktionsmoment samtidigt inom gruppen, genom tre grupper av två medlemmar vardera. En detalj som skulle kunna justeras är att en av arbetsgrupperna arbetat mycket på distans, vilket i sig inte är ett problem, men ibland har det varit önskvärt att ha en gruppmedlem från varje arbetspar på plats i arbetsrummet. Samtliga gruppmedlemmar har bidragit till projektet, och utfört de uppgifter man kommit överens om utan problem. Samarbetet i gruppen har fungerat mycket bra, utan några egentliga problem.
+Upplägget med att fördela konstruktionsmoment till par av två gruppmedlemmar var lyckat. På detta sätt kunde medlemmarna inom ett arbetspar stödja varandra på ett bra sätt, samtidigt som man kunde arbeta på tre parallella konstruktionsmoment samtidigt inom gruppen, genom tre grupper av två medlemmar vardera. En detalj som kunde ha justerats är att en av arbetsgrupperna arbetade mycket på distans, vilket i sig inte är ett problem, men ibland var det önskvärt att ha en gruppmedlem från varje arbetspar på plats i arbetsrummet. Samtliga gruppmedlemmar bidrog till projektet, och utförde de uppgifter som man hade kommit överens om utan problem. Samarbetet i gruppen fungerade mycket bra, utan några egentliga problem.\\
 	
 \subsubsection{Hårdvarubeställningar}
-Inköpen av hårdvara under projektet har fungerat smidigt via handledare och ansvariga på instutitionen. Det har inte varit problem på Chalmers sida att
-få den hårdvara gruppen velat ha. Ett misstag från gruppens sida som gjordes tidigt i projektet var dock att vänta för länge med beställningen av display. Då gruppen väl beslutat att använda E-Paper, visade det sig vara för lång leveranstid på sådana displayer. Istället fick man använda sig av en bistabil LCD från Kent, vilket i efterhand dock visade sig vara ett fullt jämförbart alternativ till E-Paper. Anledningen till att gruppen sköt upp beställningen av display var att tillräcklig information saknades, och att E-Paper ansågs som något av en risk på grund av dess höga komplexitet jämfört med en normal LCD.\\
+Inköpen av hårdvara under projektet har fungerat smidigt via handledare och ansvariga på institutionen. Det har inte varit problem från Chalmers sida att få den hårdvara gruppen velat ha. Ett misstag från gruppens sida som gjordes tidigt i projektet var dock att vänta för länge med beställningen av display. Då gruppen väl beslutat att använda E-Paper, visade det sig vara för lång leveranstid på sådana displayer. Istället fick man använda sig av en bistabil LCD från Kent, vilket i efterhand dock visade sig vara ett fullt jämförbart alternativ till E-Paper. Anledningen till att gruppen sköt upp beställningen av display var att tillräcklig information saknades, att enstaka exemplar till försäljning var sällsynt, och att E-Paper ansågs som något av en risk på grund av dess höga komplexitet jämfört med en normal LCD.\\
 
 Av en tillfällighet har gruppen fått dubbla uppsättningar av många komponenter i projektet, något som har visat sig vara mycket användbart under konstruktionsfasen. Med dubbel uppsättning hårdvara har gruppen kunnat koppla upp testuppkopplingar som varit till stor hjälp under debugging och felsökning.
 
@@ -1058,8 +1075,19 @@ I projektets slutfas slutade programmeringen av Arduino Mega:n (basstationen) at
 
 Gruppen övervägde flera alternativ, bland annat att försöka bygga basstationen runt en annan typ av Arduino, men detta valdes bort på grund av den minnesbrist det skulle medföra. Efter en del arbete lyckades gruppen lägga in en ny bootloader på Arduino Mega:n, och arbetet kunde fortsätta. Den nya bootloadern hämtades från Arduinoprojektets hemsida och är en uppdaterad version av den som ursprungligen användes på Arduino Mega:n. Det vanliga sättet att lägga in bootloaders på Arduinokort, via Arduinos utvecklingsmiljö, fungerade inte. Istället fick de så kallade Fuse-bits sättas manuellt, vissa hårdvaruregister skrivas över, och en hex-fil föras över med hjälp av en extern programmeringskrets.
 
+\subsubsection{Svårigheter med externa bibliotek}
+Tidigt i projektet valdes Arduino-plattformen då den var välkänd av medlemmarna i gruppen och ansågs vara ett populärt projekt där mycket hjälp kunde fås från communityt. Som en del i det antagandet antogs även att mängden öppen källkod att ta del av, från allt såsom HTTP-klienter till JSON-parser, var både rik och väletablerad. Så visade sig dock inte vara fallet.\\
+
+Under arbetets gång började gruppen med existerande lösningar för både HTTP-anrop och parsning av JSON. Biblioteken som användes hette aJSON, \hyperref[github]{(GitHub, 2012b)} respektive HTTPClient \hyperref[github]{(GitHub, 2012c)}. Biblioteken är skrivna av samma författare, och i användningen av biblioteken stötte gruppen på problem.\\
+
+HTTPClient, ett bibliotek för att göra HTTP-anrop, användes en kort stund i början av projektet. Under användning märkte gruppen att biblioteket gav tillbaka korrupt data, vilket ledde till en närmre granskning av bibliotekets källkod för felsökning. Gruppen fann dock inga uppenbara indikationer på varför responsdatan returnerades som godtyckliga tecken.\\
+
+aJSON är ytterligare ett bibliotek från författaren till HTTPClient, som är ämnat att kunna läsa in JSON på Arduino. Biblioteket stödjer inte i skrivande stund UTF-8 — det specificeras dock inte vad det innebär — vilket arbetades runt genom att strippa vår data innan parsning. Det visade sig dock att även efter detta så fick aJSON vår Arduino att crasha. När både aJSON och HTTPClient orsakade problem som var svåra att lösa ansåg gruppen att det skulle ta mindre tid att skriva egna ersättare för ovan nämnda bibliotek, vilket också senare gjordes.\\
+
+HTTP-parsern fungerade till en början men slutade sedan att kompilera korrekt. Felsökning var för tidskrävande och för sent i projektet. Yajl använder ett antal konstanter som inte finns i AVR-C. Dessa fick definieras för hand med kvalificerade gissningar.
+
 \subsubsection{Minnesbrist vid parsing}
-Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket YAJL och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standard värde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standard värdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
+Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket Yajl och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM-minnet var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standardvärde som var inställt på 2 kB, vilket kan jämföras med basstationens totala RAM-minne på 8 kB. Standardvärdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
 
 \subsubsection{E-Paper}
 Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades först under projektets slutfas, då E-paper fanns vara för dyrt och svårtillgängligt med bland annat controllerkort och leveranstider på produkterna. Istället valdes en ChLCD, en annan energieffektiv displayteknik. Såsom marknaden ser ut i dagsläget väntas inte E-paper eller ChLCD kunna konkurrera på den vanliga displaymarknaden under de närmaste åren, på grund av avsaknad av bra färgdisplayer och långa uppdateringstider \hyperref[epapercentral]{(Epaper Central, 2012)}.
@@ -1068,7 +1096,7 @@ Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades f
 Under projektets slutfas slutade skyltens display att fungera. Styrelektroniken verkar fortfarande fungera och displayen ger rätt svar på kommandon. Även läsning och skrivning till minnet på displayen verkar fungera. Däremot uppdateras aldrig själva displayytan, av okänd anledning. Tänkbara fel kan vara konstruktionsfel eller ESD-skador, men båda dessa förefaller osannolika. ESD-skador borde ha skadat styrelektroniken på displayen, medan konstruktionsfel är mycket ovanliga enligt tillverkaren. Tillverkaren, Kent Displays, kontaktades via mail (kontaktperson: Tony Emanuele, 2012-05-10), men inte heller de kunde ge någon förklaring till problemet. En ersättnings-display fick beställas.
 
 \subsection{Jämförelser med liknande projekt}
-En enkel google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
+En enkel Google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, Juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
 
 Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
 
@@ -1079,14 +1107,14 @@ En expansionsmöjlighet till projektet, som diskuterades tidigt under planerings
 
 Andra tänkbara vidareutvecklingar är tillägg av möjlighet för användaren att komma åt och konfigurera basstationer via ett webb-interface, eller att kontrollera hela nätverk av basstation-skyltpar via sitt lokala nätverk eller via internet. \\
 
-Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med relativ lätthet, givet industriell utvecklingsutrustning. Med för ändamålet specialutvecklade mönsterkort och ytmonterade komponenter skulle de fysiska dimensionerna på enheterna kunna krympas avsevärt. Vidare skulle kostnaderna per enhet sjunka dramatiskt vid serieproduktion. Användarvänligheten hos systemet skulle kunna förbättras genom att göra det lättare att komma åt SD-kortet och att byta och ladda skyltens batteri. 
+Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med relativ lätthet, givet industriell utvecklingsutrustning. Med för ändamålet specialutvecklade mönsterkort och ytmonterade komponenter skulle de fysiska dimensionerna på enheterna kunna krympas avsevärt. Vidare skulle kostnaderna per enhet sjunka dramatiskt vid serieproduktion. Användarvänligheten hos systemet skulle kunna förbättras genom att göra det lättare att komma åt SD-kortet samt att byta och ladda skyltens batteri. 
 
 \pagebreak
 
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{Referenser}
-\bibliographystyle{apalike}
+\bibliographystyle{decsci}
 \begin{thebibliography}{9}
 
 \label{atmel}
@@ -1193,6 +1221,14 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door},
     2011. (2012-01-17)
 
+\label{fielding}
+\label{rfc2616}
+\bibitem{fielding}
+R. Fielding; UC Irvine; J. Gettys; Compaq/W3C; J. Mogul; Compaq; H. Frystyk; W3C/MIT; L. Masinter; Xerox; P. Leach; Microsoft; T. Berners-Lee,
+\emph{Hypertext Transfer Protocol -- HTTP/1.1. RFC 2616},
+\url{http://www.w3.org/Protocols/rfc2616/rfc2616.html },
+1999. (2012-05-10)
+
 \label{instructables}
 \bibitem{instructables}
     Instructables,
@@ -1245,7 +1281,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     Microsoft,
     \emph{Naming, Files, Paths, and Namespace},
     \url{http://msdn.microsoft.com/en-us/library/aa365247.aspx},
-    2012. (2012-XX-XX)
+    2012. (2012-04-03)
 
 \label{mingu}
 \bibitem{mingu}
@@ -1295,17 +1331,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
     The National
     \emph{Facebook and Twitter key to Arab uprisings: report},
     \url{http://www.thenational.ae/news/uae-news/facebook-and-twitter-key-to-arab-spring-uprisings-report},
-    2011. (8/5/2012)
-
-\label{rfc2277}
-\bibitem{rfc2277}
-    RFC2277,
-    \url{http://tools.ietf.org/html/rfc2277}
-
-\label{rfc2616}
-\bibitem{rfc2616}
-    RFC2616,
-    \url{http://www.w3.org/Protocols/rfc2616/rfc2616.html}
+    2011. (2012-05-08)
 
 \label{twitter}
 \bibitem{twitter}
@@ -1348,6 +1374,14 @@ xbee-arduino,
 \emph{xbee-arduino},
 \url{http://code.google.com/p/xbee-arduino/},
 2011. (2012-02-01)
+
+\label{yergeau}
+\label{rfc2277}
+\bibitem{yergeau}
+Yergeau, F.,
+\emph{UTF-8, a transformation format of ISO 10646. STD 63. RFC 3629.},
+\url{http://tools.ietf.org/rfc/rfc3629.txt},
+2003. (2012-05-10)
 
 \label{zigbee}
 \bibitem{zigbee}
@@ -1408,13 +1442,13 @@ xbee-arduino,
 	\begin{tabular}{|l|c|r|}
 	{\bf Namn} & {\bf Värde} & {\bf Typ} \\
 	C1-C3			& 1$\mu$	& Kapacitans \\
-	C4			& 6.8n		& Kapactians \\		
+	C4			& 6.8n		& Kapacitans \\		
 	C5-C7			& 1$\mu$	& Kapacitans \\
 	C8			& 8.2n		& Kapaictans \\
-	C9-C10			& 1$\mu$	& Kapactians \\
+	C9-C10			& 1$\mu$	& Kapacitans \\
 	C11			& 6.8n		& Kapacitans \\
-	C12-C13			& 10$\mu$	& Kapactians \\
-	C14			& 470$\mu$	& Kapactians \\
+	C12-C13			& 10$\mu$	& Kapacitans \\
+	C14			& 470$\mu$	& Kapacitans \\
 	IC1			& -		& 7414-Schmitt \\
 	IC2			& -		& TMP36 \\
 	IC3-IC4			& -		& 7414-Schmitt \\
@@ -1465,7 +1499,8 @@ xbee-arduino,
 \pagebreak
 
 \section{Arbetsfördelning}
-Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika områdena under projektet. Till viss del överlappar områden, och gruppmedlemmar har varit inblandade i andra områden än de som står listade nedan.\\
+\label{sec:arbetsfordelning}
+Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika områdena under projektet. Till viss del överlappar områden, och gruppmedlemmar har varit inblandade i andra områden än de som står listade nedan. Under rapportskrivningen har gruppmedlemmarna fokuserat på sina expertisområden, men även läst genom de andras text och utbytt synpunkter och förslag.\\
 
 {\bf Konstruktion}
 	\begin{enumerate}
@@ -1478,22 +1513,103 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
     	\item Display - {\it Lars, Anton}
     	\item Övrig elektronik och mekanik - {\it Fredrik}\\
     	\end{enumerate}
-{\bf Rapport}
-	\begin{enumerate}
-    	\item Inledning
-    	\item Bakomliggande tekniker och tjänster
-    	\item Arbetsmetod
-    	\item Systembeskrivning
-    	\item Resultat
-    	\item Diskussion och slutsatser
-    	\item Appendix
-	\end{enumerate}
 {\bf Presentation}
 	\begin{enumerate}
- 	\item Halvtidsredovisning - Kim, Andreas
-    	\item Slutpresentation
-    	\item Opponering
-    	\item Utställningsaffisch - Jakob\\
+ 	\item Halvtidsredovisning - {\it Kim, Andreas}
+    	\item Slutpresentation - {\it Jakob, Lars, Fredrik}
+    	\item Opponering - {\it Kim, Andreas, Anton}
+    	\item Utställningsaffisch - {\it Jakob}\\
 	\end{enumerate}
+\pagebreak
+
+\section{Användarmanual}
+
+Hummingbird kopplar din kontorsdörr till Twitter. Dina tweets visas på en skylt som du enkelt monterar utanför ditt kontor. Skylten är helt trådlös och hämtar sina meddelanden från en basstation vilken du kopplar till ett vanligt nätverksuttag. Batteritiden är beräknad till minst 800 timmar för ett 2000mAh-batteri av den typ som följer med.
+
+\subsection{Montering}
+Basstationen skall ges tillgång till spänning och nätverksuppkoppling. Skylten är helt trådlös och monteras lämpligen på en dörr eller en vägg. Basstation och skylt behöver befinna sig inom räckvidd för varandra. Räckvidden beror på mängden radiotrafik i omgivningen och på antalet hinder i vägen, såsom väggar, större elektrisk utrustning. En tumregel i vanlig kontorsmiljö kan vara två våningar i höjdled eller 50 meter i sidled.
+
+\subsection{Konfigurering}
+
+\begin{enumerate}
+    \item Anslut ett micro-SD-kort till kortläsaren i din dator.
+    \item Kör det konfigureringsskript som är anpassat för ditt operativsystem: {\it config-windows.bat} för Windows eller {\it config-linux.sh} för Linux.
+    \begin{enumerate}
+        \item Ange ditt Twitter-användarnamn och tryck {\it Enter}.
+        \item Om du inte vill visa alla dina tweets på skylten, ange den söksträng som ska användas för att välja ut tweets och tryck {\it Enter}. Tryck annars bara {\it Enter}. Syntaxen för söksträngar dokumenteras på Twitters hemsida: \url{https://support.twitter.com/articles/71577}
+    \end{enumerate}
+    \item Ta ut micro-SD-kortet från din dator och anslut det till kortläsaren i basstationen.
+\end{enumerate}
+
+\subsection{Användning}
+
+\begin{enumerate}
+    \item Förse basstationen med nätverksuppkoppling via RJ45-kontakten.
+    \item Starta basstationen genom att ansluta en spänningskälla (5V via USB alternativt 12V med transformator). Båda status-LEDs på basstationens ovansida tänds för att visa att systemet har spänning. De släcks igen då basstationen fått en IP-adress via DHCP och är redo för att anslutas till en skylt.
+    \item Starta skylten genom att ansluta LiPo-batteriet.
+    \item Tryck först på {\it Associate-knappen} på basstationen och sedan på {\it Associate-knappen} på skylten. Vänta i ett par sekunder. När nätverksindikatorerna på båda modulerna lyser fast grönt är skylten ihopkopplad med basstationen och kommer automatiskt att hämta in din senaste tweet. Om ihopparningen av modulerna misslyckas, försök igen eller följ anvisningarna under {\it Felsökning}.
+\end{enumerate}
+
+När skylten är ihopkopplad med basstationen kommer den automatiskt att var femte minut hämta in din senaste tweet. Om du vill hämta in din senaste tweet direkt, tryck på knapp B på skylten. Om du precis skrev din tweet kan det dröja upp till en minut innan den kan hämtas in av Hummingbird.
 		
+\subsection{Statusindikatorer och knappar}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|c|c|}
+    {\bf LED} & {\bf Fast ljus} & {\bf Blinkande}\\
+    Röd & Fel eller timeout & - \\
+    Grön & Ansluten till skylt & Söker efter skylt \\
+    Röd (sidan) & Batteriet laddas & - \\
+    \end{tabular}
+\caption{LEDs på basstation}
+\label{tab:ledtable_base}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|r|}
+    {\bf Knapp} & {\bf Funktion} \\
+    A & Systemomstart \\
+    B & Ihopparning med skylt \\
+    \end{tabular}
+\caption{Knappar på basstation}
+\label{tab:btntable_base}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|c|}
+    {\bf LED} & {\bf Fast ljus}  \\
+    Röd & Fel eller timeout \\
+    Gul & Låg batterinivå \\
+    Grön & Ansluten till basstation \\
+    \end{tabular}
+\caption{LEDs på skylt}
+\label{tab:ledtable_skylt}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|r|}
+    {\bf Knapp} & {\bf Funktion} \\
+    A & Uppdatering \\
+    B & Ihopparning med basstation \\
+    \end{tabular}
+\caption{Knappar på skylt}
+\label{tab:btntable_skylt}
+\end{table}
+
+\subsection{Felsökning}
+
+Om den röda lysdioden på basstationen lyser, testa först att starta om systemet genom att trycka på Knapp A på basstationen.
+
+Om felet uppstår igen, följ anvisningarna nedan:
+\begin{itemize}
+\item Säkerställ att systemet är korrekt monterat: Följ anvisningarna under {\it Montering}.
+\item Säkerställ att din internetuppkoppling fungerar: Öppna webbläsaren i en dator som är kopplad till ett nätverksuttag i ditt kontor och säkerställ att hemsidor kan laddas.
+\item Säkerställ tillräcklig matningsspänning: För basstationen behövs en matningsspänning på 5V via USB eller 12V via medföljande transformator, som skall anslutas till nätspänning. För skylten skall medföljande batteri användas (en-cells LiPo).
+\item Säkerställ att du har en giltig konfigurationsfil: Anslut basstationens SD-kort till en dator och säkerställ att det innehåller en fil med namnet config.txt där den första raden innehåller ett giltigt Twitter-användarnamn och där den andra raden antingen är tom eller innehåller en giltig Twitter-söksträng. Syntaxen för söksträngar dokumenteras på Twitters hemsida.
+\end{itemize}
+
 \end{document}
