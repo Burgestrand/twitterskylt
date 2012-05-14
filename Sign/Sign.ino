@@ -192,17 +192,20 @@ void loop () {
       invalidate_data();
       disp.write("Assoc fail");
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_JOIN_NOT_DELIVERED:
       // Could not deliver join message
       invalidate_data();
       disp.write("Join:\n No delivery");
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_JOIN_TIMEOUT:
       invalidate_data();
       disp.write("Join:\n Timeout");
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_JOIN_OK:
       invalidate_data();
@@ -213,11 +216,13 @@ void loop () {
       invalidate_data();
       disp.write("Update:\n No delivery");
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_UPDATE_TIMEOUT:
       invalidate_data();
       disp.write("Update:\n Timeout");
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_NEW_MSG:
       // Update message buffer if a different message is recieved and set a flag.
@@ -257,6 +262,7 @@ void loop () {
     case TICK_JOIN_BAD_MSG:
       invalidate_data();
       digitalWrite(ERROR_LED, HIGH);
+      digitalWrite(ASSOC_LED, LOW);
       break;
     case TICK_OK:
     default:
