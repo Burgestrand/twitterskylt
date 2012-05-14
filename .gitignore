@@ -6,6 +6,5 @@ tests
 *.aux
 *.out
 *.log
-*.pdf
 *.toc
 *.svg
