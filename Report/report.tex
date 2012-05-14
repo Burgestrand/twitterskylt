@@ -11,7 +11,11 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{listings}
-\usepackage[round, sort&compress, authoryear]{natbib}
+\usepackage[longnamesfirst]{natbib}
+
+\makeatletter
+\renewcommand\@biblabel[1]{}
+\makeatother
 
 % Harvard style references
 %\usepackage{harvard}
@@ -93,7 +97,6 @@ Den här rapporten beskriver utvecklingen av en prototyp till ett system, Hummin
 Resultatet är ett fungerande system bestående av två delar: en dörrskylt med display samt en basstation som hämtar meddelanden från Twitter. Skylten och basstationen kommunicerar via en radiolänk.\\
 
 Projektets huvudsakliga fokus ligger på energieffektivitet hos skylten. Även användarvänlighet och robusta kommunikationsprotokoll har prioriterats. Som en del i projektets fokus på energieffektivitet har tekniker för strömsnåla displayer, radiokommunikationsmoduler och microcontrollerplattformar undersökts och använts. Användarvänligheten ligger i skyltens trådlöshet, enkla konfigurering, samt dess fysiska dimensioner som möjliggör enkel montering på en dörr eller vägg. Slutligen ges systemet robusthet av pålitliga kommunikationsprotokoll för nätverk och radiolänk mellan basstation och skylt.
-	
 
 \thispagestyle{empty}
 \pagebreak
@@ -118,7 +121,6 @@ The main focus points of the project have been to construct an energy efficient,
 \end{center}
 
 \begin{table}[h!]
-\centering
 	\begin{tabular}{|l|l|}
 A/D-Omvandlare & Omvandlar en analog signal till digital.\\
 API & Application Programming Interface\\
@@ -259,7 +261,7 @@ Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomen
 	\end{itemize}	
 
 \subsection{Arbetsuppdelning}
-Projektgruppen bestod av fyra datateknologer och två datavetare. En naturlig uppdelning, som även passade bra med gruppmedlemmarnas egna intresseområden, var att datavetarna blev huvudansvariga för den webbprogrammeringsrelaterade delen av arbetet, dvs. hämtning, parsing och formattering av meddelanden. Mer hårdvarunära programmering delades upp på datateknologerna, som även skötte konstruktionsmoment relaterade till hårdvara och elektronikkonstruktion. En mer detaljerad beskrivning av arbetsuppdelningen inom gruppen ges i Appendix~\ref{sec:arbetsfordelning}.
+Projektgruppen bestod av fyra datateknologer och två datavetare. En naturlig uppdelning, som även passade bra med gruppmedlemmarnas egna intresseområden, var att datavetarna blev huvudansvariga för den webbprogrammeringsrelaterade delen av arbetet, det vill säga hämtning, parsing och formattering av meddelanden. Mer hårdvarunära programmering delades upp på datateknologerna, som även skötte konstruktionsmoment relaterade till hårdvara och elektronikkonstruktion. En mer detaljerad beskrivning av arbetsuppdelningen inom gruppen ges i Appendix~\ref{sec:arbetsfordelning}.
 
 \subsection{Utvecklingsmetod}
 Det mesta arbetet utfördes i grupper om två, dock flexibelt och anpassat efter de uppsatta konstruktionsmomenten samt efter rådande projektstatus. Vissa uppgifter utfördes av enskilda gruppmedlemmar, där det ansågs lämpligt.\\
@@ -273,14 +275,14 @@ Versionshantering av projektets programkod togs upp tidigt. Hantering av kod nä
 
 Versionshantering innebär ofta en central plats att lagra sin kod. För att underlätta sammanflätningen av jobb som utförts parallelt så spårar ett versionshanteringssystem alla ändringar i koden, och kan intelligent föreslå strategier för att slå samman det arbetet som utförts. Som programmerare är det också användbart att kunna se vilka ändringar som har gjorts under tidens gång av sina medarbetare, utan att själv behöva leta upp förändringarna och jämföra den existerande koden med sin egen.\\
 
-Av ovan nämnda anledningar valde gruppen därför att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (~10 år), och hör till de decentraliserade versionshanteringsystemen. Då några i gruppen sedan tidigare har erfarenhet med SVN, och några i gruppen föredrar Git, stod valet mellan dem.\\
+Av ovan nämnda anledningar valde gruppen därför att använda sig av ett versionshanteringssystem. Det finns en mängd olika, bland annat CVS, SVN, Git, Bazaar, och Mercurial. SVN och CVS har använts väldigt länge inom industrin, och hör till de centraliserade versionshanteringssystemen. Git, Bazaar och Mercurial är något yngre (cirka 10 år), och hör till de decentraliserade versionshanteringsystemen. Då några i gruppen sedan tidigare har erfarenhet med SVN, och några i gruppen föredrar Git, stod valet mellan dem.\\
 
 Jämfört SVN med Git så är SVN långsammare överlag, då alla operationer på projektbasen kräver att de kommunicerar via nätverk med den server där projektbasen ligger. I Git utförs dock majoriteten av alla kommandon enbart lokalt, vilket ger Git en stor hastighetsfördel över SVN \hyperref[git]{(Git, 2012a)}. Att Git arbetar lokalt innebär också att alla i gruppen kan arbeta på kodbasen och versionshantera sin kod utan att ha tillgång till internet eller någon central server. Av bland annat ovan nämnda anledningar valdes Git som versionshanteringssystem för projektet.
 
 \subsubsection{Git och GitHub}
 Git är som tidigare nämnt ett decentraliserat versionshanteringssystem. Git används genom att först göra det arbete som är tänkt, och därefter spara det lokalt i sitt projekts kodbas tillsammans med ett meddelande som beskriver varför ändringen gjordes och vad den gör. Efter en viss tid ska ens egna arbete delas med sina medarbetare, och det görs genom att {\it pusha}, ladda upp, sin kod till en plats som alla medarbetare kan nå. Om någon inte har hunnit ladda upp upp sin kod är det sedan varje individuell persons uppgift att slå ihop ändringarna och bestämma vad som ska finnas i slutresultatet.\\
 
-Som plats att spara koden på användes GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan dess lansering, och har sedan Maj 2012 över en och en halv miljon användare och över två och en halv miljoner publika projekt \hyperref[github]{(GitHub, 2012a)}.\\
+Som plats att spara koden på användes GitHub. GitHub är en tjänst som har funnits sedan 2008, och ämnar att göra programmering och kod till en mer social företeelse än vad som tidigare varit möjligt. Tjänsten är gratis, oavsett hur många projekt man har och hur stora de är, förutsatt att man delar med sig av sin kod till allmänheten. GitHub har vuxit explosionsartat sedan dess lansering, och har sedan maj 2012 över en och en halv miljon användare och över två och en halv miljoner publika projekt \hyperref[github]{(GitHub, 2012a)}.\\
 
 Under arbetets gång kunde alltså varje medlem i projektet publicera sina ändringar på gruppens projekt som finns tillgängligt på GitHub, där de andra medlemmarna i projektet sedan kunde inspektera ändringarna, kommentera på enstaka rader, rapportera buggar och även göra mindre ändringar i koden från webben i de fall man inte kunde klona projektet till sin dator och jobba lokalt.
 
@@ -422,13 +424,13 @@ För den trådlösa kommunikationen valdes standarden ZigBee, eftersom den:
     	\end{itemize}
 \hyperref[zigbee]{(ZigBee, 2012)}, \hyperref[sensornetworks]{(Sensor Networks, 2010)}, \hyperref[eetimes]{(EE Times, 2010)}, \hyperref[embedded]{(Embedded Computing, 2011)}\\
     	
-ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2,4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16000 unika PAN-ID:n. \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
+ZigBee stödjer överföringshastigheter upp till 250 kbit/s och upp till 240 enheter i samma nätverk, vilket är mer än tillräckligt för projektet. Radiosignalerna använder det fria 2,4 GHz-bandet, som är uppdelat i 16 kanaler \hyperref[zigbee]{(ZigBee, 2012)}. Varje kanal motsvarar ett smalt band (5 MHz) i det frekvensspektrum som stöds. Inom varje kanal kan flera nätverk samexistera, dock under kravet att de har ett inom kanalen unikt PAN-ID. Detta presenterar inga större begränsningar för projektet, då varje kanal kan innehålla över 16000 unika PAN-ID:n \hyperref[zigbee]{(ZigBee, 2012)}. För större nätverk eller nätverk med höga prestandakrav är ZigBee dock inget rimligt alternativ. \\
 
-ZigBee-nätverk kan innehålla tre olika typer av enheter: {\it coordinator}, {\it router} och {\it end-device}. Ett nätverk måste innehålla en (och endast en) coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[zigbee]{(ZigBee Alliance, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
+ZigBee-nätverk kan innehålla tre olika typer av enheter: {\it Coordinator}, {\it router} och {\it end-device}. Ett nätverk måste innehålla en (och endast en) Coordinator, som fungerar liksom namnet antyder som koordinator och basstation för nätverket, med ansvar för att samla in data från och kontrollera övriga enheter \hyperref[zigbee]{(ZigBee Alliance, 2012)}. Coordinator-enheten kan starta nya nätverk och har kontroll över att tillåta nya enheter att ansluta sig. I systemet som beskrivs i denna rapport motsvaras Coordinator-enheten av basstationen. Coordinator-enheten måste alltid vara aktiv, och får alltså inte gå ner i sömn- eller strömsparlägen. \\
 
-En router fungerar som en länk mellan coordinator (eller en annan router) och en eller flera end-devices eller andra routers. Dessa är inte aktuella för användning i det här projektet, då det inte finns något behov för en sådan trädstruktur på nätverket. \\
+En router fungerar som en länk mellan Coordinator (eller en annan router) och en eller flera end-devices eller andra routers. Dessa är inte aktuella för användning i det här projektet, då det inte finns något behov för en sådan trädstruktur på nätverket. \\
 
-End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden \hyperref[digi]{(Digi, 2012a)}. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
+End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden \hyperref[digi]{(Digi, 2012a)}. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en Coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
 
 \subsubsection{Hårdvara}
 ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (bland andra Atmel och Freescale), men efter undersökning av utbudet av hårdvara som stödjer standarden valdes XBee från tillverkaren {\it Digi}, eftersom XBee-modulerna jämfört med andra radiotransceivers i samma storlek:
@@ -442,7 +444,7 @@ ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (b
 	\end{itemize}
 \hyperref[digi]{(Digi, 2012a,b)}\\
 	
-Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små koaxial-anslutningar (U.FL) för extern antenn. Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med (förhållandevis) stora, externa antenner som monteras via koaxial-anslutningarna \hyperref[digi]{(Digi, 2012c)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
+Radiosändarna/mottagarna finns tillgängliga med fasta stavantenner (monopol), med chipantenner (integrerade på kretskorten) och med små koaxial-anslutningar (U.FL) för extern antenn. Chipantenner utgör det smidigaste alternativet eftersom de tar lite plats och är ytmonterade direkt på kretskortet, men ger sämre signalräckvidd. Bäst räckvidd fås med förhållandevis stora, externa antenner som monteras via koaxial-anslutningarna \hyperref[digi]{(Digi, 2012c)}. Dessa är dock för otympliga för projektet. Av dessa skäl valdes varianten med stavantenner som en kompromiss, då dessa erbjuder bättre räckvidd än chipantennerna och samtidigt är smidigare än externa antenner. \\
 
 XBee-modulerna har två operationslägen \hyperref[xbeearduino]{(xbee-arduino, 2011)}. AT-läget (Application Transparent) är ett enkelt läge för punkt-till-punkt-kommunikation, och kan ses som en trådlös ersättning för en seriellkabel \hyperref[digi]{(Digi, 2012a)}. AT-läget har fördelen att det är mycket enkelt att konfigurera och erbjuder en simpel och snabb lösning för grundläggande radioöverföring. Nackdelarna med AT-läget är att mycket av den mer avancerade funktionaliteten går förlorad. Som nämnt ovan behövs robusthet i överföringen, och ihopparningen som den beskrivs ovan är över nivån för vad som är det tänkta användningsområdet för AT-läget. \\
 
@@ -456,11 +458,11 @@ Det andra läget som stödjs är API-läget (Application Programming Interface) 
     	\end{itemize}
 \hyperref[digi]{(Digi, 2012a)}\\
     	
-Radiomodulerna drar i aktivt läge, dvs. vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA \hyperref[digi]{(Digi, 2012a)}. Detta gör radiolänken till en stor energiförbrukningspunkt sett till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
+Radiomodulerna drar i aktivt läge, det vill säga vid sändning eller mottagning, i sammanhanget stora strömmar, 45-55mA \hyperref[digi]{(Digi, 2012a)}. Detta gör radiolänken till en stor energiförbrukningspunkt sett till hela systemet. Utrymme för energieffektivisering utgörs här främst av möjligheten att försätta radiosändarna (XBee-modulerna) i sömn- eller strömsparlägen när de inte aktivt används. Vidare ska radioöverföring användas så sparsamt som möjligt. Som förklaras nedan är strömsparfunktionerna i första hand aktuella på skyltmodulen, och det är också här de behövs som mest, i syfte att spara batteri. \\
 
 Grundidén är att skyltmodulen är försatt i sömnläge större delen av tiden, och endast vaknar och är aktiv under korta perioder med regelbundna intervall, eller då användaren interagerar med det fysiska gränssnittet (knappsatsen). Då skyltmodulen vaknar, skickar den en förfrågan till basstationen om att hämta ny data, då sådan finns. Basstationen lyssnar konstant efter dataförfrågningar, utan att aktivt sända någon data utan att ha explicit blivit tillfrågad. \\
 
-Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter andra nätverk. Sökningen fungerar genom att modulerna först söker igenom de tillgängliga frekvenskanalerna inom operationsbandet. Modulerna känner av och registrerar energinivåerna på de olika kanalerna, och på så sätt skapas en bild över vilken kanal där det finns minst traffik. En lämplig kanal väljs ut baserat på den insamlade informationen för att undvika kollisioner. Då en kanal valts sänds signaler ut på nätverket för att upptäcka coordinators (modulerna ansvariga för de enskilda nätverken), som svarar med att sända sitt PAN-ID för att markera sin närvaro. En Coordinator anpassar sig till den insamlade information genom att välja att skapa ett nytt nätverk på en ledig kanal och PAN-ID-plats. Övriga nodtyper i nätverket (End-Devices eller Routers) kan med samma information göra ett informerat val om vilket nätverk som är mest lämpligt att ansluta till.
+Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter andra nätverk. Sökningen fungerar genom att modulerna först söker igenom de tillgängliga frekvenskanalerna inom operationsbandet. Modulerna känner av och registrerar energinivåerna på de olika kanalerna, och på så sätt skapas en bild över vilken kanal där det finns minst traffik. En lämplig kanal väljs ut baserat på den insamlade informationen för att undvika kollisioner. Då en kanal valts sänds signaler ut på nätverket för att upptäcka Coordinators (modulerna ansvariga för de enskilda nätverken), som svarar med att sända sitt PAN-ID för att markera sin närvaro. En Coordinator anpassar sig till den insamlade information genom att välja att skapa ett nytt nätverk på en ledig kanal och PAN-ID-plats. Övriga nodtyper i nätverket (End-Devices eller Routers) kan med samma information göra ett informerat val om vilket nätverk som är mest lämpligt att ansluta till.
 
 \subsubsection{Implementering}
 Målet i projektet har varit att i så stor utsträckning som möjligt nyttja de funktioner som finns inbyggda i ZigBee-protokollet och de mekanismer som stöds av XBee-modulerna.
@@ -485,7 +487,7 @@ Ihopparningen av moduler sker genom att basstationen sätter upp ett nätverk, o
 
 Skyltmodulen ansluter sig till basstationen genom att skicka en simpel förfrågan. Basstationen svarar med ett svarsmeddelande. När basstationen har verifierat skyltens anslutning sparas dess adress för framtida kommunikation. \\
 
-Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överföring av kommandon och XBee-modulernas svar på dessa kommandon. Överföringen sker på ett liknande sätt som dataöverföringen via radiolänken, men på ett mer uppstrukturerat och väldefinierat sätt, då det endast finns en begränsad uppsättning kommandon och svar. Då de ges vissa kommandon svarar XBee-modemen med data, och på vissa andra endast med OK-meddelanden. Dessa kommandosvar ger arduinoplattformarna bättre kontroll över XBee-modemens exakta status, och hjälper även vid felsökning under utvecklingen. \\
+Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överföring av kommandon och XBee-modulernas svar på dessa kommandon. Överföringen sker på ett liknande sätt som dataöverföringen via radiolänken, men på ett mer uppstrukturerat och väldefinierat sätt, då det endast finns en begränsad uppsättning kommandon och svar. Då de ges vissa kommandon svarar XBee-modemen med data, och på vissa andra endast med ACK-meddelanden. Dessa kommandosvar ger arduinoplattformarna bättre kontroll över XBee-modemens exakta status, och hjälper även vid felsökning under utvecklingen. \\
 
 \begin{figure}[H]
 \begin{center}
@@ -495,7 +497,7 @@ Arduinoplattformarna kommunicerar med sina respektive XBee-modem genom överför
 \label{fig:radio_bas}
 \end{figure}
 
-Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur~\ref{fig:radio_bas} på sida~\pageref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
+Radiolänk-delen i implementeringen av basstationen är internt uppbyggd runt en tillståndsmaskin, se figur~\ref{fig:radio_bas}. Syftet med detta är att ge programmeraren kontroll och översikt över exakt vilka kommandon och svar som förväntas, och att programmet endast kan befinna sig i ett av ett antal väldefinierade tillstånd. Basstationen börjar sin livscykel i ett reset-tillstånd, och går vidare till att starta upp Coordinator-funktionen och nätverket, sedan lyssna efter anslutande skyltmoduler. Då en skyltmodul anslutit sig går basstationen in i ett passivt lyssningstillstånd. I detta läge väntar basstationen på inkommande statusmeddelanden från det lokala XBee-modemet eller på dataförfrågningar från skylten. Användaren kan även påverka basstationen genom det fysiska gränssnittet under lyssningstillståndet. \\
 
 Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan via radiolänken och väntar på att skylten ska verifiera överföringen. Då överföringen verifierats återvänder basstationen till sitt passiva lyssningstillstånd. Om basstationen vid något tillfälle avviker från de väldefinierade tillstånden, får ett oväntat och ohanterbart svar eller måste vänta för länge på svar, går den in i ett felläge och signalerar detta till omvärlden. Felläget beskrivs i figur~\ref{fig:radio_bas} som {\it Error}, och systemet stannar i felläget tills användaren manuellt trycker på systemomstarts-knappen. \\
 
@@ -507,7 +509,7 @@ Då en dataförfrågan mottas, sänder basstationen över den aktuella textdatan
 \label{fig:radio_skylt}
 \end{figure}
 
-Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt} på sida~\pageref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas. 
+Skyltmodulens radio är uppbyggd på ett liknande sätt som basstationen, och en beskrivning ges av figur~\ref{fig:radio_skylt}. Skyltmodulen börjar vid omstart att initiera sin radio, och försöker sedan ansluta sig till en basstation. Sammankopplingen mellan skylt och basstation genomförs genom att skylten skickar en förfrågan om att gå med i nätverket, som sedan identifieras av basstationen. Om förfrågan lyckas sparar basstationen undan skyltmodulens hårdvaruadress för framtida kommunikation och skickar tillbaka ett svarsmeddelande. I det här läget har basstation och skylt anslutit sig till samma nätverk och kan börja kommunicera. Då skylten är i vila är den försatt i ett strömsparläge, och radion är avstängd. Med jämna mellanrum kommer skylten att vakna upp, aktivera sin radiomodul och skicka en dataförfrågan till basstationen. Basstationen svarar med den senaste hämtade textdatan, som skylten sedan tar emot och visar upp på sin display. Detta är det normala operationsläget för skylten. Om skyltens tillståndsmaskin går utanför detta beteende kommer en felhanteringsmetod att anropas. 
 
 \subsection{Display}
 För att kunna visa upp meddelanden på skyltmodulen krävs det att den har en display. Till detta har en ChLCD (Cholesteric Liquid Crystal Display) från Kent Displays valts. Det är en grafisk bistabil LCD som har en upplösning på 240x160 pixlar med en bildyta på 61x41 mm. Pixlarna på kanten runtom bildytan är större än de andra pixlarna för att enkelt kunna göra en dekorativ ram runt innehållet som visas på displayen \hyperref[kent]{(Kent, 2010)}.\\
@@ -525,9 +527,9 @@ För att avgöra hur energisnål displayen är jämförs den med LCD-displayer a
 \centering
     \begin{tabular}{|l|c|c|r|}
     {\bf Modell} & {\bf Statisk} & {\bf Uppdatering} & {\bf Genomsnitt} \\
-    Kent & $0$ & $97$ & $0.41$ \\
-    Alfanumerisk 160 tecken & $1.75$ & $1.75$ & $1.75$ \\
-    Grafisk 240x128 pixlar & $10.9$ & $10.9$ & $10.9$ \\
+    Kent & $0$ & $97$ & $0,41$ \\
+    Alfanumerisk 160 tecken & $1,75$ & $1,75$ & $1,75$ \\
+    Grafisk 240x128 pixlar & $10,9$ & $10,9$ & $10,9$ \\
     \end{tabular}
 \caption{Jämförelse av effektförbrukning i ett urval av displayer. [mW]}
 \label{tab:kenttable}
@@ -865,7 +867,7 @@ Avstavning leder till ett bättre utnyttjande av displayen men är svårare att 
 Även utan algoritmer för korrekt avstavning kvarstår möjligheten att låta ett ord gå 
 ut till kanten av en rad och flytta ned resten av ordet till nästa rad. Systemet avstavar ord på detta sätt. \\
     
-Avstavning kan även göras med att infoga ett bindestreck i slutet av ordets första halva. Bedömningen gjordes dock att en sådan {\it naiv} avstavning inte är nämnvärt bättre än att låta ordet brytas upp över två rader utan något bindestreck.
+Avstavning kan även göras med att infoga ett bindestreck i slutet av ordets första halva. Bedömningen gjordes dock att en sådan naiv avstavning inte är nämnvärt bättre än att låta ordet brytas upp över två rader utan något bindestreck.
 
 \subsubsection{Algoritm, justering}
 Den algoritm som vi tog fram för justering är en relativt simpel girig algoritm: Den flyttar ned ord så långt det går och bryter ord över två rader (utan bindestreck) så fort en nedflyttning skulle orsaka platsbrist. Algoritmen tar som argument en lista med ord. \\
@@ -1000,7 +1002,7 @@ Arduinoplattformen använder sig av en linjär spänningsregulator, vilket inneb
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.70, angle=0]{effekt.png}
+\includegraphics[scale=0.55, angle=0]{effekt.png}
 \end{center}
 \caption{Effektanalys för skylt}
 \label{fig:effectgraph}
@@ -1121,7 +1123,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{Referenser}
-\bibliographystyle{decsci}
+\bibliographystyle{descsci}
 \begin{thebibliography}{9}
 
 \label{atmel}
@@ -1427,7 +1429,7 @@ Yergeau, F.,
 \section{Kopplingsschema för stödkretsar i basstation}
 
 \begin{figure}[H]
-\includegraphics[scale=1.0, angle=0]{sch_bas.png}
+\includegraphics[scale=0.8, angle=0]{sch_bas.png}
 \label{fig:base_schematic}
 \caption{Kopplingsschema, bas}
 \end{figure}
@@ -1436,7 +1438,7 @@ Yergeau, F.,
 \section{Kopplingsschema för stödkretsar i skyltmodul}
 
 \begin{figure}[H]
-\includegraphics[scale=1.0, angle=0]{sch_skylt.png}
+\includegraphics[scale=0.8, angle=0]{sch_skylt.png}
 \label{fig:skylt_schematic}
 \caption{Kopplingsschema, skylt}
 \end{figure}
@@ -1624,16 +1626,22 @@ Om felet uppstår igen, följ anvisningarna nedan:
 \section{3D-Modell av basstation}
 
 \begin{figure}[H]
-\includegraphics[scale=0.2, angle=0]{drawing_base.png}
+\begin{center}
+\includegraphics[scale=0.3, angle=0]{drawing_base.png}
+\end{center}
 \label{fig:drawing_base}
 \caption{Basstation, sidovy}
 \end{figure}
 
 \begin{figure}[H]
-\includegraphics[scale=0.2, angle=0]{drawing_base_side.png}
-\label{fig:drawing_base}
+\begin{center}
+\includegraphics[scale=0.3, angle=0]{drawing_base_side.png}
+\end{center}
+\label{fig:drawing_base_side}
 \caption{Basstation, andra sidan}
 \end{figure}
+
+\subsection{Sifferförklaringar}
 
 \begin{enumerate}
 \item Knapp A: Ihopparning
@@ -1644,7 +1652,7 @@ Om felet uppstår igen, följ anvisningarna nedan:
 \item Batteriladdnings-LED (röd)
 \item Batteriladdningsanslutning för LiPo-batteri
 \item Ethernet-port
-\item USB-port
+\item USB-port  
 \item 12V-matning
 \end{enumerate}
 
@@ -1653,10 +1661,14 @@ Om felet uppstår igen, följ anvisningarna nedan:
 \section{3D-Modell av skylt}
 
 \begin{figure}[H]
-\includegraphics[scale=0.2, angle=0]{drawing_skylt.png}
+\begin{center}
+\includegraphics[scale=0.5, angle=0]{drawing_skylt.png}
+\end{center}
 \label{fig:drawing_skylt}
 \caption{Skyltmodul, ovanifrån}
 \end{figure}
+
+\subsection{Sifferförklaringar}
 
 \begin{enumerate}
 \item Error-LED (röd)
