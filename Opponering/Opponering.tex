@@ -62,20 +62,20 @@ title=\lstname, % show the filename of files included with \lstinputlisting; als
 
 Detta är en opponering på rapporten \emph{Robusta och noggranna positioneringssystem baserade på avståndsmätningar mellan mobila noder} av kandidatarbetesgrupp 1 vid instutitionen för Data- och Informationsteknik vid Chalmers Tekniska Högskola. Opponeringsrapporten är skriven av grupp 43. \\
 
-Rapporten är lätt att följa, kortfattad och fokuserar på de viktiga delarna av arbetet, utan överdrivet djupa eller teoretiska delar. Tyngdpunkten verkar ligga på de resultat som gruppen fått vid fysiska/praktiska tester av systemet, och resultaten presenteras tydligt i grafer och tabeller. Förhållandet till Gulliverprojektet skulle behöva beskrivas mer i detalj: det beskrivs inte konsekvent genom rapporten, vilket skapar förvirring. \\
+Rapporten är lätt att följa, kortfattad och fokuserar på de viktiga delarna av arbetet, utan överdrivet djupa eller teoretiska delar. Tyngdpunkten verkar ligga på de resultat som gruppen fått vid fysiska, praktiska tester av systemet, och resultaten presenteras tydligt i grafer och tabeller. Förhållandet till Gulliverprojektet skulle behöva beskrivas mer i detalj: det beskrivs inte konsekvent genom rapporten, vilket skapar förvirring. \\
 
 Helhetsintrycket är att rapporten är i grunden bra, men skulle behöva en del bearbetning för att ge en bra läsupplevelse. Vissa delar avviker från den logiska tråden och blir därför svårlästa, men resultatpresentationen fungerar sammanfattande för resten av rapporten. Det skulle stärka rapporten att behålla den lättlästa stilen, men förklara mer hur systemet fungerar och förbättra språket. \\
 
 \section{Rapportens upplägg och struktur}
-Avsnittet 1.4 \emph{Rapportens upplägg} är överflödigt då nästan samma text inleder kapitlen samt att varje kapitel är självförklarande. Även figurförteckningen är överflödig då bildtexterna är ungefär det som står under respektive bild och dessutom är sidnummreringen felaktig. Om det ska vara med kan en bättre placering vara i appendix och även nämna varifrån figurerna har hämtats. Som exempel ser figur 17 ut som en bild som finns på Wikipedia. Ett antal referenser framåt i rapporten sänker läsbarheten och skapar en osammanhängande rapport. \\
+Avsnitt 1.4, \emph{Rapportens upplägg}, är överflödigt då nästan samma text inleder kapitlen samt att varje kapitel är självförklarande. Även figurförteckningen är överflödig då bildtexterna är ungefär det som står under respektive bild och dessutom är sidnummreringen felaktig. Om det ska vara med kan en bättre placering vara i appendix och även nämna varifrån figurerna har hämtats. Som exempel ser figur 17 ut som en bild som finns på Wikipedia. Ett antal referenser framåt i rapporten sänker läsbarheten och skapar en osammanhängande rapport. \\
 
 Texten under varje huvudrubrik som förklarar vad rubriken innefattar är även den överflödig. Den inledande sektionen behandla ämnet som kapitlet tar upp, inte hur rapporten i sig är utformad. En fördel med detta är att läsaren kan välja att hoppa över underrubrikerna men fortfarande kunna ta till sig en övergripande del av rapportens faktiska innehåll. \\
 
-Avsnittet 5.2.3 nämner tidskomplexiteten för två olika avståndsmätningsmetoder (PRE, CRE). Det finns ingen genomgång om hur man räknar fram tidkomplexiteten och det finns inte heller någon algoritmbeskrivning tidigare i rapporten så att läsaren kan resonera sig fram till påstådd tidskomplexitet. Vidare vore det bara att definiera vad \emph{n} är och sedan borde nog antalet ankare vara m som i sin tur kanske borde vara med i uttrycket för tidskomplexitet. \\
+Avsnittet 5.2.3 nämner tidskomplexiteten för två olika avståndsmätningsmetoder (PRE, CRE). Det finns ingen genomgång om hur man räknar fram tidkomplexiteten och det finns inte heller någon algoritmbeskrivning tidigare i rapporten så att läsaren kan resonera sig fram till påstådd tidskomplexitet. Vidare vore det bara att definiera vad \emph{n} är och sedan borde nog antalet ankare vara \emph{m} som i sin tur kanske borde vara med i uttrycket för tidskomplexitet. \\
 
-I avsnitt 4.3 finns endel oklarheter. I stycket som nämner Rescue slot står det först att rescue slot är emellan två tidsramar och senare visas en uträkning av tidsramens storlek där rescue slot ingår. Tillhör rescue sloten tidsramen? Det står även att rescue slot används för beräkning av tidsramens storlek, men eftersom rescue slot är en konstant borde det rimligt vara vid beräkning istället. Förklaring varför rescue slot är 50 ms bör vara med, samt varför robotarna har en tidslucka på just 150 ms. I samma stycke skrivs det också om att systemets medlemslistor får samma tidsstämpel, men det är oklart vad det är för tidsstämpel som texten syftar på och när den används.
+I avsnitt 4.3 finns endel oklarheter. I stycket som nämner Rescue slot står det först att rescue slot är emellan två tidsramar och senare visas en uträkning av tidsramens storlek där rescue slot ingår. Tillhör rescue sloten tidsramen? Det står även att rescue slot används för beräkning av tidsramens storlek, men eftersom rescue slot är en konstant borde det rimligt vara vid beräkning istället. Förklaring varför rescue slot är $50 ms$ bör vara med, samt varför robotarna har en tidslucka på just $150 ms$. I samma stycke skrivs det också om att systemets medlemslistor får samma tidsstämpel, men det är oklart vad det är för tidsstämpel som texten syftar på och när den används.
 
-\section{Sammanfattning, inledning och problemdefinition}
+\section{Sammanfattning, inledning och syfte}
 
 Den sammanfattning som ges i rapporten tar upp en del av det som egentligen borde behandlas under \emph{Bakgrund}, samt vad som gjorts på området förut. Ingen förklarande sammanfattning ges för vad som gjorts inom just det projekt som rapporten beskriver. Det är till viss del oklart vad själva produkten i projektet är. Sammanfattningen beskriver dock på ett direkt och tydligt sätt de resultat som gruppen fått. \\
 
@@ -89,13 +89,15 @@ Beskrivningen av Triangulering är tydlig och lätt att följa och förstå. Teo
 
 I 2.6.2 nämns att om man väljer PII = 6 så får man lägsta möjliga tidsfördröjning, 25ms. Tidigare i rapporten visas uträkningar för flera relativt triviala uträkningar, men i det nämns inget om den icke triviala uträkningen av den lägsta möjliga tidfördröjningen. \\
 
-I kapitlet om utvecklingsmetod saknas det en beskrivning av hur testplattformen eller -uppkopplingen ser ut, men senare nämns “de lysdioder som är monterade på kretskortet”. Detta bidrar till förvirring för läsaren eftersom man inte vet vilket kretskort som åsyftas. Kapitlet om utvecklingsmiljö och språk är överflödigt och innehåller omotiverade påståenden: “Det är allmänt känt att...”. Kapitel 3.4.1 \\
+I kapitlet om utvecklingsmetod saknas det en beskrivning av hur testplattformen eller -uppkopplingen ser ut, men senare nämns “de lysdioder som är monterade på kretskortet”. Detta bidrar till förvirring för läsaren eftersom man inte vet vilket kretskort som åsyftas. Kapitlet om utvecklingsmiljö och språk är överflödigt och innehåller omotiverade påståenden: “Det är allmänt känt att...”. \\
 
 Den från roboten interna datan som används som en del i positionsbestämningen kan vara opålitliga av många anledningar, några av vilka nämns i kapitlet om slutsatser och diskussion. Detta är positivt eftersom det skapar kvalitetskänsla i rapporten och visar på att gruppen utvärderat sin metod och dragit slutsatser därefter. Resonemanget skulle kunna utvecklas ytterligare för att inkludera fler tänkbara felkällor, såsom hjulspin, externa krafter som verkar på roboten, feljusterade hjul eller hjuldiametrar eller andra källor till felaktiga värden från sensorer. \\
 
 \section{Resultat och analys}
 
 På sidan 24 nämns att positioneringssystemet fick störningar i närheten av glaspartier. Då syftet med systemet är att använda det i stadsmiljö där det förmodligen existerar glaspartier tycks detta vara en stor nackdel (givet att påståendet på sida 24 stämmer). \\
+
+I övrigt är resultaten klara och tydliga, med tillhörande relevanta diskussioner. En fråga som väcks är dock hur mycket resultaten beror på de olika metoder man valt: resultaten är delvis relativt generella resultat från kandidatarbetes moderprojekt. Det vore önskvärt med en diskussion om hur Gulliver-projektet som helhet skulle kunna påverkas om andra designval gjorts inom just designen av algoritmerna i MAC-lagret. \\
 
 \section{Övriga kommentarer}
 
