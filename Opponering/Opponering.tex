@@ -60,37 +60,49 @@ title=\lstname, % show the filename of files included with \lstinputlisting; als
 {\noindent \LARGE {\bf Opponeringsrapport}}\\
 \end{center}
 
-Detta är en opponering på rapporten \emph{Robusta och noggranna positioneringssystem baserade på avståndsmätningar mellan mobila noder} av kandidatarbetesgrupp 1 vid instutitionen för Data- och Informationsteknik vid Chalmers Tekniska Högskola. Opponeringsrapporten är skriven av grupp 43. \\
+Detta är en opponering på rapporten “Robusta och noggranna positioneringssystem baserade på avståndsmätningar mellan mobila noder” av kandidatarbetesgrupp 1 vid instutitionen för Data- och Informationsteknik vid Chalmers Tekniska Högskola. Opponeringsrapporten är skriven av grupp 43. \\
 
-Rapporten är lätt att följa, kortfattad och fokuserar på de viktiga delarna av arbetet, utan överdrivet djupa eller teoretiska delar. Tyngdpunkten verkar ligga på de resultat som gruppen fått vid fysiska, praktiska tester av systemet, och resultaten presenteras tydligt i grafer och tabeller. Förhållandet till Gulliverprojektet skulle behöva beskrivas mer i detalj: det beskrivs inte konsekvent genom rapporten, vilket skapar förvirring. \\
+Rapporten är lätt att följa, kortfattad och fokuserar på de viktiga delarna av arbetet, utan överdrivet djupa eller teoretiska delar. Tyngdpunkten verkar ligga på de resultat som gruppen fått vid fysiska, praktiska tester av systemet, och resultaten presenteras tydligt i grafer och tabeller. \\
 
 Helhetsintrycket är att rapporten är i grunden bra, men skulle behöva en del bearbetning för att ge en bra läsupplevelse. Vissa delar är för sig svårlästa (exempelvis 2.6.2), men resultatpresentationen fungerar sammanfattande för resten av rapporten. Det skulle stärka rapporten att förklara mer hur systemet fungerar och förbättra språket, men samtidigt behålla den lättlästa stilen. \\
 
-\section{Rapportens upplägg och struktur}
-Avsnitt 1.4, \emph{Rapportens upplägg}, är överflödigt då nästan samma text inleder kapitlen samt att varje kapitel är självförklarande. Även figurförteckningen är överflödig då bildtexterna är ungefär det som står under respektive bild och dessutom är sidnummreringen felaktig. Om det ska vara med kan en bättre placering vara i appendix och även nämna varifrån figurerna har hämtats. Som exempel ser figur 17 ut som en bild som finns på Wikipedia. Ett antal referenser framåt i rapporten sänker läsbarheten och skapar en osammanhängande rapport.\\
+Genomgående i rapporten verkar diverse designbeslut tas utan att de vägs mot några alternativ. Vi får känslan av att vissa beslut har fattats av någon utomstående, men det framgår inte tydligt i texten. Det står till exempel i 1.2.3 att gruppen var tvungen att inämta kunskap om Kalmanfiltret, men ingen beskrivning av hur de kom fram till att det var just Kalmanfilter som ska användas. \\
 
-Texten under varje huvudrubrik som förklarar vad rubriken innefattar är även den överflödig. Den inledande sektionen behandla ämnet som kapitlet tar upp, inte hur rapporten i sig är utformad. En fördel med detta är att läsaren kan välja att hoppa över underrubrikerna men fortfarande kunna ta till sig en övergripande del av rapportens faktiska innehåll. \\
+Något som också vore önskvärt är en mer konkret förankring i Gulliverprojektet; förslagsvis vilka huvuddelar som ingår i projektet, vilka delar som gruppen är ansvariga för och vilka delar som gruppen är beroende av för att göra sitt eget arbete. Vissa delar belyses dock i rapporten, men de kommer utan sammanhang. \\
+
+\section{Rapportens upplägg och struktur}
+Majoriteten av huvudrubrikerna börjar med “I detta kapitel presenteras […]”. En extra förklaring på vad rubriken innefattar är överflödig, och bör ersättas med ett (eller fler!) stycken som kort tar upp de ämnen som finns under rubriken.\\
+
+Avsnitt 1.4, “Rapportens upplägg”, är överflödigt då nästan samma text inleder kapitlen samt att varje kapitel är självförklarande. Även figurförteckningen är överflödig då bildtexterna är ungefär det som står under respektive bild och dessutom är sidnummreringen felaktig. Om det ska vara med kan en bättre placering vara i appendix och även nämna varifrån figurerna har hämtats. Som exempel ser figur 17 ut som en bild som finns på Wikipedia. Ett antal referenser framåt i rapporten sänker läsbarheten och skapar en osammanhängande rapport.\\
+
+Avsnitt 2.6.1. “Den huvudsakliga programkoden med diverse beräkningar körs på ett egenutvecklat moderkort som kallas för Main-board”. Det nämns dock aldrig vem som har utvecklat moderkortet, och om det är gruppen i sig som har utvecklat kortet saknas en mer ingående beskrivning i hur det har utvecklats och eventuella alternativ till den egenutvecklade.\\
 
 Avsnittet 5.2.3 nämner tidskomplexiteten för två olika avståndsmätningsmetoder (PRE, CRE). Det finns ingen genomgång om hur man räknar fram tidkomplexiteten och det finns inte heller någon algoritmbeskrivning tidigare i rapporten så att läsaren kan resonera sig fram till påstådd tidskomplexitet. Vidare vore det bara att definiera vad \emph{n} är och sedan borde nog antalet ankare vara \emph{m} som i sin tur kanske borde vara med i uttrycket för tidskomplexitet. \\
 
-I avsnitt 4.3 finns endel oklarheter. I stycket som nämner Rescue slot står det först att rescue slot är emellan två tidsramar och senare visas en uträkning av tidsramens storlek där rescue slot ingår. Tillhör rescue sloten tidsramen? Det står även att rescue slot används för beräkning av tidsramens storlek, men eftersom rescue slot är en konstant borde det rimligt vara vid beräkning istället. Förklaring varför rescue slot är $50 ms$ bör vara med, samt varför robotarna har en tidslucka på just $150 ms$. I samma stycke skrivs det också om att systemets medlemslistor får samma tidsstämpel, men det är oklart vad det är för tidsstämpel som texten syftar på och när den används.
+I avsnitt 4.3 finns en del oklarheter. I stycket som nämner Rescue slot står det först att rescue slot är emellan två tidsramar och senare visas en uträkning av tidsramens storlek där rescue slot ingår. Tillhör rescue sloten tidsramen? Det står även att rescue slot används för beräkning av tidsramens storlek, men eftersom rescue slot är en konstant borde det rimligt vara vid beräkning istället. Förklaring varför rescue slot är $50 ms$ ms bör vara med, samt varför robotarna har en tidslucka på just $150 ms$. I samma stycke skrivs det också om att systemets medlemslistor får samma tidsstämpel, men det är oklart vad det är för tidsstämpel som texten syftar på och när den används.
 
 \section{Sammanfattning, inledning och syfte}
-Den sammanfattning som ges i rapporten tar upp en del av det som egentligen borde behandlas under \emph{Bakgrund}, samt vad som gjorts på området förut. Ingen förklarande sammanfattning ges för vad som gjorts inom just det projekt som rapporten beskriver: det är till viss del oklart vad själva produkten i projektet är. Sammanfattningen beskriver dock på ett direkt och tydligt sätt de resultat som gruppen fått.
+Den sammanfattning som ges i rapporten tar upp en del av det som egentligen borde behandlas under “Bakgrund”, samt vad som gjorts på området förut. Ingen förklarande sammanfattning ges för vad som gjorts inom just det projekt som rapporten beskriver: det är till viss del oklart vad själva produkten i projektet är. Sammanfattningen beskriver dock på ett direkt och tydligt sätt de resultat som gruppen fått.
 
 Inledningen är kortfattad, vilket är bra, men det vore möjligtvis bra att presentera det existrande arbete som kandidatprojektet bygger på mer ingående. Det är lite oklart vilka förutsättningar som fanns innan, och hur resten av projektet såg ut. Detta kan ses som en fördel då man istället fokuserar på det relevanta, men isåfall bör det explicit nämnas i rapportens inledning var man väljer att fokusera rapporten, och var läsaren kan hitta mer information. \\
 
-I syftesbeskrivningen påstås det att kandidatarbetes syfte är att tillhandahålla ett positoneringssystem baserat på radio, och även att skapa ett kollisionsfritt MAC-lager. I sammanfattningen och resultatdelen nämns endast MAC-algoritmerna. Kravspecifikationen är tydlig och klar. I kapitel 1.2.2 introduceras dock ett helt nytt begrepp med meningen “Alla robotar i systemet”, utan att rapporten tidigare nämnt något om robotar eller vad själva systemet utgörs av, endast vilka krav som ställs på det. Kollisionsfrihet omtalas på flera ställen i rapporten innan någon närmare förklaring ges. Både kravspecifikation och avgränsningar är välskrivna och verkar högst rimliga. Dessa skulle kunna förbättras ytterligare genom motiveringar, så att läsaren övertygas och förstår varför just dessa krav och begränsningar sattes på projektet. \\ 
+I syftesbeskrivningen påstås det att kandidatarbetes syfte är att tillhandahålla ett positoneringssystem baserat på radio, och även att skapa ett kollisionsfritt MAC-lager. I sammanfattningen och resultatdelen nämns endast MAC-algoritmerna.
+
+Kollisionsfrihet omtalas på flera ställen i rapporten innan någon närmare förklaring ges. Både kravspecifikation och avgränsningar är välskrivna och verkar högst rimliga. Dessa skulle kunna förbättras ytterligare genom motiveringar, så att läsaren övertygas och förstår varför just dessa krav och begränsningar sattes på projektet.
+
+Kravspecifikationen är tydlig och klar, vilket fungerar som ett bra stöd för läsaren i resten av rapporten. I kapitel 1.2.2 introduceras dock ett helt nytt begrepp med meningen “Alla robotar i systemet”, utan att rapporten tidigare nämnt något om robotar eller vad själva systemet utgörs av, endast vilka krav som ställs på det. \\ 
 
 \section{Teori och metod}
 
-Beskrivningen av Triangulering är tydlig och lätt att följa och förstå. Teoridelen av rapporten är överlag lätt att förstå, och går inte in särskilt djupt alls på tekniska eller abstrakta delar av de bakomliggande teknikerna. Både för Kalman-filtret och radioavståndsmätning vore det önskvärt med en mer matematisk respektive teknisk beskrivning. Eftersom Kalmanfilter är en central del inom projektet skulle det vara bra att ha mer teori om hur filtret fungerar. Lättläsligheten är en fördel, men resultatet blir att resultaten blir aningen \emph{magiska} för läsaren, då man inte vet vad som ligger bakom. Beskrivningarna av UWB och systemplattformen ligger på en bra nivå tekniskt, de är lätta att läsa och följa, samtidigt som de ger en tillräcklig teknisk inblick. \\
+Teoridelen av rapporten är överlag lätt att förstå, och går inte in särskilt djupt på tekniska eller abstrakta delar av de bakomliggande teknikerna. Att texten är lätt på teori är en fördel, men leder också till att vissa uttryck blir en aning magiska för läsaren då uttrycken inte har någon teoretisk förankring alls. \\
 
-I 2.6.2 nämns att om man väljer PII = 6 så får man lägsta möjliga tidsfördröjning, 25ms. Tidigare i rapporten visas uträkningar för flera relativt triviala uträkningar, men i det nämns inget om den icke triviala uträkningen av den lägsta möjliga tidfördröjningen. \\
+Beskrivningarna av UWB, triangulering och systemplattformen ligger på en bra teknisk nivå, de är lätta att läsa och följa, samtidigt som de ger en tillräcklig teknisk inblick. För Kalmanfilter och avståndsmätning via radio vore det dock önskvärt med en mer matematisk- respektive teknisk beskrivning, i synnerhet då Kalmanfilter är en viktig del av projektet och resultatet. \\
 
-I kapitlet om utvecklingsmetod saknas det en beskrivning av hur testplattformen eller -uppkopplingen ser ut, men senare nämns “de lysdioder som är monterade på kretskortet”. Detta bidrar till förvirring för läsaren eftersom man inte vet vilket kretskort som åsyftas. Kapitlet om utvecklingsmiljö och språk är överflödigt och innehåller omotiverade påståenden: “Det är allmänt känt att...”. \\
+I 2.6.2 nämns att om man väljer PII = 6 så får man lägsta möjliga tidsfördröjning, $25 ms$. Tidigare i rapporten visas uträkningar för flera relativt triviala uträkningar, men i det nämns inget om den icke triviala uträkningen av den lägsta möjliga tidfördröjningen. \\
 
-Den från roboten interna datan som används som en del i positionsbestämningen kan vara opålitliga av många anledningar, några av vilka nämns i kapitlet om slutsatser och diskussion. Detta är positivt eftersom det skapar kvalitetskänsla i rapporten och visar på att gruppen utvärderat sin metod och dragit slutsatser därefter. Resonemanget skulle kunna utvecklas ytterligare för att inkludera fler tänkbara felkällor, såsom hjulspin, externa krafter som verkar på roboten, feljusterade hjul eller hjuldiametrar eller andra källor till felaktiga värden från sensorer. \\
+I kapitlet om utvecklingsmetod saknas det en beskrivning av hur testplattformen eller testuppkopplingen ser ut, men senare nämns “de lysdioder som är monterade på kretskortet”. Detta bidrar till förvirring för läsaren eftersom man inte vet vilket kretskort som åsyftas. Kapitlet om utvecklingsmiljö och språk är överflödigt och innehåller omotiverade påståenden: “Det är allmänt känt att…”.  \\
+
+Den från roboten interna datan som används som en del i positionsbestämningen kan vara opålitliga av många anledningar, några av vilka nämns i kapitlet om slutsatser och diskussion. Detta är positivt eftersom det skapar kvalitetskänsla i rapporten och visar på att gruppen utvärderat sin metod och dragit slutsatser därefter. Resonemanget skulle möjligen kunna utvecklas ytterligare för att inkludera fler tänkbara felkällor, såsom hjulspin, externa krafter som verkar på roboten, feljusterade hjul eller hjuldiametrar eller andra källor till felaktiga värden från sensorer. \\
 
 \section{Resultat och analys}
 
@@ -103,8 +115,8 @@ I övrigt är resultaten klara och tydliga, med tillhörande relevanta diskussio
 \subsection{Innehåll}
 
 \begin{itemize}
-   \item I avsnitt 3.1 skrivs det om “en hel den \emph{[sic!]} möten med professorer”. Det skulle vara vara bra med lite mer specifikt hur många möten (t.ex 10-tals, 100-tals) samt med vilka professorer och lite kort om vad som diskuterades. Nuvarande formulering ger ett oseriöst intryck.
-   \item I avsnitt 5 skrivs det om spikar vid 10 och 110 meter i figur 14, men några spikar hittas inte vid de värdena i grafen, vilket är förvirrande. Förmodligen är det figur 15 som menas.
+   \item I avsnitt 3.1 skrivs det om “en hel den möten med professorer”. Det skulle vara vara bra med lite mer specifikt hur många möten (t.ex 10-tals, 100-tals) samt med vilka professorer och lite kort om vad som diskuterades. Nuvarande formulering ger ett oseriöst intryck.
+   \item I avsnitt 5 skrivs det om spikar vid 10 och 110 meter i figur 14, men endast en spik kan observeras i grafen. Förmodligen är det figur 15 som menas.
    \item I Slutsatser och diskussion behövs den sista meningen, angående positionsbestämning med flera mobila noder, preciseras. Som det står nu är det lite väl generellt. 
 \end{itemize}
 
@@ -119,8 +131,8 @@ I övrigt är resultaten klara och tydliga, med tillhörande relevanta diskussio
 Överlag behöver språket ses över. Stavfel, talspråk, syftningsfel, och andra grammatiska fel är vanligt förekommande. Rapporten verkar inte vara korrekturläst, och den version som Grupp 43 fått att opponera på behöver en del arbete vad gäller formatering av text och figurer. Exempel:
 
 \begin{itemize}
-   \item Gauss-distribution används i flera sammanhang men svenskans normalfördelning skulle passa bättre. (\url{http://www.ne.se/gaussf\%C3\%B6rdelning})
-   \item Sida 6 står det “å andra sidan” vilket är ett talspråkligt utryck och passar inte i rapporttext. Istället skulle “Däremot går Collission Detection ut på att...” kunna användas.
+  \item \emph{Gauss-distribution} används i flera sammanhang men svenskans \emph{normalfördelning} skulle passa bättre. (\url{http://www.ne.se/gaussfördelning})
+   \item Sida 6 står det “å andra sidan” vilket är ett talspråkligt utryck och passar inte i rapporttext. Istället skulle “Däremot går Collission Detection ut på att…” kunna användas.
    \item Sida 8 står det “en så kallad MICAz” då det borde vara “en MICAz-modul” som åsyftas, leder lätt till förvirring.
 \end{itemize}
 
