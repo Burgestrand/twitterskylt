@@ -1122,7 +1122,7 @@ HTTPClient, ett bibliotek för att göra HTTP-anrop, användes en kort stund i b
 
 aJSON är ytterligare ett bibliotek från författaren till HTTPClient, som är ämnat att kunna läsa in JSON på Arduino. Biblioteket stödjer inte i skrivande stund UTF-8 — det specificeras dock inte vad det innebär — vilket arbetades runt genom att strippa vår data innan parsning. Det visade sig dock att även efter detta så fick aJSON vår Arduino att crasha. När både aJSON och HTTPClient orsakade problem som var svåra att lösa ansåg gruppen att det skulle ta mindre tid att skriva egna ersättare för ovan nämnda bibliotek, vilket också senare gjordes.\\
 
-För de egengjorda biblioteken bestämde sig gruppen ändå för att försöka använda öppen källkod för att minimera det jobb som behövde göras, och därför valde gruppen att använda en något modifierad version av Yajl som JSON-parser \hyperref[github]{(GitHub 2012d)}. Modifieringarna innebar att definiera en del konstanter som finns i standard-C, men inte AVR-C.
+För de egengjorda biblioteken bestämde sig gruppen ändå för att försöka använda öppen källkod för att minimera det jobb som behövde göras, och därför valde gruppen att använda en något modifierad version av Yajl som JSON-parser \hyperref[github]{(GitHub, 2012d)}. Modifieringarna innebar att definiera en del konstanter som finns i standard-C, men inte AVR-C.
 
 \subsubsection{Minnesbrist vid parsing}
 Projektet stötte på ett problem när JSON-data ifrån Twitter skulle parsas. Då JSON strängen innehöll escape-tecken så fungerade inte parsningen med parser biblioteket Yajl och basstationen startade helt plötsligt om. Det misstänktes det att åtgången av RAM var för stort och att detta orsakade omstarten. Efter undersökning av parserns källkod upptäcktes det att en buffer allokerades när den stötte på ett escape-tecken. Hur mycket minne som parsern försökte allokera styrdes av ett standardvärde som var inställt på 2 kByte, vilket kan jämföras med basstationens totala RAM-minne på 8 kByte. Standardvärdet ansågs var för högt inställt och när det minskades flöt parsningen på som förväntat.
@@ -1284,10 +1284,13 @@ Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt a
 
 \label{github}
 \bibitem{github}
-    GitHub, 2012,
-    \emph{Data at GitHub},
-    \url{https://github.com/blog/1112-data-at-github}
-    . (2012-01-27)
+    GitHub, 2012,\\
+    \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
+    \item{\emph{Data at GitHub}, \url{https://github.com/blog/1112-data-at-github}. (2012-01-27)}
+    \item{\emph{aJson}, \url{https://github.com/interactive-matter/aJson}. (2012-01-27)}
+    \item{\emph{HTTPClient}, \url{https://github.com/interactive-matter/httpclient}. (2012-01-27)}
+    \item{\emph{yajl}, \url{https://github.com/lloyd/yajl}. (2012-01-27)}
+    \end{list}
 
 \label{greenbatteries}
 \bibitem{greenbatteries}
