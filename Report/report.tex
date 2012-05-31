@@ -254,7 +254,7 @@ Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomen
         	\item DHCP
         	\item Parsing av konfigurationsfil
         	\item Parsing av Twitterdata
-        	\item Formatering av Tweets
+        	\item Formatering av meddelanden
         	\end{itemize}
     	\item Systemintegration
     		\begin{itemize}
@@ -292,24 +292,14 @@ Under arbetets gång kunde alltså varje medlem i projektet publicera sina ändr
 \section{Bakomliggande tekniker och tjänster}
 
 \subsection{Twitter}
-Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över \hyperref[twitter]{(Twitter, 2012c)}.\\
 
-Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den {\it Arabiska våren} \hyperref[national]{(The National, 2011)}.\\
+Twitter är en hemsida som tillhandahåller gratis mikrobloggar där varje inlägg är högst 140 tecken långt. Twitter lanserades 2006 och har idag över 140 miljoner aktiva medlemmar världen över \hyperref[twitter]{(Twitter, 2012c)}. \\
 
-\subsubsection{Terminologi}
-Twitter utgörs av ett stort antal användare. En användare identifieras av ett användarnamn som är högst 15 tecken långt. \\
+Twitters syfte är att låta användare förmedla korta meddelanden till antingen inbjudna vänner eller hela webben. Dess användningsområde sträcker sig från SMS-liknande kommunikation mellan individer till spridning av nyheter och politisk aktivism. Den fick ett stort medialt genomslag under 2010 och 2011, då många beskrev tjänsten som en bidragande faktor till den arabiska våren \hyperref[national]{(The National, 2011)}. \\
 
-En tweet (härefter {\it meddelande}) är ett inlägg på Twitter. Det tillhör en användare och består av upp till 140 Unicode-tecken. Detta meddelande kan innehålla så kallade hashtags, som ingår i meddelandets metadata. En användares samling av meddelanden kallas för tidslinje. \\
+Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012d)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden. \\
 
-En hashtag är ett ord inuti ett meddelande som föregås av ett nummertecken ({\#}, hash). En hashtag används för att kategorisera meddelandet, som sedan kan hittas genom en sökning på denna hashtag. En hashtag kan vara upp till 139 tecken lång och ett meddelande kan innehålla så många hashtags som ryms i dess 140 tecken. \\
-
-En {\it retweet} är en kopia av ett existerande meddelande, återpublicerat av en annan användare. En retweet tillhör den andra användarens tidslinje. Den innehåller en kopia av det fullständiga originalmeddelandet och inleds med strängen {\it RT @user: }, där user är den ursprungliga författarens användarnamn. Detta innebär att en retweet kan innehålla upp till 161 tecken: 140 för det ursprungliga meddelandet, 15 för ett användarnamn av maximal längd och 6 för formateringen runt användarnamnet.
-
-\subsubsection{API}
-\label{twitterapi}
-Twitter erbjuder ett HTTP-baserat API som kan användas av vem som helst för att hämta meddelanden, användaruppgifter och annan information från tjänstens databas \hyperref[twitter]{(Twitter, 2012a)}. Autentisering krävs enbart för att komma åt dold information (exempelvis privata meddelanden) och för att publicera nya meddelanden.\\
-
-Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format, se avsnitt~\ref{sec:json}.
+Den allmänna informationen i Twitters databas returneras som svar på HTTP-förfrågningar till URL:er som dokumenteras på Twitters hemsida. Svaren skickas i antingen XML- eller JSON-format. (JSON beskrivs närmare i avsnitt~\ref{sec:json}.)
 
 \subsection{Arduino}
 Arduino är en microcontroller-plattform vars mönsterkortsdesign och källkod publiceras under öppen licens \hyperref[arduino]{(Arduino, 2012a)}. Det finns ett antal varianter av plattformen, i olika storlek och komplexitetsgrad. Originalversionen av Arduino tillverkas av ett italienskt företag, men det finns många tredjepartsalternativ och varianter. Utöver grundplattformarna finns ett stort antal tillbehör och utbyggnadskort som lägger till funktionalitet.\\
@@ -350,6 +340,8 @@ Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som b
 
 \section{Systembeskrivning, Hårdvara}
 
+I följande kapitel behandlas systemets hårdvarudelar, först på ett övergripande sätt i moduluppdelningen. Sedan följer en mer detaljerad beskrivning av komponenterna som används i produkten.
+
 \subsection{Moduluppdelning}
 Systemet är konstruerat med moduläritet i åtanke, både för mjuk- och hårdvara. På en övergripande nivå är systemet uppdelat i två delar: basstation och skylt. Basstationen och skylten är i sin tur uppbyggda av flera olika submoduler för att hantera olika funktioner. \\
 
@@ -357,6 +349,7 @@ Basstationen och skylten är båda baserade runt microcontrollerplattformar. Til
 
 \subsubsection{Skylt}
 \label{sec:skylt_section}
+För en blockschemabeskrivning av skylten, se Appendix~\ref{sec:block_skylt}.
 Skylten är baserad runt en Arduino Pro. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med I/O, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
 	
 	\begin{itemize}
@@ -371,7 +364,9 @@ Skylten utför inget avancerat logikarbete. Tyngdpunkten för skyltens design li
 Skyltens display har plats för 160 tecken: 140 tecken från själva meddelandet och 20 tecken ytterligare information i form av tid och datum. Tecknen fördelas över 8 rader med plats för 20 tecken vardera.
 
 \subsubsection{Basstation}
-Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av tweets. Basstationen är ansvarig för att hämta och formattera meddelanden. Efter att texten för ett meddelande har hämtats återstår följande justeringar:
+För en blockschemabeskrivning av basstationen, se Appendix~\ref{sec:block_bas}.
+
+Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av meddelanden. Basstationen är ansvarig för att hämta och formattera meddelanden. Efter att texten för ett meddelande har hämtats återstår följande justeringar:
 	
 	\begin{itemize}
     	\item Tecken som inte stöds av skyltens display rensas bort eller ersätts.
@@ -381,6 +376,8 @@ Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 25
 Basstationen är alltid aktiv och lyssnar kontinuerligt efter inkommande förfrågningar. Internetuppkopplingen konfigureras automatiskt genom DHCP och använder sig av DNS för att kunna adressera Twitter i de HTTP-anrop som görs till dess API.
 
 \subsection{Arduinoplattformar}
+
+De tre följande styckena behandlar Ardunio-plattformens egenskaper. En lista över de Arduinoprodukter och relaterade utbyggnadskort finns given i Appendix~\ref{sec:komp_list}.
 
 \subsubsection{AVR och energieffektivitet}
 Arduino bygger på microcontrollers ur Atmels AVR-serie. AVR är relativt enkla att bygga med och att programmera, samtidigt som de erbjuder den prestanda och konfigurerbarhet som behövs i många projekt som baseras runt microcontrollers. Just i detta projekt är även energieffektiveten av stor vikt, och AVR erbjuder många möjligheter att spara energi. Detta sker främst genom att under körtid försätta hela eller delar av systemet i sömnläge. Exempelvis kan programmeraren samoptimera energiförbrukning och prestanda genom att sätta exakt klockfrekvens. Enligt databladet för AVR ATMega328 (som exempel) kan AVR ge en exekveringshastighet på nära 1 MIPS per MHz, vilket är mycket effektivt \hyperref[atmel]{(Atmel, 2012a)}. \\
@@ -398,17 +395,19 @@ Basstationen använder en Ethernet Shield för att ansluta till internet. Ethern
 XBee Shield är ett utbyggnadskort för att lägga till funktionalitet för XBee-modem för användning tillsammans med Arduino. Utbyggnadskortet är relativt okomplicerat, och dess största bidrag är spänningsreglering och fysiskt smidig anslutning till resten av systemet. Basstationen använder en XBee-shield, medan skylten använder en mindre, nedskalad variant \hyperref[arduino]{(Arduino, 2012d)}.
 
 \subsection{Radiolänk}
-En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Energieffektiviten i systemet kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukare i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
+En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Ett vidare problem som behandlas i projektet är energieffektivitet, särskilt för skyltmodulen. Detta kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukningspost i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
 	
 	\begin{itemize}
 	\item {\it Radiohårdvara och -sändare}: Trådlösa nätverksmoduler som kan kommunicera med microcontrollerplattformarna samt erbjuda sändning och mottagning av radiosignaler.
     	\item {\it Nätverket}: Den mjukvara och det protokoll som bygger upp nätverket som använder hårdvaran.
 	\end{itemize}
-	
+
+De radiomodem som används kallas XBee och implementerar ZigBee, en standard för små, trådlösa nätverk som bygger på IEEE 802.15.4. Nätverket i systemet består av två noder, basstation och skylt. Dessa kommunicerar via en XBee-modem som implementerar ZigBee-protokollet. I ZigBee-nätverket fungerar basstationen som en nätverskoordinator och är ansvarig för att sätta upp nya nätverk och knyta en skylt till sig. Skylten i sin tur fungerar som slutanvändare och kan efterfråga data eller nätverksinformation från basstationen.
+
 \subsubsection{Uppgift}
 Huvuduppgiften för det trådlösa nätverket är att överföra textdata över en radiolänk. Datan hämtas från Twitter och behandlas av basstationen, som sedan skickar den vidare trådlöst via radiolänken till skylten, som slutligen visar upp datan på displaymodulen. \\
 
-Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt många liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både {\it robust} för att garantera tillförlitlig dataöverföring, och {\it dynamisk} för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
+Trådlösa nätverk är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt många liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både {\it robust} för att garantera tillförlitlig dataöverföring, och {\it dynamisk} för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
 
 Kravet på robusthet innebär att radiolänken måste implementera ett protokoll som stödjer felkontroll för skickade paket, såsom i form av sekvensnumrering, kontrollsummor och omsändning.
 
@@ -434,6 +433,11 @@ ZigBee-nätverk kan innehålla tre olika typer av enheter: {\it Coordinator}, {\
 En router fungerar som en länk mellan Coordinator (eller en annan router) och en eller flera end-devices eller andra routers. Dessa är inte aktuella för användning i det här projektet, då det inte finns något behov för en sådan trädstruktur på nätverket. \\
 
 End-devices är något enklare, och fungerar oftast som simpla insamlare eller mottagare av data. Eftersom end-devices inte har ansvar för att skicka vidare data eller koordinera andra enheter, kan de för att spara energi med fördel försättas i strömsparläge under större delen av tiden \hyperref[digi]{(Digi, 2012a)}. Detta är idealt för skyltmodulen i systemet, då denna behöver ha lång batteritid. I det system som beskrivs här motsvarar skyltmodulen en end-device, och det finns som mest en end-device i nätverket, det vill säga att nätverket består endast av två enheter, en Coordinator och en end-device. På grund av den relativa enkelheten hos en end-device finns det goda möjligheter att utöka systemet med fler skyltar (end-devices), men det ligger utanför ramarna för detta projekt.
+
+\subsubsection{Säkerhet}
+ZigBee är konstruerat för att stödja vissa säkerhetsfunktioner, såsom kryptering av nätverkstrafik. Eftersom ZigBee bygger på standarden för IEEE 802.15.4 finns det grundläggande ramar för hur meddelanden ska krypteras. Utöver detta bygger ZigBee på med säkerhetsfunktioner för sina specifika tillägg till IEEE 802.15.4. Hårdvaruimplementationen, här XBee, är sedan ansvarig för att tillhandahålla möjligheterna att kryptera och tillhandahålla krypteringsnycklar. De XBee-modem som använts ger systemkonstruktören möjlighet att slå på och använda vissa säkerhetsfunktioner, som 128-bitars kryptering. Problem uppstår dock när krypteringsnycklar ska delas ut, eftersom detta projekt har som mål att erbjuda dynamisk ihopkoppling av en basstation och en skyltmodul. Nycklarna skulle då behöva sändas över en osäker länk vid ihopparningen. \\
+
+I detta projekt har fokus inte legat på nätverkssäkerhet, då det anses ligga utanför projektramarna. Dessutom är det av lågt intresse då informationen som skickas över nätverket inte är hemlig utan snarare avsedd att vara så öppen som möjligt för att visas på Twitter och skyltens display. Även användarscenariot, där skylten främst används på en arbetsplats i kontorsmiljö, bidrar till att kryptering anses onödigt. Radiolänkens operationsområde är begränsat rent fysiskt, vilket innebär att en attack skulle behöva ske från dess fysiska närhet, oftast begränsat till själva arbetsplatsen. Säkerhetsfunktionalitet i form av kryptering av meddelanden skulle även bidra till långsammare radiokommunikation och större energiförbrukning. Tidigt i denna rapport nämndes systemets egenvärde för teknikfantaster. För att bygga vidare på detta kan det hävdas att avsaknaden av kryptering också har något av ett egenvärde, då systemet troligen hittar användare i kontorsmiljöer på teknikföretag, där det kan vara ett uppskattat skämt att försöka skicka egna meddelanden till en intet ont anande kollegas kontorsdörr.
 
 \subsubsection{Hårdvara}
 ZigBee-standarden stöds av många olika hårdvaruplattformar och tillverkare (bland andra Atmel och Freescale), men efter undersökning av utbudet av hårdvara som stödjer standarden valdes XBee från tillverkaren {\it Digi}, eftersom XBee-modulerna jämfört med andra radiotransceivers i samma storlek:
@@ -469,7 +473,7 @@ Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter an
 
 \subsubsection{Implementering}
 Målet i projektet har varit att i så stor utsträckning som möjligt nyttja de funktioner som finns inbyggda i ZigBee-protokollet och de mekanismer som stöds av XBee-modulerna.
-Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data (Tweets) till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta\hyperref[eetimes]{(EE Times, 2010)},  \hyperref[embedded]{(Embedded Computing, 2011)}. \\
+Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data i form av meddelanden till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta\hyperref[eetimes]{(EE Times, 2010)},  \hyperref[embedded]{(Embedded Computing, 2011)}. \\
 
 All data skickas över radiolänken som datapaket, snarare än som en enkel byteström. Datapaketen är uppbyggda av nyttodata, metadata samt överföringsdata. Överföringsdatan hjälper till med den rena överföringsbiten och består av kontrollsumma, sekvensnummer samt start- och stopptecken. Metadata ger information om nyttodatans egenskaper.
 Paketen är märkta med vilken typ av data det rör sig om. De olika pakettyperna är:
@@ -951,17 +955,29 @@ Datumet läggs till på meddelandet efter att det har justerats. Eftersom det al
     	
 \section{Resultat}
 
-\subsection{Resultatsammanställning, mätdata och produktegenskaper}
+Detta kapitel beskriver det slutgiltiga system som har tagits fram under projektets gång. Såsom energieffektivitet, funktionalitet och andra aspekter av produkten.
 
-\subsubsection{Funktionalitet}
+\subsection{Funktionalitet}
 
 Systemet i sin helhet är idag fullbordat, enligt planeringen. Basstationen hämtar nya meddelanden från Twitter via HTTP, där den därefter läser ut svaret ur Twitters respons genom en egenskriven HTTP-parser. Under tiden som meddelandet hämtas strömmas det igenom en JSON-parser baserad på Yajl, som i sin tur signalerar att parsningen är färdig först när önskad data har hittats och extraherats ur i texten.\\
 
 De meddelanden som hämtas går igenom en process där icke-önskade tecken städas bort, och där alla andra tecken ersätts med sina respektive representationer som krävs för visning på systemets display. Därefter städas meddelandet ytterligare genom att dela upp texten i ord, som sedan justeras efter bästa förmåga i syfte att kunna visa texten på optimalt vis, uppdelat i det antal rader som displayen kräver.\\
 
-Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier.
+Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. \\
 
-\subsubsection{Begränsningar i Twitters API}
+Systemets dataflöde kan sammanfattas på följande sätt: Användaren skickar ett meddelande till Twitter, meddelandet hamnar i Twitters databas, basstationen hämtar meddelandet från Twitter, skylten hämtar meddelandet från basstationen och visar upp på displayen. Detta illustreras i figur~\ref{fig:sys_overblick}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3, angle=0]{system_overblick.png}
+\end{center}
+\caption{Överblick av systemets dataflöde}
+\label{fig:sys_overblick}
+\end{figure}
+
+En beskrivning av systemets funktionalitet ur användarens perspektiv ges genom en användarmanual i Appendix~\ref{sec:manual}.
+
+\subsection{Begränsningar i Twitters API}
 
 Systemets användning av Twitters API lyder under vissa begränsningar från Twitters sida som systemet inte kan påverka. Dessa begränsningar påverkar dels hur pålitliga API-svaren är och dels hur snabbt systemet kan hämta in användarens senaste meddelande.\\
 
@@ -971,7 +987,7 @@ Twitters sök-API kan inte heller användas för att ta emot meddelanden i realt
 
 En ytterligare detalj är att systemet i sin användning av Twitters sök-API förlitar sig på en operator som inte är dokumenterad: {\it +exclude:retweets}. Syftet med detta beskrivs i avsnittet \hyperref[twitterapi]{Twitters API}. Konsekvensen om operatorn skulle sluta fungera vore att även retweets, som kan vara längre än 140 tecken, skulle visas på skylten. Eftersom samtliga meddelanden trunkeras till 140 tecken påverkar detta dock inte systemets stabilitet utan kan i värsta fall leda till att slutet av en sådan retweet inte får plats på displayen.\\
 
-\subsubsection{Energieffektivitet}
+\subsection{Energieffektivitet}
 För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts dels i isolation och dels som en del av det kompletta systemet. Syftet med metoden är att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3,7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.\\
 
 \begin{table}[h]
@@ -1026,14 +1042,14 @@ Batteriavläsningen tar för närvarande endast hänsyn till den spänning som f
 
 Denna lösning är dock inte implementerad i systemet, då det skulle innebära mycket extra beräkningskraft som går åt till att beräkna batteritid, samt en del extra hårdvara. Bland annat skulle en avläsningsbar strömprob behöva kopplas till microcontrollern, samt att externa minneskretsar skulle behöva läggas till för att spara datan relaterat till batterihanteringen. Inom projektet togs snabbt beslutet att detta skulle vara mycket onödigt, på grund av extra kostnader och platsbrist, både fysiskt i enheten och i form av I/O-pinnar på microcontrollern. Vidare skulle det bidra relativt lite till användarupplevelsen. Med nuvarande lösning ger systemet en varning om att batterinivån är låg då spänningen från batteriet börjar sjunka, genom att en LED på skyltmodulen tänds. Då vet samtidigt användaren om att det verkligen är dags att ladda batteriet, då batterinivåvarningen kommer relativt sent i urladdningscykeln. \\
 
-\subsubsection{Radiolänk och nätverk}
+\subsection{Radiolänk och nätverk}
 Radiolänken har testats i kontorsmiljö (Instutitionen för Data- och informationsteknik på Chalmers), och fungerar bra. Ihopparning av modulerna går relativt snabbt (ca 5 sekunder), och inga konflikter med närliggande nätverk märks av. Vid systemstart kan basstationen ta upp till en minut på sig att ansluta sig till nätverksuppkopplingen via DHCP, men oftast går det snabbare. \\
 
 Radiokommunikationen har testats även över längre avstånd inomhus, och verkar fungera bra upp till ungefär två våningar upp eller ned i ett vanligt kontorshus. Även cirka 40-50 meter i sidled. Detta ger en radie runt basstationen som skylten kan operera inom. Operationsområdet för skylten begränsas av väggar, annan störande elektronisk utrustning och andra fysiska hinder. Sammantaget bedöms radiokommunikationen väl uppfylla de krav på räckvidd och samexistensförmåga med andra nätverk som finns i en vanlig kontorsmiljö, och därmed uppfyller radionätverket även den specifikation som ställdes upp i början av projektet. Test har inte utförts utomhus, då det är utanför skyltens tänkta användningsområde. \\
 
 Robustheten i radiokommunikationen är relativt god. Vid längre avstånd gör systemet fler omsändningar av data över radiolänken, på grund av paketförluster. Dessa bidrar till längre uppdateringstider för skylten, men är acceptabla. Små avstånd (upp till 10 meter) ger mycket goda förhållanden mellan misslyckade och framgångsrika paketsändningar. Vid enstaka tillfällen händer det att många paket i följd tappas, vilket får som resultat att systemet går in i ett felhanteringsläge. Detta sker dock sällan, och endast vid långa avstånd med fysiska hinder för radiokommunikationen.
 
-\subsubsection{Fysiska dimensioner}
+\subsection{Fysiska dimensioner}
 \begin{table}[h]
 \centering
 	\begin{tabular}{|l|c|c|c|}
@@ -1400,6 +1416,7 @@ Yergeau, F., 2003,
 \addappheadtotoc
 
 \section{Blockschema, basstation}
+\label{sec:block_bas}
 
 \begin{figure}[H]
 \includegraphics[scale=0.6, angle=0]{block_bas.png}
@@ -1409,6 +1426,7 @@ Yergeau, F., 2003,
 \pagebreak
 
 \section{Blockschema, skylt}
+\label{sec:block_skylt}
 
 \begin{figure}[H]
 \includegraphics[scale=0.6, angle=0]{block_skylt.png}
@@ -1468,6 +1486,7 @@ Yergeau, F., 2003,
 \pagebreak
 
 \section{Komponentlista, huvudsystem}
+\label{sec:komp_list}
 
 \begin{table}[h]
 \centering
@@ -1523,6 +1542,7 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
 \pagebreak
 
 \section{Användarmanual}
+\label{sec:manual}
 
 Hummingbird kopplar din kontorsdörr till Twitter. Dina tweets visas på en skylt som du enkelt monterar utanför ditt kontor. Skylten är helt trådlös och hämtar sina meddelanden från en basstation vilken du kopplar till ett vanligt nätverksuttag. Batteritiden är beräknad till minst 800 timmar för ett 2000mAh-batteri av den typ som följer med.
 
