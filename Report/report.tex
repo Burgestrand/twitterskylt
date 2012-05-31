@@ -962,18 +962,16 @@ Datumet läggs till på meddelandet efter att det har justerats. Eftersom det al
     	\end{enumerate}
     	
 \section{Resultat}
-
-Detta kapitel beskriver det slutgiltiga system som har tagits fram under projektets gång. Såsom energieffektivitet, funktionalitet och andra aspekter av produkten.
+Detta kapitel beskriver det slutgiltiga system som har tagits fram under projektets gång. Energieffektivitet, funktionalitet och andra aspekter av produkten tas upp på ett kritiskt sätt.
 
 \subsection{Funktionalitet}
-
 Systemet i sin helhet är idag fullbordat, enligt planeringen. Basstationen hämtar nya meddelanden från Twitter via HTTP, där den därefter läser ut svaret ur Twitters respons genom en egenskriven HTTP-parser. Under tiden som meddelandet hämtas strömmas det igenom en JSON-parser baserad på Yajl, som i sin tur signalerar att parsningen är färdig först när önskad data har hittats och extraherats ur i texten.\\
 
 De meddelanden som hämtas går igenom en process där icke-önskade tecken städas bort, och där alla andra tecken ersätts med sina respektive representationer som krävs för visning på systemets display. Därefter städas meddelandet ytterligare genom att dela upp texten i ord, som sedan justeras efter bästa förmåga i syfte att kunna visa texten på optimalt vis, uppdelat i det antal rader som displayen kräver.\\
 
 Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. \\
 
-Systemets dataflöde kan sammanfattas på följande sätt: Användaren skickar ett meddelande till Twitter, meddelandet hamnar i Twitters databas, basstationen hämtar meddelandet från Twitter, skylten hämtar meddelandet från basstationen och visar upp på displayen. Detta illustreras i figur~\ref{fig:sys_overblick}
+Systemets dataflöde kan sammanfattas på följande sätt: Användaren skickar ett meddelande till Twitter, meddelandet hamnar i Twitters databas, basstationen hämtar meddelandet från Twitter, skylten hämtar meddelandet från basstationen och visar upp på displayen. Detta illustreras i figur~\ref{fig:sys_overblick}.
 
 \begin{figure}[H]
 \begin{center}
@@ -996,7 +994,9 @@ Twitters sök-API kan inte heller användas för att ta emot meddelanden i realt
 En ytterligare detalj är att systemet i sin användning av Twitters sök-API förlitar sig på en operator som inte är dokumenterad: {\it +exclude:retweets}. Syftet med detta beskrivs i avsnittet \hyperref[twitterapi]{Twitters API}. Konsekvensen om operatorn skulle sluta fungera vore att även retweets, som kan vara längre än 140 tecken, skulle visas på skylten. Eftersom samtliga meddelanden trunkeras till 140 tecken påverkar detta dock inte systemets stabilitet utan kan i värsta fall leda till att slutet av en sådan retweet inte får plats på displayen.\\
 
 \subsection{Energieffektivitet}
-För att mäta energieffektivteten hos skyltmodulen har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts dels i isolation och dels som en del av det kompletta systemet. Syftet med metoden är att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3,7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.\\
+Diskussionen om energieffektivitet har begränsats till att behandla skyltmodulens energieffektivitet, eftersom den är batteridriven och ska enligt projektmålen ge lång batteritid. Inga mätningar har gjorts på basstationens energieffektivitet, men det har varit i åtanke under konstruktionsfasen. Basstationen är baserad på samma sorts strömsnåla plattform som skylten, och radiokommunikationen används på ett liknande effektivt sätt som för skylten. Skillnaderna är att basstationen ständigt är i ett aktivt läge. Detta kan jämföras med skylten, som går ned i ett strömsparläge större delen av driftstiden. Sammanlagt bidrar dessa faktorer till att basstationens konstruktion är mindre fokuserad på strömsnålhet än skylten, men är fortfarande relativt effektiv. Andra faktorer har istället prioriterats, såsom enkel nätverksanslutning och större arbetsminne.\\
+
+För att mäta energieffektivteten för skylten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
 
 \begin{table}[h]
 \centering
@@ -1150,7 +1150,7 @@ Rent produktionstekniskt skulle systemet kunna anpassas för serieproduktion med
 För en serieproducerad variant av systemet skulle kontrollen öka över komponentval och vilka kretsar som används. Bland annat spänningsregulatorer skulle kunna ändras: istället för linjära skulle switchade regulatorer kunna användas. En del onödiga kretsar som inte använts skulle kunna tas bort från konstruktionen. Det har varit mycket svårt att uppskatta kostnaden för en serieproducerad variant, då det är många faktorer som spelar in. Ingen i gruppen har erfarenhet av att ta fram ett komplett system och beräkna kostnader för industriell massproduktion. 
 
 \subsection{Slutsatser}
-Det färdiga systemet uppfyller alla de krav som uppställdes i projektets början, dessa återfinns i avdelningen \ref{sec:mal}. Både den önskade funktionaliteten och energieffektiviteten har uppnåtts, dock finns det brister gällande systemetsanvändarvänlighetet. I dagsläget är det opraktiskt att komma åt det micro-SD-kort på vilket systemets konfigurering ska sparas. Felhanteringen är också ytterst begränsad då basstationen endast signalerar om ett fel har inträffat, ej vilket slags fel. Dessa brister är dock i sammanhanget små och skulle i en slutlig design kunna åtgärdas utan att göra några grundläggande förändringar i systemets uppbyggnad.\\
+Det färdiga systemet uppfyller alla de krav som uppställdes i projektets början, dessa återfinns i avdelningen \ref{sec:mal}. Både den önskade funktionaliteten och energieffektiviteten har uppnåtts, dock finns det brister gällande systemets användarvänlighetet. I dagsläget är det opraktiskt att komma åt det micro-SD-kort på vilket systemets konfigurering ska sparas. Felhanteringen är också ytterst begränsad då basstationen endast signalerar om ett fel har inträffat, ej vilket slags fel. Dessa brister är dock i sammanhanget små och skulle i en slutlig design kunna åtgärdas utan att göra några grundläggande förändringar i systemets uppbyggnad.\\
 
 Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt att ersätta traditionella dörrskyltar med elektroniska dörrskyltar som enkelt kan fjärruppdateras.
 
@@ -1232,14 +1232,6 @@ Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt a
     \url{http://www.display-elektronik.de/DEM40491SYH-LY.PDF}
     . (2012-05-07).
 
-\label{eetimes}
-\bibitem{eetimes}
-    Drew Gislason,
-    EE Times, 2011,
-    \emph{ZigBee Applications},
-    \url{ http://www.eetimes.com/design/embedded-internet-design/4201087/ZigBee-applications--Part-1-Sending-and-receiving-data/}
-    . (2012-02-25)
-
 \label{embedded}
 \bibitem{embedded}
     Embedded Computing, 2011,
@@ -1253,20 +1245,13 @@ Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt a
     \url{http://www.epapercentral.com/}
     . (2012-03-29)
 
-\label{spectrum}
-\bibitem{spectrum}
-    Erico Guizzo, 
-    IEEE Spectrum, 2011,
-    \emph{Send a tweet to your office door},
-    \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door}. (2012-01-17)
-
 \label{fielding}
 \label{rfc2616}
 \bibitem{fielding}
-Fielding, R et al, 1999,
-\emph{Hypertext Transfer Protocol -- HTTP/1.1. RFC 2616},
-\url{http://www.w3.org/Protocols/rfc2616/rfc2616.html}
-. (2012-05-10)
+    Fielding, R et al, 1999,
+    \emph{Hypertext Transfer Protocol -- HTTP/1.1. RFC 2616},
+    \url{http://www.w3.org/Protocols/rfc2616/rfc2616.html}
+    . (2012-05-10)
 
 \label{instructables}
 \bibitem{instructables}
@@ -1282,19 +1267,27 @@ Fielding, R et al, 1999,
     \url{http://www.ietf.org/rfc/rfc2131.txt}
     . (2012-04-05)
 
+\label{eetimes}
+\bibitem{eetimes}
+    Gislason, D.,
+    EE Times, 2011,
+    \emph{ZigBee Applications},
+    \url{ http://www.eetimes.com/design/embedded-internet-design/4201087/ZigBee-applications--Part-1-Sending-and-receiving-data/}
+    . (2012-02-25)
+
 \label{git}
 \bibitem{git}
     Git, 2012,
     \emph{Git - Small and fast},
     \url{http://git-scm.com/about/small-and-fast}
-    .
+    . (2012-01-27)
 
 \label{github}
 \bibitem{github}
     GitHub, 2012,
     \emph{Data at GitHub},
     \url{https://github.com/blog/1112-data-at-github}
-    .
+    . (2012-01-27)
 
 \label{greenbatteries}
 \bibitem{greenbatteries}
@@ -1309,6 +1302,13 @@ Fielding, R et al, 1999,
     \emph{The World of Liquid Crystal Displays - Cholesteric Liquid Crystal},
     \url{http://www.personal.kent.edu/~mgu/LCD/chlc.htm}
     . (2012-04-19)
+
+\label{spectrum}
+\bibitem{spectrum}
+    Guizzo, E., 
+    IEEE Spectrum, 2011,
+    \emph{Send a tweet to your office door},
+    \url{http://spectrum.ieee.org/geek-life/hands-on/send-a-tweet-to-your-office-door}. (2012-01-17)
 
 \label{hilaiel}
 \bibitem{hilaiel}
@@ -1345,7 +1345,7 @@ Fielding, R et al, 1999,
 
 \label{lavrentovich}
 \bibitem{lavrentovich}
-    O.D. Lavrentovich, M.Gu, et al., 2008,
+    Lavrentovich, O.D., Gu, M., et al., 2008,
     \emph{Electro-Optical Effects in Liquid Crystals with Dielectric Dispersion},
     Proc. SPIE, 
     Vol. 7050, 70500S
@@ -1414,16 +1414,16 @@ Fielding, R et al, 1999,
 
 \label{xbeearduino}
 \bibitem{xbeearduino}
-xbee-arduino, 2011,
-\emph{xbee-arduino},
-\url{http://code.google.com/p/xbee-arduino/}. (2012-02-01)
+    xbee-arduino, 2011,
+    \emph{xbee-arduino},
+    \url{http://code.google.com/p/xbee-arduino/}. (2012-02-01)
 
 \label{yergeau}
 \label{rfc2277}
 \bibitem{yergeau}
-Yergeau, F., 2003,
-\emph{UTF-8, a transformation format of ISO 10646. STD 63. RFC 3629.},
-\url{http://tools.ietf.org/rfc/rfc3629.txt}. (2012-05-10)
+    Yergeau, F., 2003,
+    \emph{UTF-8, a transformation format of ISO 10646. STD 63. RFC 3629.},
+    \url{http://tools.ietf.org/rfc/rfc3629.txt}. (2012-05-10)
 
 \label{zigbee}
 \bibitem{zigbee}
