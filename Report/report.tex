@@ -348,7 +348,7 @@ Systemet är konstruerat med moduläritet i åtanke, både för mjuk- och hårdv
 Basstationen och skylten är båda baserade runt microcontrollerplattformar. Till dessa plattformar finns anslutna kringmoduler och kringkretsar som ger de önskade I/O-funktionerna. De båda systemdelarna kommunicerar trådlöst via en radiolänk och är utrustade med varsin radiotranceiver.
 
 \subsubsection{Skylt}
-För en blockschemabeskrivning av skylten, se Appendix B.
+För en blockschemabeskrivning av skylten, se Appendix~\ref{sec:block_skylt}.
 
 Skylten är baserad runt en Arduino Pro. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med I/O, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
 	
@@ -364,7 +364,9 @@ Skylten utför inget avancerat logikarbete. Tyngdpunkten för skyltens design li
 Skyltens display har plats för 160 tecken: 140 tecken från själva meddelandet och 20 tecken ytterligare information i form av tid och datum. Tecknen fördelas över 8 rader med plats för 20 tecken vardera.
 
 \subsubsection{Basstation}
-Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av tweets. Basstationen är ansvarig för att hämta och formattera meddelanden. Efter att texten för ett meddelande har hämtats återstår följande justeringar:
+För en blockschemabeskrivning av basstationen, se Appendix~\ref{sec:block_bas}.
+
+Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 2560, på grund av dess extra RAM, vilket behövs för hantering av meddelanden. Basstationen är ansvarig för att hämta och formattera meddelanden. Efter att texten för ett meddelande har hämtats återstår följande justeringar:
 	
 	\begin{itemize}
     	\item Tecken som inte stöds av skyltens display rensas bort eller ersätts.
@@ -374,6 +376,8 @@ Basstationen är konstruerad runt en större variant av Arduino, Arduino Mega 25
 Basstationen är alltid aktiv och lyssnar kontinuerligt efter inkommande förfrågningar. Internetuppkopplingen konfigureras automatiskt genom DHCP och använder sig av DNS för att kunna adressera Twitter i de HTTP-anrop som görs till dess API.
 
 \subsection{Arduinoplattformar}
+
+De tre följande styckena behandlar Ardunio-plattformens egenskaper. En lista över de Arduinoprodukter och relaterade utbyggnadskort finns given i Appendix~\ref{sec:komp_list}.
 
 \subsubsection{AVR och energieffektivitet}
 Arduino bygger på microcontrollers ur Atmels AVR-serie. AVR är relativt enkla att bygga med och att programmera, samtidigt som de erbjuder den prestanda och konfigurerbarhet som behövs i många projekt som baseras runt microcontrollers. Just i detta projekt är även energieffektiveten av stor vikt, och AVR erbjuder många möjligheter att spara energi. Detta sker främst genom att under körtid försätta hela eller delar av systemet i sömnläge. Exempelvis kan programmeraren samoptimera energiförbrukning och prestanda genom att sätta exakt klockfrekvens. Enligt databladet för AVR ATMega328 (som exempel) kan AVR ge en exekveringshastighet på nära 1 MIPS per MHz, vilket är mycket effektivt \hyperref[atmel]{(Atmel, 2012a)}. \\
@@ -392,13 +396,15 @@ Basstationen använder en Ethernet Shield för att ansluta till internet. Ethern
 XBee Shield är ett utbyggnadskort för att lägga till funktionalitet för XBee-modem för användning tillsammans med Arduino. Utbyggnadskortet är relativt okomplicerat, och dess största bidrag är spänningsreglering och fysiskt smidig anslutning till resten av systemet. Basstationen använder en XBee-shield, medan skylten använder en mindre, nedskalad variant \hyperref[arduino]{(Arduino, 2012d)}.
 
 \subsection{Radiolänk}
-En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Energieffektiviten i systemet kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukare i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
+En central del i projektet är den trådlösa kommunikationen mellan skylt och basstation, som möjliggör kringflyttande av skylten och gör den smidig att använda och montera utan sladdar. Ett vidare problem som behandlas i projektet är energieffektivitet, särskilt för skyltmodulen. Detta kopplar starkt till radiolänken, då trådlös kommunikation är en stor energiförbrukningspost i sammanhanget. Därför bör användningen av aktiv kommunikation hållas till ett minimum. Fokus läggs på enkel ihoplänkning av basstation och skylt, robusthet och dynamisk anpassning till rådande flora av radiosignaler i systemets omgivning. Radiolänken består av två delar:
 	
 	\begin{itemize}
 	\item {\it Radiohårdvara och -sändare}: Trådlösa nätverksmoduler som kan kommunicera med microcontrollerplattformarna samt erbjuda sändning och mottagning av radiosignaler.
     	\item {\it Nätverket}: Den mjukvara och det protokoll som bygger upp nätverket som använder hårdvaran.
 	\end{itemize}
-	
+
+De radiomodem som används kallas XBee och implementerar ZigBee, en standard för små, trådlösa nätverk som bygger på IEEE 802.15.4. Nätverket i systemet består av två noder, basstation och skylt. Dessa kommunicerar via en XBee-modem som implementerar ZigBee-protokollet. I ZigBee-nätverket fungerar basstationen som en nätverskoordinator och är ansvarig för att sätta upp nya nätverk och knyta en skylt till sig. Skylten i sin tur fungerar som slutanvändare och kan efterfråga data eller nätverksinformation från basstationen.
+
 \subsubsection{Uppgift}
 Huvuduppgiften för det trådlösa nätverket är att överföra textdata över en radiolänk. Datan hämtas från Twitter och behandlas av basstationen, som sedan skickar den vidare trådlöst via radiolänken till skylten, som slutligen visar upp datan på displaymodulen. \\
 
@@ -1399,6 +1405,7 @@ Yergeau, F., 2003,
 \addappheadtotoc
 
 \section{Blockschema, basstation}
+\label{sec:block_bas}
 
 \begin{figure}[H]
 \includegraphics[scale=0.6, angle=0]{block_bas.png}
@@ -1408,6 +1415,7 @@ Yergeau, F., 2003,
 \pagebreak
 
 \section{Blockschema, skylt}
+\label{sec:block_skylt}
 
 \begin{figure}[H]
 \includegraphics[scale=0.6, angle=0]{block_skylt.png}
@@ -1467,6 +1475,7 @@ Yergeau, F., 2003,
 \pagebreak
 
 \section{Komponentlista, huvudsystem}
+\label{sec:komp_list}
 
 \begin{table}[h]
 \centering
