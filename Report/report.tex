@@ -254,7 +254,7 @@ Under projektets inledande fas identifierades de huvudsakliga konstruktionsmomen
         	\item DHCP
         	\item Parsing av konfigurationsfil
         	\item Parsing av Twitterdata
-        	\item Formatering av Tweets
+        	\item Formatering av meddelanden
         	\end{itemize}
     	\item Systemintegration
     		\begin{itemize}
@@ -340,12 +340,16 @@ Bistabila LCD delar många fördelar och nackdelar med E-paper. En nackdel som b
 
 \section{Systembeskrivning, Hårdvara}
 
+I följande kapitel behandlas systemets hårdvarudelar, först på ett övergripande sätt i moduluppdelningen. Sedan följer en mer detaljerad beskrivning av komponenterna som används i produkten.
+
 \subsection{Moduluppdelning}
 Systemet är konstruerat med moduläritet i åtanke, både för mjuk- och hårdvara. På en övergripande nivå är systemet uppdelat i två delar: basstation och skylt. Basstationen och skylten är i sin tur uppbyggda av flera olika submoduler för att hantera olika funktioner. \\
 
 Basstationen och skylten är båda baserade runt microcontrollerplattformar. Till dessa plattformar finns anslutna kringmoduler och kringkretsar som ger de önskade I/O-funktionerna. De båda systemdelarna kommunicerar trådlöst via en radiolänk och är utrustade med varsin radiotranceiver.
 
 \subsubsection{Skylt}
+För en blockschemabeskrivning av skylten, se Appendix B.
+
 Skylten är baserad runt en Arduino Pro. Plattformen ger basfunktionalitet i form av ett komplett microcontrollersystem med I/O, spänningsreglering och klockkrets. Till microcontrollern ansluts submoduler:
 	
 	\begin{itemize}
@@ -398,7 +402,7 @@ En central del i projektet är den trådlösa kommunikationen mellan skylt och b
 \subsubsection{Uppgift}
 Huvuduppgiften för det trådlösa nätverket är att överföra textdata över en radiolänk. Datan hämtas från Twitter och behandlas av basstationen, som sedan skickar den vidare trådlöst via radiolänken till skylten, som slutligen visar upp datan på displaymodulen. \\
 
-Trådlösa nätvek är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt många liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både {\it robust} för att garantera tillförlitlig dataöverföring, och {\it dynamisk} för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
+Trådlösa nätverk är av naturen mer opålitliga än trådburna lösningar \hyperref[dell]{(Dell, 2012)}, av flera olika anledningar. Det är svårare att garantera och kontrollera att data har kommit fram, eftersom data kan förloras helt eller delvis över radiolänk (där luften utgör ett delat medium) lättare än i en kopparledning (eller liknande). Vidare finns det potentiellt många liknande trådlösa nätverk och radiolänkar i närheten som kan konkurrera om samma kanaler och nätverksidentifierare. Radiolänken behöver alltså vara både {\it robust} för att garantera tillförlitlig dataöverföring, och {\it dynamisk} för att upptäcka andra nätverk i närheten och anpassa sig för att kunna samexistera utan att orsaka kollisioner mellan paket som skickas över de olika närliggande nätverken. \\
 
 Kravet på robusthet innebär att radiolänken måste implementera ett protokoll som stödjer felkontroll för skickade paket, såsom i form av sekvensnumrering, kontrollsummor och omsändning.
 
