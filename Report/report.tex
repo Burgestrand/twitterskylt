@@ -474,7 +474,7 @@ Radiomodulerna har inbyggda funktioner för att söka av sin närmiljö efter an
 
 \subsubsection{Implementering}
 Målet i projektet har varit att i så stor utsträckning som möjligt nyttja de funktioner som finns inbyggda i ZigBee-protokollet och de mekanismer som stöds av XBee-modulerna.
-Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data (Tweets) till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta\hyperref[eetimes]{(EE Times, 2010)},  \hyperref[embedded]{(Embedded Computing, 2011)}. \\
+Den funktionalitet som specificerats under projektets uppstart är: Pålitlig överföring av data i form av meddelanden till skyltmodulen, möjlighet till god energieffektivitet samt ett robust och dynamiskt sätt att forma nätverk och göra en ihopparning mellan skylt och basstation. ZigBee ger möjligheterna att implementera detta\hyperref[eetimes]{(EE Times, 2010)},  \hyperref[embedded]{(Embedded Computing, 2011)}. \\
 
 All data skickas över radiolänken som datapaket, snarare än som en enkel byteström. Datapaketen är uppbyggda av nyttodata, metadata samt överföringsdata. Överföringsdatan hjälper till med den rena överföringsbiten och består av kontrollsumma, sekvensnummer samt start- och stopptecken. Metadata ger information om nyttodatans egenskaper.
 Paketen är märkta med vilken typ av data det rör sig om. De olika pakettyperna är:
@@ -964,7 +964,19 @@ Systemet i sin helhet är idag fullbordat, enligt planeringen. Basstationen häm
 
 De meddelanden som hämtas går igenom en process där icke-önskade tecken städas bort, och där alla andra tecken ersätts med sina respektive representationer som krävs för visning på systemets display. Därefter städas meddelandet ytterligare genom att dela upp texten i ord, som sedan justeras efter bästa förmåga i syfte att kunna visa texten på optimalt vis, uppdelat i det antal rader som displayen kräver.\\
 
-Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier.
+Algoritmen för justering utvärderades genom att testa den på 100 huvudsakligen svenska meddelanden från Twitters API och granska resultatet för hand. Algoritmen fungerade förvånansvärt bra på dessa godtyckligt utvalda meddelanden. I de flesta av meddelandena kunde samtliga ord flyttas ned istället för att brytas över två rader, vilket ledde till bra läslighet. Faktum är att praktiskt taget de enda ord testet som behövde brytas över flera rader var URL:er, som lider av samma problem i nästan alla andra medier. \\
+
+Systemets dataflöde kan sammanfattas på följande sätt: Användaren skickar ett meddelande till Twitter, meddelandet hamnar i Twitters databas, basstationen hämtar meddelandet från Twitter, skylten hämtar meddelandet från basstationen och visar upp på displayen. Detta illustreras i figur~\ref{fig:sys_overblick}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3, angle=0]{system_overblick.png}
+\end{center}
+\caption{Överblick av systemets dataflöde}
+\label{fig:sys_overblick}
+\end{figure}
+
+En beskrivning av systemets funktionalitet ur användarens perspektiv ges genom en användarmanual i Appendix~\ref{sec:manual}.
 
 \subsection{Begränsningar i Twitters API}
 
@@ -1531,6 +1543,7 @@ Nedan redovisas de gruppmedlemmar som varit huvudansvariga för de olika område
 \pagebreak
 
 \section{Användarmanual}
+\label{sec:manual}
 
 Hummingbird kopplar din kontorsdörr till Twitter. Dina tweets visas på en skylt som du enkelt monterar utanför ditt kontor. Skylten är helt trådlös och hämtar sina meddelanden från en basstation vilken du kopplar till ett vanligt nätverksuttag. Batteritiden är beräknad till minst 800 timmar för ett 2000mAh-batteri av den typ som följer med.
 
