@@ -998,7 +998,7 @@ En ytterligare detalj är att systemet i sin användning av Twitters sök-API f�
 \subsection{Energieffektivitet}
 Diskussionen om energieffektivitet har begränsats till att behandla skyltmodulens energieffektivitet, eftersom den är batteridriven och ska enligt projektmålen ge lång batteritid. Inga mätningar har gjorts på basstationens energieffektivitet, men det har varit i åtanke under konstruktionsfasen. Basstationen är baserad på samma sorts strömsnåla plattform som skylten, och radiokommunikationen används på ett liknande effektivt sätt som för skylten. Skillnaderna är att basstationen ständigt är i ett aktivt läge. Detta kan jämföras med skylten, som går ned i ett strömsparläge större delen av driftstiden. Sammanlagt bidrar dessa faktorer till att basstationens konstruktion är mindre fokuserad på strömsnålhet än skylten, men är fortfarande relativt effektiv. Andra faktorer har istället prioriterats, såsom enkel nätverksanslutning och större arbetsminne.\\
 
-För att mäta energieffektivteten för skylten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3.7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.
+För att mäta energieffektivteten för skylten har ett antal mätningar, beräkningar och uppskattningar gjorts. Strömförbrukningen för varje delmodul har så långt det gått uppmätts i isolation, och som en del av det kompletta systemet, för att kunna peka ut systemets flaskhalsar. Mätningarna har gjorts vid matningsspänning på 3,7V (från batteriet), som regleras ned till 3,3V för systemet. Alla mätningar har skett vid vanlig rumstemperatur och i övrigt under normala kontorsförhållanden.\\
 
 \begin{table}[h]
 \centering
@@ -1022,9 +1022,9 @@ För att mäta energieffektivteten för skylten har ett antal mätningar, beräk
 
 Den slutsats som direkt kan dras är att spänningsregulatorn är den största källan till energiförlust, utslaget över en längre period. Detta beror på att resistiva förluster (i form av värme) fås i regulatorn då spänningen regleras ned till $3,3V$ för systemet. Resultatet blir även att regulatorn blir varm. Lite efterforskning ger dock resultatet att den regulator som används är väl anpassad för systemet och batteriet. Det finns dyrare regulatorer som skulle kunna ge bättre energieffektivitet \hyperref[dimension]{(Dimension Engineering, 2012)}.\\
 
-Med uppdateringsintervall på $5$ minuter och uppdateringstid på $10$ sekunder för en komplett uppdatering av skylten (med display och radiokommunikation) ger detta en batteritid på strax över $690$ timmar $(\approx 29 dagar)$ pessimistiskt räknat. I denna beräkning har antagits att radion är aktiv hela tiden och maximalt antal omsändningar görs. Beräkningen tar dock inte hänsyn till förluster i ledningar, regulatorn för XBee-modulen eller temperaturförändringar. Av dessa uppskattas dock endast XBee-modulens spänningsregulator ha en mätbar inverkan, och även den bör vara mycket liten. \\
+Med uppdateringsintervall på $5$ minuter och uppdateringstid på $10$ sekunder för en komplett uppdatering av skylten (med display och radiokommunikation) ger detta en batteritid på strax över $690$ timmar $(\approx 29 \: dagar)$ pessimistiskt räknat. I denna beräkning har antagits att radion är aktiv hela tiden och maximalt antal omsändningar görs. Beräkningen tar dock inte hänsyn till förluster i ledningar, regulatorn för XBee-modulen eller temperaturförändringar. Av dessa uppskattas dock endast XBee-modulens spänningsregulator ha en mätbar inverkan, och även den bör vara mycket liten. \\
 
-Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(32-36 dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppemot $2400$ timmar. \\
+Uppskattningsvis och optimistiskt räknat, fås en maximal batteritid på strax under $1200$ timmar $(\approx 50 \: dagar)$. En noggrannare och rimligare uppskattning av driftstiden för systemet ligger runt $800-860$ timmar $(32-36 \: dagar)$ på ett fulladdat batteri, inräknat alla mätbara faktorer och under antagandet att användande av skylten sker enligt det normala användarscenario som beskrivs tidigare i rapporten. Som väntat är det alltså spänningsregulatorerna som är de största källorna till förluster. Med perfekta spänningsregulatorer beräknas systemet kunna ha en batteritid på uppemot $2400$ timmar. \\
 
 Arduinoplattformen använder sig av en linjär spänningsregulator, vilket innebär att överbliven effekt går förlorad som värme. Den överblivna effekten kommer av differensen i spänning mellan vad som fås ut av batteriet och systemets driftsspänning. Ett alternativ skulle vara att använda en så kallad switchande spänningsregulator. Dessa kräver dock mer avancerade uppkopplingar och är dyrare \hyperref[dimension]{(Dimension Engineering, 2012)}. \\
 
@@ -1136,9 +1136,9 @@ Originaltanken var att basera skylten runt en E-paper-display. Detta ändrades f
 Under projektets slutfas slutade skyltens display att fungera. Styrelektroniken verkar fortfarande fungera och displayen ger rätt svar på kommandon. Även läsning och skrivning till minnet på displayen verkar fungera. Däremot uppdateras aldrig själva displayytan, av okänd anledning. Tänkbara fel kan vara konstruktionsfel eller ESD-skador, men båda dessa förefaller osannolika. ESD-skador borde ha skadat styrelektroniken på displayen, medan konstruktionsfel är mycket ovanliga enligt tillverkaren. Tillverkaren, Kent Displays, kontaktades via mail (kontaktperson: Tony Emanuele, 2012-05-10), men inte heller de kunde ge någon förklaring till problemet. En ersättnings-display fick beställas.
 
 \subsection{Jämförelser med liknande projekt}
-En enkel Google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzo:s artikel Send a Tweet to Your Office Door i IEEE Spectrum, juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzo:s projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzo:s projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
+En enkel Google-sökning ger en handfull projekt som involverar Twitter och Arduino. Det främsta exemplet på ett liknande projekt är även det som gav grundtanken till detta projekt, Erico Guizzos artikel Send a Tweet to Your Office Door i IEEE Spectrum, juni 2011 \hyperref[spectrum]{(Guizzo, IEEE Spectrum, 2011)}. Guizzos projekt skiljer sig dock på en del viktiga punkter, det är inte trådlöst eller har energieffektivitetsfokus (bland annat används en mindre energieffektiv display), samt att slutprodukten är relativt otymplig. Guizzos projekt är även tekniskt enklare och har mindre inbyggd robusthet och felhantering. \\
 
-Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzo:s projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
+Ett annat projekt, Arduino LCD Twitter Display, implementerar liknande funktioner, men har liknande nackdelar som Guizzos projekt, i form av energiineffektivt, icke-trådlöst och otympligt. Här behöver Arduino-enheten även direkt koppling till en PC \hyperref[instructables]{(Instructables, 2011)}. \\
 
 Inget annat projekt erbjuder en twitteransluten, trådlös dörrskylt med energieffektiv display och radio, eller lång batteritid. Vidare finns inget annat projekt som erbjuder samma robusta kommunikationslänk eller användarvänlighet. Hummingbird kräver inte heller någon extern PC för att koppla upp sig mot internet, utan använder egen nätadapter för matningsspänning, och går att koppla direkt till en router via vanlig Ethernet. \\
 
@@ -1191,7 +1191,7 @@ Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt a
 \label{cisco}
 \bibitem{cisco}
     Cisco Systems, 2003,
-    \emph{CCNA 3 and 4 Companion Guide (Cisco Networking Academy Program), ss. 14, 391-392.}.
+    \emph{CCNA 3 and 4 Companion Guide (Cisco Networking Academy Program), ss. 14, 391-392}.
     Cisco Press, Indianapolis, USA,
     Upplaga 3.
 
@@ -1319,20 +1319,18 @@ Sammantaget visar projektet att det på ett energieffektivt sätt är möjligt a
 \bibitem{hilaiel}
     Hilaiel, L., 2012, 
     \emph{Yajl},
-    \url{http://lloyd.github.com/yajl/},
+    \url{http://lloyd.github.com/yajl/}
     . (2012-05-10)
 
 \label{kent}
 \bibitem{kent}
     Kent Displays Inc, 2012,
     \begin{list}{[\alph{qcounter}]}{\usecounter{qcounter}}
-    \item \emph{Kent Displays},
-    \url{http://www.kentdisplays.com/}
-    . (2012-04-05) \\
-    \item \emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.}, 2012,
-    \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf}
+    \item {\emph{Kent Displays}, \url{http://www.kentdisplays.com/}. (2012-04-05)}
+    \item {\emph{1/8 VGA Cholesteric Display Module with SPITM-Compatible Interface. Kent Displays | Resources.}, 2012,
+        \url{http://www.kentdisplays.com/services/resources/datasheets/25075h_240x160_SPI_datasheet.pdf}. (2012-03-31)}
     \end{list}
-     . (2012-03-31)
+     
 
 \label{microsoft}
 \bibitem{microsoft}
